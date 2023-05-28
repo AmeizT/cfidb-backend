@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from .db import DATABASES
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -134,12 +133,12 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-if not DEBUG:
-    STORAGES = {
-        "staticfiles": {
-            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-        },
-    }
+# if not DEBUG:
+#     STORAGES = {
+#         'staticfiles': {
+#             'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+#         },
+#     }
      
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
