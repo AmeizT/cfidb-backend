@@ -79,6 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name='church', 
         on_delete=models.CASCADE,
         to="church.Church",
+        null=True
     )
     avatar = models.ImageField( 
         upload_to=avatarURL, 

@@ -8,7 +8,8 @@ from apps.church.serializers import (
     DemographicSerializer,
     MemberSerializer 
 )
-from rest_framework import pagination, permissions, viewsets
+from rest_framework.response import Response
+from rest_framework import pagination, permissions, viewsets, status
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -20,8 +21,14 @@ class StandardPagination(pagination.PageNumberPagination):
 
 class ChurchView(viewsets.ModelViewSet):
     queryset = Church.objects.all()
-    serializer_class = ChurchSerializer
+    serializer_class = ChurchSerializer()
     permission_classes = [permissions.AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     
 class AttendanceView(viewsets.ModelViewSet):
