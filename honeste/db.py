@@ -11,7 +11,6 @@ if(settings.DEBUG == False):
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    print(settings.DEBUG)
 else:
     DATABASES = {
         'default': {
