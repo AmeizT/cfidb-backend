@@ -4,7 +4,7 @@ from django.conf import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
-if(settings.DEBUG == True):
+if(settings.DEBUG == False):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
