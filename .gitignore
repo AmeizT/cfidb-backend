@@ -1,2 +1,4 @@
 # PIP MODULES
 /venv
+
+db.sqlite3
