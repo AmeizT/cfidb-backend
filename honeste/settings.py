@@ -6,12 +6,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-0@j@=#kon^h6jyqr*nb@5ekt4!!d3iy6$ojes+pr71w0t&+vz5'
 
-# if str(os.environ.get('DJANGO_ENV')) == 'local':
-#     DEBUG = True
-# else:
-#     DEBUG = False
-
-DEBUG = False
+if str(os.environ.get('DJANGO_ENV')) == 'local':
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = [
     '.vercel.app', 
@@ -76,24 +74,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-# if(DEBUG == True):
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-    
-DATABASES = {
-    'default': {
-        'ENGINE': str(os.environ.get('DB_ENGINE')),
-        'NAME': str(os.environ.get('DB_NAME')),
-        'HOST': str(os.environ.get('DB_HOST')),
-        'PORT': str(os.environ.get('DB_PORT')),
-        'USER': str(os.environ.get('DB_USER')),
-        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-    },
-}
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': str(os.environ.get('DB_ENGINE')),
+            'NAME': str(os.environ.get('DB_NAME')),
+            'HOST': str(os.environ.get('DB_HOST')),
+            'PORT': str(os.environ.get('DB_PORT')),
+            'USER': str(os.environ.get('DB_USER')),
+            'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+        },
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -146,8 +144,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'PAGE_SIZE': 10
 }
 
 SIMPLE_JWT = {
