@@ -7,10 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-0@j@=#kon^h6jyqr*nb@5ekt4!!d3iy6$ojes+pr71w0t&+vz5'
 
-if str(os.environ.get('DJANGO_ENV')) == 'local':
-    DEBUG = True
-else:
-    DEBUG = False
+# if str(os.environ.get('DJANGO_ENV')) == 'local':
+#     DEBUG = True
+# else:
+#     DEBUG = False
+
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '.vercel.app', 
