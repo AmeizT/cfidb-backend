@@ -71,7 +71,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
-DATABASES = DATABASES
+DATABASES = {
+    'default': {
+        'ENGINE': str(os.environ.get('DB_ENGINE')),
+        'NAME': str(os.environ.get('DB_NAME')),
+        'HOST': str(os.environ.get('DB_HOST')),
+        'PORT': str(os.environ.get('DB_PORT')),
+        'USER': str(os.environ.get('DB_USER')),
+        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+    },
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
