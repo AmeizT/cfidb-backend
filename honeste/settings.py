@@ -77,26 +77,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-if(DEBUG == True):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    print('debug mode on')
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': str(os.environ.get('DB_ENGINE')),
-            'NAME': str(os.environ.get('DB_NAME')),
-            'HOST': str(os.environ.get('DB_HOST')),
-            'PORT': str(os.environ.get('DB_PORT')),
-            'USER': str(os.environ.get('DB_USER')),
-            'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-        },
-    }
-    print('debug mode off')
+# if(DEBUG == True):
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
+    
+DATABASES = {
+    'default': {
+        'ENGINE': str(os.environ.get('DB_ENGINE')),
+        'NAME': str(os.environ.get('DB_NAME')),
+        'HOST': str(os.environ.get('DB_HOST')),
+        'PORT': str(os.environ.get('DB_PORT')),
+        'USER': str(os.environ.get('DB_USER')),
+        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+    },
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [
