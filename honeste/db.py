@@ -15,9 +15,9 @@ if(settings.DEBUG == False):
 else:
     DATABASES = {
         'default': {
-            'ENGINE': os.environ.get('DB_ENGINE'),
+            'ENGINE': str(os.environ.get('DB_ENGINE')),
             'NAME': str(os.environ.get('DB_NAME')),
-            'HOST': os.environ.get('DB_HOST'),
+            'HOST': str(os.environ.get('DB_HOST')),
             'PORT': str(os.environ.get('DB_PORT')),
             'USER': str(os.environ.get('DB_USER')),
             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
