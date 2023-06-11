@@ -11,12 +11,18 @@ if str(os.environ.get('DJANGO_ENV')) == 'local':
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = [
-    '.vercel.app', 
-    '127.0.0.1', 
-    'localhost',
-    'cfi.church'
-]
+if DEBUG:
+   ALLOWED_HOSTS = ['127.0.0.1', 'localhost'] 
+else:
+    ALLOWED_HOSTS = ['.vercel.app', 'cfi.church']
+
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+else:
+    CORS_ALLOWED_ORIGINS = [
+        'https://cfi.church',
+        'https://honeste.vercel.app',
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000', 

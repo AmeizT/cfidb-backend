@@ -59,19 +59,28 @@ class UserSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             church=validated_data['church'],
         )
-        password = validated_data.pop('password', None)
-        re_password = validated_data.pop('re_password', None)
+        password = validated_data['password']
+        re_password = validated_data['re_password']
 
         if password != re_password:
             raise serializers.ValidationError('Passwords do not match')
         elif len(password) < 8 or len(re_password) < 8:
             raise serializers.ValidationError(
                 'Password must contain at least 8 characters')
-        else:
-            user.set_password(password)
+
+        user.set_password(password)
         user.save()
         return user
-    
+  
+  
+class PasswordChangeSerializer(serializers.Serializer):
+    current_password = serializers.CharField(style={"input_type": "password"}, required=True)
+    new_password = serializers.CharField(style={"input_type": "password"}, required=True)
+
+    def validate_current_password(self, value):
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError({'current_password': 'Does not match'})
+        return value  
         
 class ChurchSerializer(serializers.ModelSerializer):
     class Meta:

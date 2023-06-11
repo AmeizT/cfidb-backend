@@ -6,10 +6,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('honeste-admin/', admin.site.urls),
+    path('api/', include("apps.chat.urls")),
+    path('api/', include("apps.church.urls")),
+    path('api/', include("apps.events.urls")),
+    path('api/', include("apps.finance.urls")),
     # path('', include("apps.home.urls")),
     path('api/', include("apps.users.urls")),
-    path('api/', include("apps.church.urls")),
-    path('api/', include("apps.chat.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

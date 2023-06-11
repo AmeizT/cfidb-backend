@@ -21,7 +21,7 @@ class AccountUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         if not church and not self.model.is_superuser:
             raise ValueError('Users must belong to at one church')
-
+    
         user = self.model(
             email=self.normalize_email(email),
             name=name,
@@ -29,7 +29,6 @@ class AccountUserManager(BaseUserManager):
             username=username,
             church=church
         )
-
         user.set_password(password)
         user.save(using=self._db)
         return user   
@@ -45,8 +44,9 @@ class AccountUserManager(BaseUserManager):
         )
         user.is_admin=True
         user.is_superuser=True
-        user.is_pastor=True
-        user.is_secretary=True
+        user.is_overseer=True
+        user.is_pastor=False
+        user.is_secretary=False
         user.save(using=self._db)
         return user
     
@@ -96,6 +96,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     is_pastor = models.BooleanField(default=False)
     is_secretary = models.BooleanField(default=False)
+    is_overseer = models.BooleanField(default=False)
     
     objects = AccountUserManager()
 

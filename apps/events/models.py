@@ -32,7 +32,7 @@ class Event(models.Model):
     
     host = models.ForeignKey(
         Church, 
-        related_name='event_host', 
+        related_name='host', 
         on_delete=models.CASCADE
     )
     title = models.CharField(max_length=200)
@@ -62,7 +62,7 @@ class Event(models.Model):
     entrance_fee = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     banner = models.ImageField(
         default='events/ballons.webp', 

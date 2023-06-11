@@ -1,3 +1,4 @@
+import uuid
 from PIL import Image
 from decimal import Decimal
 from django.db import models
@@ -13,47 +14,47 @@ class Income(models.Model):
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     offering = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     pledges = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     fundraising = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     thanksgiving = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     funds_received = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     sum = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     expenses = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     balance = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -136,24 +137,28 @@ class Expenditure(models.Model):
         
 class Asset(models.Model):
     ASSET_TYPE_CHOICES = (
-        ('building', 'Building'),
-        ('other', 'Other'),
-        ('instrument', 'Instrument'),
-        ('vehicle', 'Vehicle'),
+        ('Building', 'Building'),
+        ('Other', 'Other'),
+        ('Instrument', 'Instrument'),
+        ('Vehicle', 'Vehicle'),
     )
     CONDITION_CHOICES = (
         ('New', 'New'),
         ('Good', 'Good'),
         ('Fair', 'Fair'),
         ('Old', 'Old'),
-        ('Not working', 'Not Working'),
+        ('Not Working', 'Not Working'),
     )
     church = models.ForeignKey(
         Church, 
         related_name='asset', 
         on_delete=models.CASCADE
     )
-    asset_id = models.CharField(max_length=255)
+    asset_id = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        unique=True
+    )
     purchase_date = models.DateField()
     name = models.CharField(max_length=255)
     asset_group = models.CharField(
@@ -166,12 +171,12 @@ class Asset(models.Model):
     purchase_price = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     valuation = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
-        default=Decimal('0.00')
+        default=Decimal(0.00)
     )
     condition = models.CharField(
         max_length=255, 

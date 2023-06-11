@@ -9,7 +9,7 @@ class EventView(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
+    filterset_fields = ['host__name']
     
     # def get_queryset(self):
     #     return Message.objects.filter(church=self.request.user.church) # type: ignore

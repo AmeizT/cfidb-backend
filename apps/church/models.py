@@ -15,6 +15,7 @@ class Church(models.Model):
     town = models.CharField(max_length=100, blank=True)
     province = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
+    code = models.CharField(max_length=3, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     email = models.CharField(max_length=20, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

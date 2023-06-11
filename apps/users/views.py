@@ -20,19 +20,13 @@ class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     http_method_names = ['post', 'put', 'patch']
     
-    def get_object(self):
-        return self.request.user
-
-    def list(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                return Response({'message': 'created'}, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # def post(self, request):
+    #     serializer = UserSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         user = serializer.save()
+    #         if user:
+    #             return Response({'message': 'created'}, status=status.HTTP_201_CREATED)
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
         
 class RetrieveUserView(viewsets.ModelViewSet):
@@ -52,6 +46,8 @@ class CreateUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
     http_method_names = ['post', 'put', 'patch']
+    
+    
     
 
     
