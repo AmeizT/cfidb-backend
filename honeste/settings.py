@@ -14,9 +14,9 @@ SECRET_KEY = 'django-insecure-0@j@=#kon^h6jyqr*nb@5ekt4!!d3iy6$ojes+pr71w0t&+vz5
 DEBUG = True
 
 if DEBUG:
-   ALLOWED_HOSTS = ['127.0.0.1', 'localhost'] 
+   ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'honeste-backend.vercel.app'] 
 else:
-    ALLOWED_HOSTS = ['.vercel.app', 'cfi.church']
+    ALLOWED_HOSTS = ['.vercel.app', 'cfi.church', 'honeste-backend.vercel.app']
 
 if DEBUG:
     CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
