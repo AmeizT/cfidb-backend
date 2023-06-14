@@ -99,8 +99,8 @@ class Expenditure(models.Model):
     )
     invoice_number = models.CharField(max_length=255, blank=True)
     invoice_date = models.DateField()
-    item = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    title = models.CharField(max_length=255)
+    desc = models.TextField(blank=True)
     expense_type = models.CharField(
         max_length=255, 
         choices=EXPENSE_TYPE_CHOICES
@@ -128,7 +128,7 @@ class Expenditure(models.Model):
         ordering = ['-created_at']
         
     def __str__(self):
-        return f'{self.item}'
+        return f'{self.title}'
 
     def save(self, *args, **kwargs):
         self.total = self.price * self.quantity

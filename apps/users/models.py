@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 
-class AccountUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager):
     def create_user(self, name, surname, username, email, church, password=None):
         if not name:
             raise ValueError('Users must have a name')
@@ -92,13 +92,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_pastor = models.BooleanField(default=False)
     is_secretary = models.BooleanField(default=False)
     is_overseer = models.BooleanField(default=False)
     
-    objects = AccountUserManager()
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname', 'username']

@@ -1,16 +1,8 @@
-from apps.church.models import ( 
-    Church, 
-    Demographics,
-    Member
-)
-from apps.church.serializers import (
-    ChurchSerializer,
-    DemographicSerializer,
-    MemberSerializer 
-)
+from apps.church.models import Church
 from rest_framework.response import Response
-from rest_framework import pagination, permissions, viewsets, status
+from apps.church.serializers import ChurchSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import pagination, permissions, viewsets, status
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -30,28 +22,6 @@ class ChurchView(viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    
-class AttendanceView(viewsets.ModelViewSet):
-    queryset = Demographics.objects.all()
-    serializer_class = DemographicSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    
-    def get_queryset(self):
-        return Demographics.objects.filter(church=self.request.user.church) # type: ignore
-    
- 
-class MemberView(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-    
-    def get_queryset(self):
-        return Member.objects.filter(church=self.request.user.church) # type: ignore
 
 
 

@@ -65,6 +65,7 @@ class UserAdmin(BaseUserAdmin):
         'is_admin', 
         'is_pastor', 
         'is_secretary',
+        'is_overseer',
     )
     fieldsets = (
         ("Authentication", {
@@ -88,6 +89,7 @@ class UserAdmin(BaseUserAdmin):
                 'is_superuser', 
                 'is_pastor', 
                 'is_secretary',
+                'is_overseer',
             )
         }),
     )

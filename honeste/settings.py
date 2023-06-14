@@ -4,31 +4,52 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-0@j@=#kon^h6jyqr*nb@5ekt4!!d3iy6$ojes+pr71w0t&+vz5'
 
 if str(os.environ.get('DJANGO_ENV')) == 'local':
     DEBUG = True
 else:
     DEBUG = False
-
-# DEBUG = True
-
+    
+  
 if DEBUG:
-   ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'honeste-backend.vercel.app'] 
+    SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
 else:
-    ALLOWED_HOSTS = ['.vercel.app', 'cfi.church', 'honeste-backend.vercel.app']
+    SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
+    
+    
+print(SECRET_KEY)
+
 
 if DEBUG:
-    CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+   ALLOWED_HOSTS = [
+       '127.0.0.1', 
+       'localhost', 
+       'honeste-backend.vercel.app'
+    ] 
+else:
+    ALLOWED_HOSTS = [
+        '.vercel.app', 
+        'cfi.church', 
+        'honeste-backend.vercel.app'
+    ]
+    
+
+if DEBUG:
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:3000'
+    ]
 else:
     CORS_ALLOWED_ORIGINS = [
         'https://cfi.church',
+        'https://www.cfi.church',
         'https://honeste.vercel.app',
     ]
+    
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000', 
-    'https://cfi.church'
+    'https://cfi.church',
+    'https://www.cfi.church'
 ]
 
 INSTALLED_APPS = [
@@ -46,7 +67,9 @@ INSTALLED_APPS = [
     'apps.chat',
     'apps.church',
     'apps.finance',
-    'apps.events'
+    'apps.events',
+    'apps.timetable',
+    'apps.demographics',
 ]
 
 MIDDLEWARE = [
@@ -81,19 +104,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': str(os.environ.get('DB_ENGINE')),
-#         'NAME': str(os.environ.get('DB_NAME')),
-#         'HOST': str(os.environ.get('DB_HOST')),
-#         'PORT': str(os.environ.get('DB_PORT')),
-#         'USER': str(os.environ.get('DB_USER')),
-#         'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-#     },
-# }
-
-
 if DEBUG:
     DATABASES = {
         'default': {
@@ -112,9 +122,6 @@ else:
             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
         },
     }
-
-
-print(DATABASES)
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -175,8 +182,19 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
+    
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": str(os.environ.get('JWT_SECRET_KEY')),
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+    
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
 }
+
