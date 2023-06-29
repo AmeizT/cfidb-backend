@@ -9,7 +9,7 @@ class Income(models.Model):
     church = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE,
-        related_name='finance'
+        related_name='income'
     )
     tithes = models.DecimalField(
         max_digits=10, 
@@ -67,7 +67,7 @@ class Income(models.Model):
         
     def save(self, *args, **kwargs):
         self.sum = self.tithes + self.offering + self.pledges + self.thanksgiving + self.fundraising + self.funds_received
-        expenses = Expenditure.objects.all().aggregate(models.Sum('total'))
+        expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
         self.expenses = expenses['total__sum'] or Decimal('0.00')
         self.balance = self.sum - self.expenses
         super().save(*args, **kwargs)

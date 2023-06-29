@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from apps.timetable.models import Timetable
 from apps.church.models import Church
@@ -39,30 +40,78 @@ class Members(models.Model):
     GENDER_CHOICES = (
         ('Male', 'Male'),
         ('Female', 'Female'),
-        ('Not Known', 'Not Known'),
     )
     
     RELATIONSHIP_CHOICES = (
-        ('Married', 'Married'),
         ('Single', 'Single'),
+        ('Married', 'Married'),
         ('Divorced', 'Divorced'),
         ('Widowed', 'Widowed'),
         ('Separated', 'Separated'),
-        ('None', 'None'),
+        ('Engaged', 'Engaged'),
+        ('In a Relationship', 'In a Relationship'),
+        ('Domestic Partnership', 'Domestic Partnership'),
+        ('Civil Union', 'Civil Union'),
+        ('Committed', 'Committed'),
+        ('Common-Law Marriage', 'Common-Law Marriage'),
+        ('Traditional Marriage', 'Traditional Marriage'),
+        ('Co-parenting', 'Co-parenting'),
+    )
+
+    PREFIX_CHOICES = (
+        ('Mr', 'Mr'),
+        ('Ms', 'Ms'),
+        ('Mrs', 'Mrs'),
+        ('Dr', 'Dr'),
+        ('Prof', 'Prof'),
     )
     
-    TITLE_CHOICES = (
-        ('Mr', 'Mr.'),
-        ('Ms', 'Ms.'),
-        ('Mrs', 'Mrs.'),
-        ('Dr', 'Dr.'),
-        ('Prof', 'Prof.'),
-    )
-    
+    CHURCH_POSITIONS_CHOICES = [
+        ('Sunday School Teacher', 'Sunday School Teacher'),
+        ('Youth Leader', 'Youth Leader'),
+        ('Deacon', 'Deacon'),
+        ('Deaconess', 'Deaconess'),
+        ('Elder', 'Elder'),
+        ('Praise and Worship Director', 'Praise and Worship Director'),
+        ('Pastor', 'Pastor'),
+        ('Senior Pastor', 'Senior Pastor'),
+        ('Overseer', 'Overseer'),
+        ('President', 'President'),
+        ('Media Director', 'Media Director'),
+        ('WOE Leader', 'WOE Leader'),
+        ('Gatekeepers Leader', 'Gatekeepers Leader'),
+        ('House Keeper', 'House Keeper'),
+        ('Home Cell Leader', 'Home Cell Leader'),
+        ('Secretary', 'Secretary'),
+        ('Treasurer', 'Treasurer'),
+        ('Other', 'Other'),
+    ]
+
+    MINISTRY_CHOICES = [
+        ('Administration', 'Administration'),
+        ('Christian education', 'Christian education'),
+        ('Counseling', 'Counseling'),
+        ('Discernment', 'Discernment'),
+        ('Evangelism', 'Evangelism'),
+        ('Giving', 'Giving'),
+        ('Hospitality', 'Hospitality'),
+        ('Intercession', 'Intercession'),
+        ('Leadership', 'Leadership'),
+        ('Media and Communications', 'Media and Communications'),
+        ('Other', 'Other'),
+        ('Praise and Worship', 'Praise and Worship'),
+        ('Ushering', 'Ushering'),
+    ]
+
     church = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE,
-        related_name='member'
+        related_name='members'
+    )
+    prefix = models.CharField(
+        max_length=255, 
+        choices=PREFIX_CHOICES,
+        blank=True
     )
     first_name = models.CharField(max_length=255)
     other_names = models.CharField(
@@ -70,12 +119,7 @@ class Members(models.Model):
         blank=True
     )
     surname = models.CharField(max_length=255)
-    title = models.CharField(
-        max_length=255, 
-        choices=TITLE_CHOICES
-    )
     dob = models.DateField()
-    date_of_baptism = models.DateField(blank=True)
     gender = models.CharField(
         max_length=255, 
         choices=GENDER_CHOICES
@@ -85,14 +129,29 @@ class Members(models.Model):
         blank=True,
         choices=RELATIONSHIP_CHOICES
     )
+    occupation = models.CharField(max_length=255, blank=True)
     address = models.TextField(blank=True)
+    city = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=255)
-    work = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=24, blank=True)
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    ministry = models.CharField(max_length=255, blank=True)
-    role = models.CharField(max_length=255, blank=True)
+    baptism_date = models.DateField(blank=True)
+    tithes = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    ministry = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=MINISTRY_CHOICES
+    )
+    position = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=CHURCH_POSITIONS_CHOICES
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -17,9 +17,6 @@ else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
     
     
-print(SECRET_KEY)
-
-
 if DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
@@ -103,6 +100,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'honeste.wsgi.application'
+
 
 if DEBUG:
     DATABASES = {

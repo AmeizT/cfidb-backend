@@ -14,10 +14,10 @@ class Message(models.Model):
     )
     
     TAG_CHOICES = (
-        ('praise', 'Praise'),
-        ('request', 'Request'),
-        ('suggestion', 'Suggestion'),
-        ('testimony', 'Testimony'),
+        ('Praise', 'Praise'),
+        ('Request', 'Request'),
+        ('Suggestion', 'Suggestion'),
+        ('Testimony', 'Testimony'),
     )
     
     umid = models.CharField(
