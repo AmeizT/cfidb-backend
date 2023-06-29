@@ -195,9 +195,9 @@ class Asset(models.Model):
     def __str__(self):
         return self.name
     
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.image:
-            img = Image.open(self.image.path)
-            img.thumbnail((800, 800))
-            img.save(self.image.path)
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if self.image:
+    #         img = Image.open(self.image.path)
+    #         img.thumbnail((800, 800))
+    #         img.save(self.image.path)

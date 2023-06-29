@@ -187,8 +187,10 @@ MEDIA_URL = '/media/'
 cloudinary.config( 
     cloud_name = str(os.environ.get('CLOUDINARY_NAME')), 
     api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
-    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET'))
+    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET')),
 )
+
+print(cloudinary.config)
 
      
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
