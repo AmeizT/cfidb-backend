@@ -3,6 +3,7 @@ from PIL import Image
 from decimal import Decimal
 from django.db import models
 from apps.church.models import Church
+from cloudinary.models import CloudinaryField
 
 
 class Income(models.Model):
@@ -182,11 +183,7 @@ class Asset(models.Model):
         max_length=255, 
         choices=CONDITION_CHOICES
     )
-    image = models.ImageField(
-        upload_to='media/assets/', 
-        blank=True, 
-        null=True
-    )
+    image = CloudinaryField('image', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

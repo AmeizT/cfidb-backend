@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+import cloudinary
+import cloudinary.api
+import cloudinary.uploader
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -59,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'cloudinary',
     'apps',
     'apps.users',
     'apps.chat',
@@ -177,6 +182,14 @@ MEDIA_URL = '/media/'
 #             'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
 #         },
 #     }
+
+
+cloudinary.config( 
+    cloud_name = str(os.environ.get('CLOUDINARY_NAME')), 
+    api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
+    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET'))
+)
+
      
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
