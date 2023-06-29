@@ -10,7 +10,8 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register(r'church/attendance', AttendanceView, basename='attendance')
-router.register(r'churc/members', MemberView, basename='members')
+router.register(r'church/members', MemberView, basename='members')
+router.register(r'church/members/add', MemberView, basename='members_add')
 router.register(r'admin/attendance', CombineAttendanceView, basename='combine_attendance')
 router.register(r'admin/members', CombineAttendanceView, basename='combine_members')
 

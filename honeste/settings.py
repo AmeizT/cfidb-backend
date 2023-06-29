@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if str(os.environ.get('DJANGO_ENV')) == 'local':
     DEBUG = True
 else:
-    DEBUG = True
+    DEBUG = False
     
   
 if DEBUG:
@@ -107,36 +107,36 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': str(os.environ.get('DB_ENGINE')),
-        'NAME': str(os.environ.get('DB_NAME')),
-        'HOST': str(os.environ.get('DB_HOST')),
-        'PORT': str(os.environ.get('DB_PORT')),
-        'USER': str(os.environ.get('DB_USER')),
-        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-    },
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': str(os.environ.get('DB_ENGINE')),
+#         'NAME': str(os.environ.get('DB_NAME')),
+#         'HOST': str(os.environ.get('DB_HOST')),
+#         'PORT': str(os.environ.get('DB_PORT')),
+#         'USER': str(os.environ.get('DB_USER')),
+#         'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+#     },
+# }
 
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': str(os.environ.get('DB_ENGINE')),
-#             'NAME': str(os.environ.get('DB_NAME')),
-#             'HOST': str(os.environ.get('DB_HOST')),
-#             'PORT': str(os.environ.get('DB_PORT')),
-#             'USER': str(os.environ.get('DB_USER')),
-#             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-#         },
-#     }
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': str(os.environ.get('DB_ENGINE')),
+            'NAME': str(os.environ.get('DB_NAME')),
+            'HOST': str(os.environ.get('DB_HOST')),
+            'PORT': str(os.environ.get('DB_PORT')),
+            'USER': str(os.environ.get('DB_USER')),
+            'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+        },
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -171,6 +171,7 @@ USE_TZ = True
 # else:
 #     STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -189,9 +190,6 @@ cloudinary.config(
     api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
     api_secret = str(os.environ.get('CLOUDINARY_API_SECRET')),
 )
-
-print(cloudinary.config)
-
      
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -32,6 +32,13 @@ class MemberView(viewsets.ModelViewSet):
         return Member.objects.filter(church=self.request.user.church) # type: ignore
     
     
+class CreateMemberView(viewsets.ModelViewSet):
+    queryset = Members.objects.all()
+    serializer_class = MemberSerializer
+    http_method_names = ['post', 'put', 'patch']
+    permission_classes = [permissions.AllowAny]
+    
+        
 class CombineAttendanceView(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
