@@ -1,6 +1,7 @@
 import uuid
 import random
 from PIL import Image
+from decimal import Decimal
 from django.db import models
 from apps.users.utils import avatarURL
 from django.db.models.expressions import Value
@@ -86,7 +87,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True, 
         blank=True
     )
-    default_background_color = models.CharField(
+    avatar_fallback = models.CharField(
         max_length=255,
         blank=True,
     )
@@ -134,11 +135,105 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
 
-
-
-
-
-
+class Account(models.Model):
+    ACCOUNT_CHOICES = (
+        ('Free', 'Free'),
+        ('Premium', 'Premium'),
+    )
+    
+    ACCOUNT_PAYMENT_METHODS = (
+        ('Cash', 'Cash'),
+        ('Visa', 'Visa'),
+        ('Mastercard', 'Mastercard'),
+    )
+    
+    ACCOUNT_INTERVALS_CHOICES = (
+        (1, 'Monthly'),
+        (4, 'Quarterly'),
+        (12, 'Annually')
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='account',
+    )
+    type = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=ACCOUNT_CHOICES,
+        default='Free'
+    )
+    method = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=ACCOUNT_PAYMENT_METHODS
+    )
+    intervals = models.IntegerField(
+        default=0,
+        choices=ACCOUNT_INTERVALS_CHOICES
+    )
+    premium_fee = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=Decimal(5),
+    )
+    sub_total = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=Decimal(0.00),
+    )
+    discount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=Decimal(0.00),
+    )
+    amount_due = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00),
+    )
+    amount_paid = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        default=Decimal(0.00)
+    )
+    expires = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'account'
+        verbose_name_plural = 'accounts'
+        ordering = ['-created']
+    
+    
+    def __str__(self):
+        return self.user.username # type: ignore
+    
+    
+    def save(self, *args, **kwargs):
+        if(self.intervals == 4):
+            self.sub_total = self.premium_fee * self.intervals
+            self.discount = self.sub_total * 4 / 100
+            self.amount_due = ((self.sub_total - self.discount) - self.amount_paid)
+        elif(self.intervals == 12):
+            self.sub_total = self.premium_fee * self.intervals
+            self.discount = self.sub_total * 12 / 100
+            self.amount_due = ((self.sub_total - self.discount) - self.amount_paid)
+        else:
+            self.sub_total = self.premium_fee * self.intervals
+            self.discount = self.sub_total * 0 / 100
+            self.amount_due = ((self.sub_total - self.discount) - self.amount_paid)
+        super().save(*args, **kwargs)
+    
+    
+    @property
+    def is_premium(self):
+        TOTAL_FEE = self.sub_total - self.discount
+        return self.type == 'Premium' and self.amount_due == 0.00 and self.amount_paid != 0.00 and self.amount_paid == TOTAL_FEE
 
 
 

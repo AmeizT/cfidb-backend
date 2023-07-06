@@ -8,6 +8,13 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Church(models.Model):
+    pastor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='pastor',
+        null=True,
+        blank=True
+    )
     church_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=100, unique=True)
     desc = models.TextField(blank=True)

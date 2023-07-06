@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from apps.users.models import User
+from apps.users.models import User, Account
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -79,7 +79,7 @@ class UserAdmin(BaseUserAdmin):
                 'username', 
                 'church', 
                 'avatar', 
-                'default_background_color',
+                'avatar_fallback',
             )
         }),
         ('Permissions', {
@@ -113,5 +113,23 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+
+class AccountAdmin(admin.ModelAdmin):
+    list_display = [
+        'user', 
+        'type',
+        'intervals', 
+        'sub_total',
+        'discount',
+        'amount_paid',
+        'amount_due',
+        'is_premium',
+        'expires',
+        'created',
+        'updated', 
+    ]
+
+
 admin.site.register(User, UserAdmin)
+admin.site.register(Account, AccountAdmin)
 

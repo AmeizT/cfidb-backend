@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(r'church/events', EventView, basename='events')
+router.register(r'events', EventView, basename='events')
 
 urlpatterns = [
     path('', include(router.urls)),

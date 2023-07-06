@@ -35,7 +35,7 @@ class Event(models.Model):
         related_name='host', 
         on_delete=models.CASCADE
     )
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=255)
     desc = models.TextField()
     date_start = models.DateField()
     date_end = models.DateField()

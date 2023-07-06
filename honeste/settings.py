@@ -68,10 +68,12 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.chat',
     'apps.church',
-    'apps.finance',
-    'apps.events',
-    'apps.timetable',
     'apps.demographics',
+    'apps.events',
+    'apps.finance',
+    'apps.projects',
+    'apps.resources',
+    'apps.timetable',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +93,7 @@ ROOT_URLCONF = 'honeste.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,8 +1,10 @@
 from apps.users.views import (
-    UserView, 
+    AccountView,
     CreateUserView, 
+    CustomTokenObtainPairView,
     RetrieveUserView,
-    CustomTokenObtainPairView
+    UserView, 
+    UniqueUserCheckView
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -15,12 +17,14 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'auth/signup', UserView, basename="users")
-router.register(r'auth/session/user', RetrieveUserView, basename='user')
+router.register(r'auth/user', RetrieveUserView, basename='user')
+router.register(r'auth/subscriptions', AccountView, basename="users")
+router.register(r'auth/check-unique-user', UniqueUserCheckView, basename='check_user')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('rest_framework.urls', namespace='restframework')),
-    path('auth/session/', CustomTokenObtainPairView.as_view(), name='session_token'),
-    path('auth/session/refresh/', TokenRefreshView.as_view(), name='session_refresh'),
-    path('auth/session/verify/', TokenVerifyView.as_view(), name='session_verify'),
+    path('auth/tokens/', CustomTokenObtainPairView.as_view(), name='session_token'),
+    path('auth/tokens/refresh/', TokenRefreshView.as_view(), name='session_refresh'), # type: ignore
+    path('auth/tokens/verify/', TokenVerifyView.as_view(), name='session_verify'),
 ]

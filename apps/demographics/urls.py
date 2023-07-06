@@ -10,11 +10,11 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(r'church/attendance', AttendanceView, basename='attendance')
-router.register(r'church/members', MemberView, basename='members')
-router.register(r'church/members/add', CreateMemberView, basename='members_add')
-router.register(r'admin/attendance', CombineAttendanceView, basename='combine_attendance')
-router.register(r'admin/members', CombineAttendanceView, basename='combine_members')
+router.register(r'attendance', AttendanceView, basename='attendance')
+router.register(r'members', MemberView, basename='members')
+router.register(r'member/add', CreateMemberView, basename='members_add')
+router.register(r'admin/attendance', CombineAttendanceView, basename='admin_attendance')
+router.register(r'admin/members', CombineAttendanceView, basename='admin_members')
 
 
 urlpatterns = [

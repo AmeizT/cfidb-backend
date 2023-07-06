@@ -1,16 +1,18 @@
 from apps.finance.views import (
     AssetView, 
     ExpenditureView,
-    IncomeView 
+    IncomeView,
+    PayrollView 
 )
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(r'church/assets', AssetView, basename='assets')
+router.register(r'assets', AssetView, basename='assets')
 router.register(r'expenditure', ExpenditureView, basename='expenditure')
 router.register(r'income', IncomeView, basename='income')
+router.register(r'payroll', PayrollView, basename='payroll')
 
 urlpatterns = [
     path('', include(router.urls)),

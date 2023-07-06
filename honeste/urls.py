@@ -11,7 +11,9 @@ urlpatterns = [
     path('api/', include('apps.demographics.urls')),
     path('api/', include('apps.events.urls')),
     path('api/', include('apps.finance.urls')),
-    # path('', include('apps.home.urls')),
+    path('', include('apps.home.urls')),
+    path('api/', include('apps.projects.urls')),
+    path('api/', include('apps.resources.urls')),
     path('api/', include('apps.timetable.urls')),
     path('api/', include('apps.users.urls')),
 ]

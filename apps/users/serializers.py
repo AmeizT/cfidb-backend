@@ -1,28 +1,27 @@
-from apps.users.models import User
 from apps.church.models import Church
 from rest_framework import serializers
 from rest_framework.fields import CharField
+from apps.users.models import User, Account
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+        
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user: User):
         token = super().get_token(user)
-
-        # token['uid'] = str(user.uid)
         token['name'] = user.name
         token['surname'] = user.surname
         token['username'] = user.username
         token['email'] = user.email
         token['church'] = user.church.id if user.church else None
         token['avatar'] = user.avatar.url if user.avatar else None
-        token['default_background_color'] = user.default_background_color
+        token['avatar_fallback'] = user.avatar_fallback
         token['created_at'] = str(user.created_at)
-        # token['updated_at'] = user.updated_at
         token['is_active'] = user.is_active
         token['is_admin'] = user.is_admin
         token['is_pastor'] = user.is_pastor
         token['is_secretary'] = user.is_secretary
+        token['is_overseer'] = user.is_overseer
 
         return token
     
@@ -36,11 +35,11 @@ class UserSerializer(serializers.ModelSerializer):
         label="Confirm Password",
         write_only=True
     )
-    
+
     class Meta:
         model = User
         fields = (
-            'pk',
+            'id',
             'name',
             'surname',
             'username',
@@ -72,6 +71,30 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
   
+ 
+class ChurchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Church
+        fields = '__all__'
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = (
+        'user', 
+        'type',
+        'intervals', 
+        'sub_total',
+        'discount',
+        'amount_paid',
+        'amount_due',
+        'is_premium',
+        'expires',
+        'created',
+        'updated', 
+    )
+ 
   
 class PasswordChangeSerializer(serializers.Serializer):
     current_password = serializers.CharField(style={"input_type": "password"}, required=True)
@@ -82,14 +105,10 @@ class PasswordChangeSerializer(serializers.Serializer):
             raise serializers.ValidationError({'current_password': 'Does not match'})
         return value  
         
-class ChurchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Church
-        fields = "__all__"
-        
-
+    
 class ListUserSerializer(serializers.ModelSerializer):
-    # church = ChurchSerializer()
+    account = AccountSerializer(many=True)
+    
     class Meta:
         model = User
         fields = (
@@ -100,13 +119,24 @@ class ListUserSerializer(serializers.ModelSerializer):
             'username', 
             'email', 
             'avatar', 
-            'default_background_color', 
-            'created_at', 
-            'updated_at', 
-            'church',
+            'avatar_fallback',  
             'is_admin',
             'is_pastor',
-            'is_secretary'
+            'is_secretary',
+            'created_at', 
+            'updated_at',
+            'church',
+            'account',
+        )  
+        
+        
+class UniqueUserCheckSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username', 
+            'email', 
         )  
   
 

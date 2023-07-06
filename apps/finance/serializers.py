@@ -1,7 +1,15 @@
 from rest_framework import serializers
-from apps.finance.models import Income, Expenditure, Asset
+from apps.finance.models import Asset, Income, Expenditure, Payroll
 
 
+
+        
+class AssetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Asset
+        fields = '__all__'
+        
+    
 class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
@@ -11,10 +19,9 @@ class ExpenditureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expenditure
         fields = '__all__'
-        
-class AssetSerializer(serializers.ModelSerializer):
+            
+
+class PayrollSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Asset
-        fields = '__all__'
-        
-        
+        model = Payroll
+        fields = '__all__'     
