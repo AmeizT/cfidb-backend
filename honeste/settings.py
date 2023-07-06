@@ -120,6 +120,8 @@ DATABASES = {
     },
 }
 
+print(DATABASES)
+
 
 # if DEBUG:
 #     DATABASES = {
