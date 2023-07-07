@@ -1,4 +1,4 @@
-from apps.church.models import Church
+from apps.churches.models import Church
 from rest_framework import serializers
 from rest_framework.fields import CharField
 from apps.users.models import User, Account
@@ -9,8 +9,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user: User):
         token = super().get_token(user)
-        token['name'] = user.name
-        token['surname'] = user.surname
+        token['first_name'] = user.first_name
+        token['last_name'] = user.last_name
         token['username'] = user.username
         token['email'] = user.email
         token['church'] = user.church.id if user.church else None
@@ -40,8 +40,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id',
-            'name',
-            'surname',
+            'first_name',
+            'last_name',
             'username',
             'email',
             'church',
@@ -52,8 +52,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            name=validated_data['name'],
-            surname=validated_data['surname'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
             username=validated_data['username'],
             email=validated_data['email'],
             church=validated_data['church'],
@@ -89,7 +89,7 @@ class AccountSerializer(serializers.ModelSerializer):
         'discount',
         'amount_paid',
         'amount_due',
-        'is_premium',
+        'is_premium_active',
         'expires',
         'created',
         'updated', 
@@ -113,9 +113,9 @@ class ListUserSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id',
-            'uid', 
-            'name', 
-            'surname', 
+            'user_id', 
+            'first_name', 
+            'last_name', 
             'username', 
             'email', 
             'avatar', 

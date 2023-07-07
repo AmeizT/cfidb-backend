@@ -11,11 +11,11 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, name, surname, username, email, church, password=None):
-        if not name:
-            raise ValueError('Users must have a name')
-        if not surname:
-            raise ValueError('Users must have a surname')
+    def create_user(self, first_name, last_name, username, email, church, password=None):
+        if not first_name:
+            raise ValueError('Users must have a first name')
+        if not last_name:
+            raise ValueError('Users must have a last name')
         if not username:
             raise ValueError('Users must have a username')
         if not email:
@@ -25,8 +25,8 @@ class CustomUserManager(BaseUserManager):
     
         user = self.model(
             email=self.normalize_email(email),
-            name=name,
-            surname=surname,
+            first_name=first_name,
+            last_name=last_name,
             username=username,
             church=church
         )
@@ -34,10 +34,10 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user   
 
-    def create_superuser(self, name, surname, username, email, church=None, password=None):
+    def create_superuser(self, first_name, last_name, username, email, church=None, password=None):
         user = self.create_user(
-            name=name,
-            surname=surname,
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             username=username,
             church=church,
@@ -45,7 +45,7 @@ class CustomUserManager(BaseUserManager):
         )
         user.is_admin=True
         user.is_superuser=True
-        user.is_overseer=True
+        user.is_overseer=False
         user.is_pastor=False
         user.is_secretary=False
         user.save(using=self._db)
@@ -53,18 +53,18 @@ class CustomUserManager(BaseUserManager):
     
    
 class User(AbstractBaseUser, PermissionsMixin):
-    uid = models.UUIDField(
+    user_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
     )
-    name = models.CharField(
+    first_name = models.CharField(
         max_length=255,
-        verbose_name='name',
+        verbose_name='First Name',
     )
-    surname = models.CharField(
+    last_name = models.CharField(
         max_length=255,
-        verbose_name='surname',
+        verbose_name='Last Name',
     )
     username = models.CharField(
         max_length=36,
@@ -79,7 +79,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     church = models.ForeignKey(
         related_name='church', 
         on_delete=models.CASCADE,
-        to="church.Church",
+        to="churches.Church",
         null=True
     )
     avatar = models.ImageField( 
@@ -103,7 +103,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'surname', 'username']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     class Meta:
         verbose_name = 'user'
@@ -122,7 +122,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         
         
     def __str__(self):
-        return self.username
+        return f'{self.first_name} {self.last_name}'
 
     def has_perm(self, perm, obj=None):
         return True
@@ -217,11 +217,11 @@ class Account(models.Model):
     def save(self, *args, **kwargs):
         if(self.intervals == 4):
             self.sub_total = self.premium_fee * self.intervals
-            self.discount = self.sub_total * 4 / 100
+            self.discount = self.sub_total * 8 / 100
             self.amount_due = ((self.sub_total - self.discount) - self.amount_paid)
         elif(self.intervals == 12):
             self.sub_total = self.premium_fee * self.intervals
-            self.discount = self.sub_total * 12 / 100
+            self.discount = self.sub_total * 15 / 100
             self.amount_due = ((self.sub_total - self.discount) - self.amount_paid)
         else:
             self.sub_total = self.premium_fee * self.intervals
@@ -231,7 +231,7 @@ class Account(models.Model):
     
     
     @property
-    def is_premium(self):
+    def is_premium_active(self):
         TOTAL_FEE = self.sub_total - self.discount
         return self.type == 'Premium' and self.amount_due == 0.00 and self.amount_paid != 0.00 and self.amount_paid == TOTAL_FEE
 

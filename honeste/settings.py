@@ -6,13 +6,13 @@ import cloudinary.api
 import cloudinary.uploader
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
 if str(os.environ.get('DJANGO_ENV')) == 'local':
     DEBUG = True
 else:
-    DEBUG = True
+    DEBUG = False
     
   
 if DEBUG:
@@ -66,14 +66,13 @@ INSTALLED_APPS = [
     'cloudinary',
     'apps',
     'apps.users',
+    'apps.churches',
+    'apps.bookkeeper',
     'apps.chat',
-    'apps.church',
     'apps.demographics',
     'apps.events',
-    'apps.finance',
     'apps.projects',
     'apps.resources',
-    'apps.timetable',
 ]
 
 MIDDLEWARE = [

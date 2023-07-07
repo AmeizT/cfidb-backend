@@ -1,6 +1,6 @@
 from django.db import models
 from apps.users.models import User
-from apps.church.models import Church
+from apps.churches.models import Church
 from django.utils.text import slugify
 from apps.chat.utils import generate_umid
 

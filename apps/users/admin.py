@@ -18,7 +18,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('name', 'surname', 'email', 'username', 'church')
+        fields = ('first_name', 'last_name', 'email', 'username', 'church')
 
     def clean_re_password(self):
         password = self.cleaned_data.get("password")
@@ -50,15 +50,17 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = [
-        'uid', 
-        'name', 
-        'surname', 
+    list_display = [ 
+        'first_name', 
+        'last_name', 
         'username', 
         'email', 
-        'is_admin', 
+        'is_overseer',
+        'is_pastor',
+        'is_secretary',
+        'last_login', 
         'created_at', 
-        'updated_at'
+        'updated_at',
     ]
     list_filter = (
         'church', 
@@ -68,29 +70,29 @@ class UserAdmin(BaseUserAdmin):
         'is_overseer',
     )
     fieldsets = (
-        ("Authentication", {
-            'fields': ('email', 'password',)
+        ('Authentication', {
+                'fields': ('email', 'password',)
             }
         ),
         ('Bio', {
-            'fields': (
-                'name', 
-                'surname', 
+            'fields': [
+                'first_name', 
+                'last_name', 
                 'username', 
                 'church', 
                 'avatar', 
                 'avatar_fallback',
-            )
+            ]
         }),
         ('Permissions', {
-            'fields': (
+            'fields': [
                 'is_active', 
                 'is_admin', 
                 'is_superuser', 
                 'is_pastor', 
                 'is_secretary',
                 'is_overseer',
-            )
+            ]
         }),
     )
 
@@ -98,8 +100,8 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': (
-                'name', 
-                'surname', 
+                'first_name', 
+                'last_name', 
                 'username', 
                 'email', 
                 'church', 
@@ -109,7 +111,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     search_fields = ('email', 'username',)
-    ordering = ('pk',)
+    ordering = ()
     filter_horizontal = ()
 
 
@@ -123,7 +125,7 @@ class AccountAdmin(admin.ModelAdmin):
         'discount',
         'amount_paid',
         'amount_due',
-        'is_premium',
+        'is_premium_active',
         'expires',
         'created',
         'updated', 

@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
-from apps.church.models import Church
+from apps.churches.models import Church
 from django.utils.text import slugify
 from django.utils.timezone import make_aware
 from apps.events.utils import event_images_url

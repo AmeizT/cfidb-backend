@@ -1,14 +1,9 @@
 from decimal import Decimal
 from django.db import models
 from apps.timetable.models import Timetable
-from apps.church.models import Church
+from apps.churches.models import Church
 
 class Attendance(models.Model):
-    timetable = models.ForeignKey(
-        Timetable,
-        on_delete=models.CASCADE,
-        related_name='register'
-    )
     church = models.ForeignKey(
         Church,
         on_delete=models.CASCADE,
@@ -33,7 +28,7 @@ class Attendance(models.Model):
         ordering = ["-created_at"]
         
     def __str__(self):
-        return f'{self.timetable}'
+        return f'{self.church}'
     
     
 class Members(models.Model):
@@ -118,7 +113,7 @@ class Members(models.Model):
         max_length=255, 
         blank=True
     )
-    surname = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     dob = models.DateField()
     gender = models.CharField(
         max_length=255, 
@@ -156,10 +151,10 @@ class Members(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['surname']
+        ordering = ['last_name']
         verbose_name = 'member'
         verbose_name_plural = 'members'
 
     def __str__(self):
-        return f'{self.first_name} {self.surname}'
+        return f'{self.first_name} {self.last_name}'
     
