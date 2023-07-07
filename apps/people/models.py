@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.db import models
-from apps.timetable.models import Timetable
 from apps.churches.models import Church
 
 class Attendance(models.Model):
@@ -8,7 +7,7 @@ class Attendance(models.Model):
         Church,
         on_delete=models.CASCADE,
         related_name='attendance'
-    ) 
+    )
     sunday = models.BigIntegerField(default=0)
     home = models.BigIntegerField(default=0)
     friday = models.BigIntegerField(default=0)

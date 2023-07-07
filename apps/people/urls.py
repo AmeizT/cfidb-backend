@@ -1,4 +1,4 @@
-from apps.demographics.views import (
+from apps.people.views import (
     AttendanceView, 
     MemberView,
     CreateMemberView,

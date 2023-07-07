@@ -1,6 +1,6 @@
 from apps.churches.models import Church
 from rest_framework import serializers
-from apps.demographics.models import Attendance, Members
+from apps.people.models import Attendance, Members
 from apps.bookkeeper.models import Asset, Expenditure, Income, Payroll
 
 

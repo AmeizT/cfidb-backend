@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from apps.demographics.models import Attendance, Members
+from apps.people.models import Attendance, Members
 from django_filters.rest_framework import DjangoFilterBackend
-from apps.demographics.permissions import IsAdminOrOverseer
+from apps.people.permissions import IsAdminOrOverseer
 from rest_framework import viewsets, permissions, pagination, status
-from apps.demographics.serializers import AttendanceSerializer, MemberSerializer
+from apps.people.serializers import AttendanceSerializer, MemberSerializer
 
 
 class StandardPagination(pagination.PageNumberPagination):
