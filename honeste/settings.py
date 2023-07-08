@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 if str(os.environ.get('DJANGO_ENV')) == 'local':
     DEBUG = True
 else:
-    DEBUG = True
+    DEBUG = False
     
   
 if DEBUG:
@@ -108,38 +108,38 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': str(os.environ.get('DB_ENGINE')),
-        'NAME': str(os.environ.get('DB_NAME')),
-        'HOST': str(os.environ.get('DB_HOST')),
-        'PORT': str(os.environ.get('DB_PORT')),
-        'USER': str(os.environ.get('DB_USER')),
-        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-    },
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': str(os.environ.get('DB_ENGINE')),
+#         'NAME': str(os.environ.get('DB_NAME')),
+#         'HOST': str(os.environ.get('DB_HOST')),
+#         'PORT': str(os.environ.get('DB_PORT')),
+#         'USER': str(os.environ.get('DB_USER')),
+#         'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+#     },
+# }
 
 # print(DATABASES)
 
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': str(os.environ.get('DB_ENGINE')),
-#             'NAME': str(os.environ.get('DB_NAME')),
-#             'HOST': str(os.environ.get('DB_HOST')),
-#             'PORT': str(os.environ.get('DB_PORT')),
-#             'USER': str(os.environ.get('DB_USER')),
-#             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-#         },
-#     }
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': str(os.environ.get('DB_ENGINE')),
+            'NAME': str(os.environ.get('DB_NAME')),
+            'HOST': str(os.environ.get('DB_HOST')),
+            'PORT': str(os.environ.get('DB_PORT')),
+            'USER': str(os.environ.get('DB_USER')),
+            'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+        },
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [

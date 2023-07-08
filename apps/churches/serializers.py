@@ -56,7 +56,7 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Church
-        fields = [
+        fields = (
             'id',
             'church_id', 
             'name', 
@@ -72,11 +72,11 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
             'attendance',
             'expenditure',
             'income',
-            'members'
+            'members',
             'payroll',
             'created_at',
             'updated_at',
-        ]  
+        ) 
 
 
         
