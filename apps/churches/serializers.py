@@ -62,7 +62,7 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
             'name', 
             'description',
             'address',
-            'town',
+            'city',
             'province',
             'country',
             'code',
