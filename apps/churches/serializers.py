@@ -74,8 +74,8 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
             'income',
             'members',
             'payroll',
-            'created_at',
-            'updated_at',
+            'created',
+            'updated',
         ) 
 
 
