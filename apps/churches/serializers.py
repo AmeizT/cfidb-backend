@@ -60,7 +60,7 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
             'id',
             'church_id', 
             'name', 
-            'desc',
+            'description',
             'address',
             'town',
             'province',
