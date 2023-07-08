@@ -3,7 +3,7 @@ from apps.users.views import (
     CreateUserView, 
     CustomTokenObtainPairView,
     RetrieveUserView,
-    UserView, 
+    CreateUserView, 
     UniqueUserCheckView
 )
 from rest_framework_simplejwt.views import (
@@ -16,9 +16,9 @@ from rest_framework import urlpatterns
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'auth/signup', UserView, basename="users")
+router.register(r'auth/signup', CreateUserView, basename="singup")
 router.register(r'auth/user', RetrieveUserView, basename='user')
-router.register(r'auth/subscriptions', AccountView, basename="users")
+router.register(r'auth/account', AccountView, basename="account")
 router.register(r'auth/check-unique-user', UniqueUserCheckView, basename='check_user')
 
 urlpatterns = [

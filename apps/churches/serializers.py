@@ -59,7 +59,6 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'church_id', 
-            'pastor',
             'name', 
             'desc',
             'address',

@@ -26,7 +26,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 
-class UserSerializer(serializers.ModelSerializer):
+class CreateUserSerializer(serializers.ModelSerializer):
     password = CharField(style={
         'input_type': 'password'
     })
@@ -39,7 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id',
             'first_name',
             'last_name',
             'username',
@@ -114,6 +113,7 @@ class ListUserSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user_id', 
+            'church',
             'first_name', 
             'last_name', 
             'username', 
@@ -125,7 +125,6 @@ class ListUserSerializer(serializers.ModelSerializer):
             'is_secretary',
             'created_at', 
             'updated_at',
-            'church',
             'account',
         )  
         

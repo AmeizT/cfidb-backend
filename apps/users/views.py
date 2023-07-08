@@ -8,7 +8,7 @@ from apps.users.serializers import (
     ListUserSerializer,
     AccountSerializer,
     UniqueUserCheckSerializer,
-    UserSerializer
+    CreateUserSerializer
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -17,9 +17,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-class UserView(viewsets.ModelViewSet):
+class CreateUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = CreateUserSerializer
     
     def get_object(self):
         return self.request.user
