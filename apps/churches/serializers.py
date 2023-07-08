@@ -10,7 +10,7 @@ class ChurchSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-class AttendnaceSerializer(serializers.ModelSerializer):
+class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = '__all__'
@@ -48,11 +48,11 @@ class PayrollSerializer(serializers.ModelSerializer):
         
 class ChurchManagerSerializer(serializers.ModelSerializer):
     assets = AssetSerializer(many=True, read_only=True)
-    attendance = AttendnaceSerializer(many=True, read_only=True)
+    attendance = AttendanceSerializer(many=True, read_only=True)
     expenditure = ExpenditureSerializer(many=True, read_only=True)
     income = IncomeSerializer(many=True, read_only=True)
     members = MemberSerializer(many=True, read_only=True)
-    payroll = MemberSerializer(many=True, read_only=True)
+    payroll = PayrollSerializer(many=True, read_only=True)
     
     class Meta:
         model = Church
