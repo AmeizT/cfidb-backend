@@ -60,11 +60,11 @@ class RetrieveUserView(viewsets.ModelViewSet):
         return self.retrieve(request, *args, **kwargs)
     
 
-class CreateUserView(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
-    queryset = User.objects.all()
-    serializer_class = ListUserSerializer
-    http_method_names = ['post', 'put', 'patch']
+# class CreateUserView(viewsets.ModelViewSet):
+#     permission_classes = [permissions.AllowAny]
+#     queryset = User.objects.all()
+#     serializer_class = ListUserSerializer
+#     http_method_names = ['post', 'put', 'patch']
     
     
     
