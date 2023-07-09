@@ -11,7 +11,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, church, password=None):
+    def create_user(self, first_name, last_name, email, church, username=str(uuid.uuid4()), password=None):
         if not first_name:
             raise ValueError('Users must have a first name')
         if not last_name:
@@ -34,7 +34,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user   
 
-    def create_superuser(self, first_name, last_name, username, email, church=None, password=None):
+    def create_superuser(self, first_name, last_name, email, username=str(uuid.uuid4()), church=None, password=None):
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
@@ -67,20 +67,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name='Last Name',
     )
     username = models.CharField(
-        max_length=36,
+        max_length=255,
         unique=True,
-        verbose_name='username',
+        verbose_name='Username',
     )
     email = models.EmailField(
         max_length=255,
         unique=True,
-        verbose_name='email',
+        verbose_name='Email',
     )
     church = models.ForeignKey(
         related_name='church', 
         on_delete=models.CASCADE,
         to="churches.Church",
-        null=True
+        null=True,
+        blank=True
     )
     avatar = models.ImageField( 
         upload_to=avatarURL, 
@@ -103,7 +104,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     class Meta:
         verbose_name = 'user'

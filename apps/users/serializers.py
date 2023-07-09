@@ -2,7 +2,9 @@ from apps.churches.models import Church
 from rest_framework import serializers
 from rest_framework.fields import CharField
 from apps.users.models import User, Account
+from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
         
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -48,6 +50,12 @@ class CreateUserSerializer(serializers.ModelSerializer):
             're_password',
         )
         extra_kwargs = {'password': {'write_only': True}}
+        validators = [
+            UniqueValidator(
+                queryset=User.objects.all(), 
+                message='This field must be unique.'
+            )
+        ]
 
     def create(self, validated_data):
         user = User.objects.create_user(
