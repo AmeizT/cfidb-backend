@@ -37,7 +37,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         label="Confirm Password",
         write_only=True
     )
-
+    
     class Meta:
         model = User
         fields = (
@@ -49,12 +49,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
             're_password',
         )
         extra_kwargs = {'password': {'write_only': True}}
-        validators = [
-            UniqueValidator(
-                queryset=User.objects.all(), 
-                message='This field must be unique.'
-            )
-        ]
 
     def create(self, validated_data):
         user = User.objects.create_user(

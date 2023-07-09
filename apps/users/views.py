@@ -20,12 +20,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class CreateUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
+    permission_classes = [permissions.AllowAny]
     
-    def get_object(self):
-        return self.request.user
-
-    def list(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
     
     # def post(self, request):
     #     serializer = UserSerializer(data=request.data)
