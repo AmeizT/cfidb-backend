@@ -17,10 +17,6 @@ from apps.users.models import User, Account
 @receiver(post_save, sender=User)
 def save_account(sender, instance, created, **kwargs):
     if created:
-        if instance.username is None:
-            instance.username = str(uuid.uuid4())
-            instance.save()
-        
         def generate_hex(): 
             return random.randint(0, 255)
 

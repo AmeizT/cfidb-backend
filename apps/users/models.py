@@ -16,8 +16,6 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Users must have a first name')
         if not last_name:
             raise ValueError('Users must have a last name')
-        if not username:
-            raise ValueError('Users must have a username')
         if not email:
             raise ValueError('Users must have an email address')
         if not church and not self.model.is_superuser:
@@ -70,6 +68,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=255,
         unique=True,
         verbose_name='Username',
+        blank=True,
     )
     email = models.EmailField(
         max_length=255,

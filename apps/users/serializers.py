@@ -43,7 +43,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         fields = (
             'first_name',
             'last_name',
-            'username',
             'email',
             'church',
             'password',
@@ -61,7 +60,6 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
-            username=validated_data['username'],
             email=validated_data['email'],
             church=validated_data['church'],
         )
