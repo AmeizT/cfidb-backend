@@ -27,7 +27,7 @@ class ChurchView(viewsets.ModelViewSet):
 class ChurchManagerView(viewsets.ModelViewSet):
     queryset = Church.objects.all()
     serializer_class = ChurchManagerSerializer
-    permission_classes = [IsAdminUserOrOverseer]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'name'
     
     
