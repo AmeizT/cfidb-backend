@@ -1,6 +1,8 @@
 from decimal import Decimal
 from django.db import models
 from apps.churches.models import Church
+from django.core.validators import RegexValidator
+from django.forms import ValidationError
 
 class Attendance(models.Model):
     church = models.ForeignKey(
@@ -156,4 +158,19 @@ class Members(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+    
+    def save(self, *args, **kwargs):
+        # Check for duplicate entries
+        if Members.objects.filter(
+            first_name=self.first_name,
+            last_name=self.last_name,
+            dob=self.dob,
+            phone=self.phone).exists():
+            raise ValidationError(
+                "A member with the same name, date of birth, and phone number already exists."
+            )
+        
+        # Save the member if no duplicate entries found
+        super(Members, self).save(*args, **kwargs)
+    
     

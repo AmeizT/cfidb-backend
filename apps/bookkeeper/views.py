@@ -37,7 +37,7 @@ class AssetView(viewsets.ModelViewSet):
 class ExpenditureView(viewsets.ModelViewSet):
     queryset = Expenditure.objects.all()
     serializer_class = ExpenditureSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     pagination_class = StandardPagination
     
     def get_queryset(self):
