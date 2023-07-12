@@ -30,8 +30,71 @@ class Attendance(models.Model):
         
     def __str__(self):
         return f'{self.church}'
+
+
+class Homecell(models.Model):
+    church = models.ForeignKey(
+        Church,
+        on_delete=models.CASCADE,
+        related_name='homecell'
+    )
+    title = models.CharField(
+        max_length=255
+    )
+    description = models.TextField(
+        blank=True
+    )
+    leader = models.CharField(
+        max_length=255,
+        blank=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        verbose_name = 'Home Cell'
+        verbose_name_plural = 'Home Cells'
+        ordering = ["-created_at"]
+        
+    def __str__(self):
+        return f'{self.title}'
     
+     
+class HCAttendance(models.Model):
+    church = models.ForeignKey(
+        Church,
+        on_delete=models.CASCADE,
+        related_name='hc_church'
+    )
+    homecell = models.ForeignKey(
+        Homecell,
+        on_delete=models.CASCADE,
+        related_name='hc_attendance',
+        null=True
+    )
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField() 
+    venue = models.CharField(
+        max_length=255
+    )
+    attendance = models.BigIntegerField(default=0)
+    visitors = models.BigIntegerField(default=0)
+    new = models.BigIntegerField(default=0)
+    repented = models.BigIntegerField(default=0)
+    activities = models.TextField(blank=True)
+    achievements = models.TextField(blank=True)  
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Home Cell Attendance'
+        verbose_name_plural = 'Home Cell Attendance'
+        ordering = ["-created_at"]
+        
+    def __str__(self):
+        return f'{self.homecell}'
+    
+
 class Members(models.Model):
     GENDER_CHOICES = (
         ('Male', 'Male'),
