@@ -10,7 +10,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class HomeCellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homecell
-        fields = ['church', 'title', 'description', 'leader']
+        fields = ['id', 'church', 'name', 'description']
 
 
 class HCAttendanceSerializer(serializers.ModelSerializer):
@@ -18,18 +18,27 @@ class HCAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HCAttendance
         fields = [
+            'id',
+            'church',
             'homecell',
-            'start_time', 
-            'end_time',
+            'leader',
+            'topic',
             'venue',
             'attendance',
+            'adults',
+            'kids',
             'visitors',
             'new',
             'repented',
+            'scriptures',
+            'testimonies',
             'activities',
-            'achievements',   
-            'created_at', 
-            'updated_at'
+            'achievements',
+            'slug',
+            'start_time',
+            'end_time',
+            'created_at',
+            'updated_at',
         ]
      
 class MemberSerializer(serializers.ModelSerializer):

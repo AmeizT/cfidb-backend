@@ -131,7 +131,7 @@ class HCAttendance(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             name_slug = slugify(self.homecell.name) #type: ignore
-            base_slug = slugify(self.topic)
+            base_slug = slugify(self.topic) # type: ignore
             self.slug = f'{name_slug}-{base_slug}'
             counter = 1
             while HCAttendance.objects.filter(slug=self.slug).exists():
