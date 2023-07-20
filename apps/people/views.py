@@ -41,6 +41,7 @@ class HCAttendanceView(viewsets.ModelViewSet):
     queryset = HCAttendance.objects.all()
     serializer_class = HCAttendanceSerializer
     permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'slug'
     
     def get_queryset(self):
         return HCAttendance.objects.filter(church=self.request.user.church) # type: ignore

@@ -1,8 +1,9 @@
 from decimal import Decimal
 from django.db import models
+from django.utils.text import slugify
 from apps.churches.models import Church
-from django.core.validators import RegexValidator
 from django.forms import ValidationError
+from django.core.validators import RegexValidator
 
 class Attendance(models.Model):
     church = models.ForeignKey(
@@ -38,14 +39,10 @@ class Homecell(models.Model):
         on_delete=models.CASCADE,
         related_name='homecell'
     )
-    title = models.CharField(
+    name = models.CharField(
         max_length=255
     )
     description = models.TextField(
-        blank=True
-    )
-    leader = models.CharField(
-        max_length=255,
         blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -57,7 +54,7 @@ class Homecell(models.Model):
         ordering = ["-created_at"]
         
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.name}'
     
      
 class HCAttendance(models.Model):
@@ -72,29 +69,82 @@ class HCAttendance(models.Model):
         related_name='hc_attendance',
         null=True
     )
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField() 
+    leader = models.CharField(
+        max_length=255,
+        blank=True
+    )
+    topic = models.CharField(
+        max_length=255,
+        blank=True
+    ) 
     venue = models.CharField(
         max_length=255
     )
-    attendance = models.BigIntegerField(default=0)
-    visitors = models.BigIntegerField(default=0)
-    new = models.BigIntegerField(default=0)
-    repented = models.BigIntegerField(default=0)
-    activities = models.TextField(blank=True)
-    achievements = models.TextField(blank=True)  
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+    attendance = models.BigIntegerField(
+        default=0
+    )
+    adults = models.BigIntegerField(
+        default=0
+    )
+    kids = models.BigIntegerField(
+        default=0
+    )
+    visitors = models.BigIntegerField(
+        default=0
+    )
+    new = models.BigIntegerField(
+        default=0
+    )
+    repented = models.BigIntegerField(
+        default=0
+    )
+    scriptures = models.TextField(
+        blank=True
+    )
+    testimonies = models.TextField(
+        blank=True
+    )
+    activities = models.TextField(
+        blank=True
+    )
+    achievements = models.TextField(
+        blank=True
+    )  
+    slug = models.SlugField(
+        max_length=255,
+        blank=True
+    )
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+    
     class Meta:
         verbose_name = 'Home Cell Attendance'
         verbose_name_plural = 'Home Cell Attendance'
         ordering = ["-created_at"]
         
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            name_slug = slugify(self.homecell.name) #type: ignore
+            base_slug = slugify(self.topic)
+            self.slug = f'{name_slug}-{base_slug}'
+            counter = 1
+            while HCAttendance.objects.filter(slug=self.slug).exists():
+                self.slug = f'{name_slug}-{base_slug}-{counter}'
+                counter += 1
+
+        super().save(*args, **kwargs)
+        
+        
     def __str__(self):
         return f'{self.homecell}'
     
-
+    
 class Members(models.Model):
     GENDER_CHOICES = (
         ('Male', 'Male'),
