@@ -12,7 +12,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class HomeCellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homecell
-        fields = ['id', 'church', 'name', 'description']
+        fields = ['id', 'church', 'name', 'members', 'description']
         
         
 class TestimonySerializer(serializers.ModelSerializer):
