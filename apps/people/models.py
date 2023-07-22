@@ -41,9 +41,12 @@ class Homecell(models.Model):
     )
     name = models.CharField(
         max_length=255
-    )
+    ) 
     description = models.TextField(
         blank=True
+    )
+    members = models.BigIntegerField(
+        default=0
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -101,10 +104,7 @@ class HCAttendance(models.Model):
     scriptures = models.TextField(
         blank=True
     )
-    testimonies = models.TextField(
-        blank=True
-    )
-    activities = models.TextField(
+    summary = models.TextField(
         blank=True
     )
     achievements = models.TextField(
@@ -143,6 +143,34 @@ class HCAttendance(models.Model):
         
     def __str__(self):
         return f'{self.homecell}'
+    
+    
+class Testimony(models.Model):
+    homecell = models.ForeignKey(
+        HCAttendance,
+        on_delete=models.CASCADE,
+        related_name='testimonies'
+    )
+    member = models.CharField(
+        max_length=255,
+        blank=True
+    )
+    description = models.TextField()
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+    
+    class Meta:
+        verbose_name = 'testimony'
+        verbose_name_plural = 'testimonies'
+        ordering = ["-created_at"]
+        
+    
+    def __str__(self):
+        return f'{self.homecell.homecell.name} {self.member}' #type: ignore
     
     
 class Members(models.Model):
