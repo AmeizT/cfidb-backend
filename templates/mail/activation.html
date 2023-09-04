@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+</head>
+<body>
+    <p>Hello {{ user.first_name }} {{ user.last_name }},</p>
+    <p>Your CFI Database account has been created and assigned to your designated church.</p>
+    <p>Your temporary password is <strong>cfidb2023</strong>. Please reset your password to activate and use your new account. Click the reset button below:</p>
+    <a href="{{ activation_url }}">Reset Account</a>
+
+    <span>Blessings,</span>
+
+    <h3>Tawanda Zhuwao</h3>
+    <span>System Developer and Admin</span>
+</body>
+</html>
+
+

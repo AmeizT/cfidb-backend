@@ -46,7 +46,7 @@ class PayrollSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-class ChurchManagerSerializer(serializers.ModelSerializer):
+class ChurchTrackerSerializer(serializers.ModelSerializer):
     assets = AssetSerializer(many=True, read_only=True)
     attendance = AttendanceSerializer(many=True, read_only=True)
     expenditure = ExpenditureSerializer(many=True, read_only=True)
@@ -66,8 +66,13 @@ class ChurchManagerSerializer(serializers.ModelSerializer):
             'province',
             'country',
             'code',
+            'lang',
+            'currency',
             'phone',
             'email',
+            'avatar',
+            'banner',
+            'brand',
             'assets',
             'attendance',
             'expenditure',

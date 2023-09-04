@@ -301,15 +301,18 @@ class Members(models.Model):
         return f'{self.first_name} {self.last_name}'
     
     def save(self, *args, **kwargs):
-        # Check for duplicate entries
-        if Members.objects.filter(
-            first_name=self.first_name,
-            last_name=self.last_name,
-            dob=self.dob,
-            phone=self.phone).exists():
-            raise ValidationError(
-                "A member with the same name, date of birth, and phone number already exists."
-            )
+        # Check if the instance has a primary key (it's an existing record)
+        if self.pk is None:
+            # Only perform duplicate check when creating a new member
+            if Members.objects.filter(
+                first_name=self.first_name,
+                last_name=self.last_name,
+                dob=self.dob,
+                phone=self.phone
+            ).exists():
+                raise ValidationError(
+                    "A member with the same name, date of birth, and phone number already exists."
+                )
         
         # Save the member if no duplicate entries found
         super(Members, self).save(*args, **kwargs)

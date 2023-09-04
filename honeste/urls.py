@@ -5,16 +5,16 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('honeste/master/', admin.site.urls),
+    path('cfi-server/', admin.site.urls),
     path('api/', include('apps.bookkeeper.urls')),
     path('api/', include('apps.chat.urls')),
     path('api/', include('apps.churches.urls')),
     path('api/', include('apps.events.urls')),
     path('', include('apps.home.urls')),
     path('api/', include('apps.people.urls')),
+    path('api/', include('apps.posts.urls')),
     path('api/', include('apps.projects.urls')),
     path('api/', include('apps.resources.urls')),
-    # path('api/', include('apps.timetable.urls')),
     path('api/', include('apps.users.urls')),
 ]
 

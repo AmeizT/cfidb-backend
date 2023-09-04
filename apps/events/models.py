@@ -85,6 +85,7 @@ class Event(models.Model):
         verbose_name = "event"
         verbose_name_plural = "events"
         ordering = ["-createdAt"]
+        
 
     def save(self, *args, **kwargs):                
         if not self.slug:

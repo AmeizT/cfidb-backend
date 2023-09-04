@@ -1,9 +1,9 @@
 from apps.churches.models import Church
 from rest_framework.response import Response
+from apps.churches.permissions import IsAdminUserOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets, status
-from apps.churches.serializers import ChurchSerializer, ChurchManagerSerializer
-from apps.churches.permissions import IsAdminUserOrOverseer
+from apps.churches.serializers import ChurchSerializer, ChurchTrackerSerializer
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -24,9 +24,9 @@ class ChurchView(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     
-class ChurchManagerView(viewsets.ModelViewSet):
+class ChurchTrackerView(viewsets.ModelViewSet):
     queryset = Church.objects.all()
-    serializer_class = ChurchManagerSerializer
+    serializer_class = ChurchTrackerSerializer
     permission_classes = [permissions.IsAdminUser]
     lookup_field = 'name'
     

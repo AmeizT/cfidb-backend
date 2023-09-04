@@ -6,6 +6,19 @@ from apps.churches.models import Church
 from cloudinary.models import CloudinaryField
 
 
+def receipt_file_path(instance, filename):
+    # 'instance' refers to the model instance, in this case, Church
+    # 'filename' is the original name of the uploaded file
+    # You can customize this function to generate a dynamic path as needed
+    return f'files/{instance.church.name}/finance/receipt/' + filename
+
+
+def bank_statement_file_path(instance, filename):
+    # 'instance' refers to the model instance, in this case, Church
+    # 'filename' is the original name of the uploaded file
+    # You can customize this function to generate a dynamic path as needed
+    return f'files/{instance.church.name}/finance/bank-statement/' + filename
+
 class Asset(models.Model):
     ASSET_TYPE_CHOICES = (
         ('Building', 'Building'),
@@ -110,6 +123,7 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
+    receipt = models.FileField(upload_to=receipt_file_path, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -178,6 +192,10 @@ class Income(models.Model):
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
+    )
+    bank_statement = models.FileField(
+        upload_to=bank_statement_file_path, 
+        null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

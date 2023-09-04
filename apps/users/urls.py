@@ -23,8 +23,10 @@ router.register(r'auth/check-unique-user', UniqueUserCheckView, basename='check_
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('auth/', include('rest_framework.urls', namespace='restframework')),
-    path('auth/tokens/', CustomTokenObtainPairView.as_view(), name='session_token'),
-    path('auth/tokens/refresh/', TokenRefreshView.as_view(), name='session_refresh'), # type: ignore
-    path('auth/tokens/verify/', TokenVerifyView.as_view(), name='session_verify'),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.jwt')),
+    # path('auth/', include('rest_framework.urls', namespace='restframework')),
+    # path('auth/tokens/', CustomTokenObtainPairView.as_view(), name='session_token'),
+    # path('auth/tokens/refresh/', TokenRefreshView.as_view(), name='session_refresh'), # type: ignore
+    # path('auth/tokens/verify/', TokenVerifyView.as_view(), name='session_verify'),
 ]

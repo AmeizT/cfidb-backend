@@ -6,6 +6,13 @@ import cloudinary.api
 import cloudinary.uploader
 
 
+cloudinary.config( 
+    cloud_name = str(os.environ.get('CLOUDINARY_NAME')), 
+    api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
+    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET')),
+)
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
@@ -63,6 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'djoser',
     'cloudinary',
     'apps',
     'apps.users',
@@ -73,6 +81,7 @@ INSTALLED_APPS = [
     'apps.people',
     'apps.projects',
     'apps.resources',
+    'apps.posts'
 ]
 
 MIDDLEWARE = [
@@ -180,6 +189,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+
 # if not DEBUG:
 #     STORAGES = {
 #         'staticfiles': {
@@ -187,14 +197,11 @@ MEDIA_URL = '/media/'
 #         },
 #     }
 
-
-cloudinary.config( 
-    cloud_name = str(os.environ.get('CLOUDINARY_NAME')), 
-    api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
-    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET')),
-)
-     
+    
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DEFAULT_FROM_EMAIL = 'CFI Database <cfidb.dev@gmail.com>'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -218,9 +225,42 @@ SIMPLE_JWT = {
     "JWK_URL": None,
     "LEEWAY": 0,
     
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_TYPES": ("JWT",),
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
+
+DJOSER = {
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'LOGIN_FIELD': 'email',
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_RESET_CONFIRM_URL': 'reset/password/{uid}/{token}',
+    # 'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_PASSWORD_RETYPE': True,
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'EMAIL': {
+        'activation': 'djoser.email.ActivationEmail',
+        'password_reset': 'djoser.email.PasswordResetEmail',
+        'username_reset': 'djoser.email.UsernameResetEmail',
+        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
+        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
+        'username_changed_reset': 'djoser.email.UsernameChangedResetEmail',
+        'password_changed_reset': 'djoser.email.PasswordChangedResetEmail',
+        'set_username': 'djoser.email.SetUsernameEmail',
+        'set_username_confirmation': 'djoser.email.SetUsernameConfirmationEmail',
+    },
+    'SERIALIZERS': {
+        'user': 'apps.users.serializers.ListUserSerializer',
+        'current_user': 'apps.users.serializers.ListUserSerializer',
+    }
+}
