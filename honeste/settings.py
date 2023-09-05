@@ -17,18 +17,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
 if str(os.environ.get('DJANGO_ENV')) == 'local':
-    DEBUG = False
-else:
     DEBUG = True
+else:
+    DEBUG = False
     
   
-if DEBUG == False:
+if DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
 else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
     
     
-if DEBUG == False:
+if DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
        'localhost', 
@@ -42,7 +42,7 @@ else:
     ]
     
 
-if DEBUG == False:
+if DEBUG:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000'
     ]
@@ -117,38 +117,38 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': str(os.environ.get('DB_ENGINE')),
-        'NAME': str(os.environ.get('DB_NAME')),
-        'HOST': str(os.environ.get('DB_HOST')),
-        'PORT': str(os.environ.get('DB_PORT')),
-        'USER': str(os.environ.get('DB_USER')),
-        'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-    },
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': str(os.environ.get('DB_ENGINE')),
+#         'NAME': str(os.environ.get('DB_NAME')),
+#         'HOST': str(os.environ.get('DB_HOST')),
+#         'PORT': str(os.environ.get('DB_PORT')),
+#         'USER': str(os.environ.get('DB_USER')),
+#         'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+#     },
+# }
 
-print(DATABASES)
+# print(DATABASES)
 
 
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': str(os.environ.get('DB_ENGINE')),
-#             'NAME': str(os.environ.get('DB_NAME')),
-#             'HOST': str(os.environ.get('DB_HOST')),
-#             'PORT': str(os.environ.get('DB_PORT')),
-#             'USER': str(os.environ.get('DB_USER')),
-#             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
-#         },
-#     }
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': str(os.environ.get('DB_ENGINE')),
+            'NAME': str(os.environ.get('DB_NAME')),
+            'HOST': str(os.environ.get('DB_HOST')),
+            'PORT': str(os.environ.get('DB_PORT')),
+            'USER': str(os.environ.get('DB_USER')),
+            'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+        },
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
