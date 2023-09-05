@@ -1,21 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Activation</title>
-</head>
-<body>
-    <p>Hello {{ user.first_name }} {{ user.last_name }},</p>
-    <p>Your CFI Database account has been created and assigned to your designated church.</p>
-    <p>Your temporary password is <strong>cfidb2023</strong>. Please reset your password to activate and use your new account. Click the reset button below:</p>
-    <a href="{{ activation_url }}">Reset Account</a>
+{% load i18n %}
 
-    <span>Blessings,</span>
+{% block subject %}
+{% blocktrans %}Password reset on {{ site_name }}{% endblocktrans %}
+{% endblock subject %}
 
-    <h3>Tawanda Zhuwao</h3>
-    <span>System Developer and Admin</span>
-</body>
-</html>
+{% block text_body %}
+{% blocktrans %}You're receiving this email because you requested a password reset for your user account at {{ site_name
+}}.{% endblocktrans %}
 
+{% trans "Please go to the following page and choose a new password:" %}
+{{ protocol }}://{{ domain }}/auth/{{ url|safe }}
+{% trans "Your username, in case you've forgotten:" %} {{ user.get_username }}
 
+{% trans "Blessings" %}
+
+{% blocktrans %}Tawanda{% endblocktrans %}
+{% endblock text_body %}
+
+{% block html_body %}
+<p>{% blocktrans %}You're receiving this email because you requested a password reset for your user account at {{
+    site_name }}.{% endblocktrans %}</p>
+
+<p>{% trans "Please go to the following page and choose a new password:" %}</p>
+<a href="{{ protocol }}://{{ domain }}/auth/{{ url|safe }}">{{ protocol }}://{{ domain }}/auth/{{ url|safe }}</a>
+<p>{% trans "Your username, in case you've forgotten:" %} <b>{{ user.get_username }}</b></p>
+
+<p>{% trans "Blessings" %}</p>
+
+<p>{% blocktrans %}Tawanda{% endblocktrans %}</p>
+{% endblock html_body %}

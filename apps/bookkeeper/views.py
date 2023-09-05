@@ -38,7 +38,6 @@ class ExpenditureView(viewsets.ModelViewSet):
     queryset = Expenditure.objects.all()
     serializer_class = ExpenditureSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = StandardPagination
     
     def get_queryset(self):
         return Expenditure.objects.filter(church=self.request.user.church) # type: ignore
@@ -48,7 +47,6 @@ class IncomeView(viewsets.ModelViewSet):
     queryset = Income.objects.all()
     serializer_class = IncomeSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = StandardPagination
     
     def get_queryset(self):
         return Income.objects.filter(church=self.request.user.church) # type: ignore

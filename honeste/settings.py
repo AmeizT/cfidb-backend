@@ -1,3 +1,4 @@
+from distutils import config
 import os
 from pathlib import Path
 from datetime import timedelta
@@ -68,10 +69,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'corsheaders',
     'rest_framework',
-    'djoser',
+    'corsheaders',
     'cloudinary',
+    'djoser',
+    'login_history',
     'apps',
     'apps.users',
     'apps.churches',
@@ -238,26 +240,27 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
 
+
+if DEBUG:
+    DOMAIN = 'localhost:3000'
+else:
+    DOMAIN = 'cfi.church'
+    
+SITE_NAME = 'CFI Database'
+
 DJOSER = {
-    'ACTIVATION_URL': 'activate/{uid}/{token}',
     'LOGIN_FIELD': 'email',
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'PASSWORD_RESET_CONFIRM_URL': 'reset/password/{uid}/{token}',
-    # 'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_PASSWORD_RETYPE': True,
     'USER_CREATE_PASSWORD_RETYPE': True,
     'EMAIL': {
-        'activation': 'djoser.email.ActivationEmail',
-        'password_reset': 'djoser.email.PasswordResetEmail',
-        'username_reset': 'djoser.email.UsernameResetEmail',
-        'username_changed_confirmation': 'djoser.email.UsernameChangedConfirmationEmail',
-        'password_changed_confirmation': 'djoser.email.PasswordChangedConfirmationEmail',
-        'username_changed_reset': 'djoser.email.UsernameChangedResetEmail',
+        'confirmation': 'apps.users.mail.ConfirmationEmail',
+        'password_reset': 'apps.users.mail.PasswordResetEmail',
+        'password_changed_confirmation': 'apps.users.mail.PasswordChangedConfirmationEmail',
         'password_changed_reset': 'djoser.email.PasswordChangedResetEmail',
-        'set_username': 'djoser.email.SetUsernameEmail',
-        'set_username_confirmation': 'djoser.email.SetUsernameConfirmationEmail',
     },
     'SERIALIZERS': {
         'user': 'apps.users.serializers.ListUserSerializer',

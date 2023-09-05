@@ -51,7 +51,6 @@ class MemberView(viewsets.ModelViewSet):
     queryset = Members.objects.all()
     serializer_class = MemberSerializer
     permission_classes = [permissions.IsAuthenticated]
-    pagination_class = StandardPagination
     
     def get_queryset(self):
         return Members.objects.filter(church=self.request.user.church) # type: ignore
