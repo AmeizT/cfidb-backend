@@ -5,6 +5,13 @@ from apps.churches.models import Church
 from django.utils.text import slugify
 
 class Project(models.Model):
+    PROJECT_STATUS_CHOICES = (
+        ("approved", "Approved"),
+        ("past", "Past"),
+        ("unsubmitted", "Unsubmitted"),
+        ("waiting", "Waiting Approval"),
+    )
+    
     church = models.ForeignKey(
         Church,
         on_delete=models.CASCADE,
@@ -21,6 +28,11 @@ class Project(models.Model):
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
+    )
+    status = models.CharField(
+        max_length=255, 
+        blank=True, 
+        choices=PROJECT_STATUS_CHOICES
     )
     location = models.CharField(max_length=255)
     date_start = models.DateField()

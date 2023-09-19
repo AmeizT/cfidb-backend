@@ -123,7 +123,7 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
-    receipt = models.FileField(upload_to=receipt_file_path, null=True)
+    receipt = models.FileField(upload_to='finance/receipts/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -194,8 +194,9 @@ class Income(models.Model):
         default=Decimal(0.00)
     )
     bank_statement = models.FileField(
-        upload_to=bank_statement_file_path, 
-        null=True
+        upload_to='finance/statements/', 
+        null=True,
+        blank=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

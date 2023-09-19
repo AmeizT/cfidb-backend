@@ -6,10 +6,10 @@ from apps.people.serializers import (
 )
 from django.shortcuts import render
 from rest_framework.response import Response
-from apps.people.models import Attendance, HCAttendance, Homecell, Members
 from apps.people.permissions import IsAdminOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
+from apps.people.models import Attendance, HCAttendance, Homecell, Members
 
 
 class StandardPagination(pagination.PageNumberPagination):
