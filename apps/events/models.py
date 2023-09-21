@@ -66,7 +66,7 @@ class Event(models.Model):
     )
     banner = models.ImageField(
         default='events/ballons.webp', 
-        upload_to=event_images_url, 
+        upload_to='events/', 
         blank=True
     )
     slug = models.SlugField(
