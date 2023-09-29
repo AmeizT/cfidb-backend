@@ -131,7 +131,7 @@ WSGI_APPLICATION = 'honeste.wsgi.application'
 #     },
 # }
 
-# print(DATABASES)
+# print("production DB active")
 
 
 if DEBUG:
