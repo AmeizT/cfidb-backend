@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from apps.people.permissions import IsAdminOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
-from apps.people.models import Attendance, HCAttendance, Homecell, Members
+from apps.people.models import Attendance, HCAttendance, Homecell, Member
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -47,9 +47,9 @@ class HCAttendanceView(viewsets.ModelViewSet):
 
 
 class MemberView(viewsets.ModelViewSet):
-    queryset = Members.objects.all()
+    queryset = Member.objects.all()
     serializer_class = MemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = "phone"
 
     def get_queryset(self):
@@ -57,7 +57,7 @@ class MemberView(viewsets.ModelViewSet):
 
 
 class CreateMemberView(viewsets.ModelViewSet):
-    queryset = Members.objects.all()
+    queryset = Member.objects.all()
     serializer_class = MemberSerializer
     http_method_names = ["post", "put", "patch"]
     permission_classes = [permissions.AllowAny]
@@ -73,7 +73,7 @@ class AttendanceAdminView(viewsets.ModelViewSet):
 
 
 class MemberAdminView(viewsets.ModelViewSet):
-    queryset = Members.objects.all()
+    queryset = Member.objects.all()
     serializer_class = MemberSerializer
     permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend]

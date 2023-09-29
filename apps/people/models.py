@@ -116,7 +116,7 @@ class Testimony(models.Model):
         return f"{self.homecell.homecell.name} {self.member}"  # type: ignore
 
 
-class Members(models.Model):
+class Member(models.Model):
     GENDER_CHOICES = (
         ("Male", "Male"),
         ("Female", "Female"),
@@ -183,51 +183,85 @@ class Members(models.Model):
         ("Ushering", "Ushering"),
     ]
 
-    # member_id = models.UUIDField(
-    #     default=uuid.uuid4, editable=False, unique=False, blank=True, null=True
-    # )
-    church = models.ForeignKey(Church, on_delete=models.CASCADE, related_name="members")
-    prefix = models.CharField(max_length=255, choices=PREFIX_CHOICES, blank=True)
-    first_name = models.CharField(max_length=255)
-    other_names = models.CharField(max_length=255, blank=True)
-    last_name = models.CharField(max_length=255)
-    dob = models.DateField()
-    gender = models.CharField(max_length=255, choices=GENDER_CHOICES)
-    relationship = models.CharField(
-        max_length=255, blank=True, choices=RELATIONSHIP_CHOICES
+    member_id = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        unique=False
     )
-    occupation = models.CharField(max_length=255, blank=True)
+    avatar_fallback_color = models.CharField(
+        max_length=24, 
+        blank=True
+    )
+    church = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE, 
+        related_name="members"
+    )
+    prefix = models.CharField(
+        max_length=255, 
+        choices=PREFIX_CHOICES, 
+        blank=True
+    )
+    first_name = models.CharField(max_length=255)
+    middle_name = models.CharField(
+        max_length=255, 
+        blank=True
+    )
+    last_name = models.CharField(max_length=255)
+    date_of_birth = models.DateField()
+    gender = models.CharField(
+        max_length=255, 
+        choices=GENDER_CHOICES
+    )
+    relationship = models.CharField(
+        max_length=255, 
+        blank=True, 
+        choices=RELATIONSHIP_CHOICES
+    )
+    occupation = models.CharField(
+        max_length=255, 
+        blank=True
+    )
     address = models.TextField(blank=True)
     city = models.CharField(max_length=255, blank=True)
     country = models.CharField(max_length=255)
     phone = models.CharField(max_length=24, blank=True)
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    baptism_date = models.DateField(blank=True)
-    tithes = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0.00))
-    ministry = models.CharField(max_length=255, blank=True, choices=MINISTRY_CHOICES)
-    position = models.CharField(
-        max_length=255, blank=True, choices=CHURCH_POSITIONS_CHOICES
+    date_of_baptism = models.DateField(blank=True)
+    tithes = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
     )
+    ministry = models.CharField(
+        max_length=255, 
+        blank=True, 
+        choices=MINISTRY_CHOICES
+    )
+    position = models.CharField(
+        max_length=255, 
+        blank=True, 
+        choices=CHURCH_POSITIONS_CHOICES
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["last_name"]
-        verbose_name = "member"
-        verbose_name_plural = "members"
+        ordering = ["-created_at"]
+        verbose_name = "Member"
+        verbose_name_plural = "Members"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
     def save(self, *args, **kwargs):
-        # Check if the instance has a primary key (it's an existing record)
         if self.pk is None:
-            # Only perform duplicate check when creating a new member
-            if Members.objects.filter(
+            if Member.objects.filter(
                 first_name=self.first_name,
                 last_name=self.last_name,
-                dob=self.dob,
+                date_of_birth=self.date_of_birth,
                 phone=self.phone,
             ).exists():
                 raise ValidationError(
@@ -235,4 +269,4 @@ class Members(models.Model):
                 )
 
         # Save the member if no duplicate entries found
-        super(Members, self).save(*args, **kwargs)
+        super(Member, self).save(*args, **kwargs)

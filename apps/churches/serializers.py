@@ -1,6 +1,6 @@
 from apps.churches.models import Church
 from rest_framework import serializers
-from apps.people.models import Attendance, Members
+from apps.people.models import Attendance, Member
 from apps.bookkeeper.models import Asset, Expenditure, Income, Payroll
 
 
@@ -36,7 +36,7 @@ class IncomeSerializer(serializers.ModelSerializer):
                
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Members
+        model = Member
         fields = '__all__'
         
         

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.people.models import (
-    Attendance, Homecell, HCAttendance, Members, Testimony
+    Attendance, Homecell, HCAttendance, Member, Testimony
 )
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -53,7 +53,7 @@ class HCAttendanceSerializer(serializers.ModelSerializer):
      
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Members  
+        model = Member  
         fields = '__all__'
         
                 

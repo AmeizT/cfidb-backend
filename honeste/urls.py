@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('cfi-server/', admin.site.urls),
+    path('cfidb/admin/', admin.site.urls),
     path('api/', include('apps.bookkeeper.urls')),
     path('api/', include('apps.chat.urls')),
     path('api/', include('apps.churches.urls')),
