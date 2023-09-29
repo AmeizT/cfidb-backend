@@ -19,6 +19,105 @@ def bank_statement_file_path(instance, filename):
     # You can customize this function to generate a dynamic path as needed
     return f'files/{instance.church.name}/finance/bank-statement/' + filename
 
+
+
+class Income(models.Model):
+    church = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='income'
+    )
+    tithes = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    offering = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    pledges = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    fundraising = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    thanksgiving = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    remittance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    sum = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    expenses = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    balance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "finance"
+        verbose_name_plural = "finances"
+        ordering = ["-created_at"]
+        
+        
+    def save(self, *args, **kwargs):
+        self.sum = self.tithes + self.offering + self.pledges + self.thanksgiving + self.fundraising + self.remittance
+        expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
+        self.expenses = expenses['total__sum'] or Decimal('0.00')
+        self.balance = self.sum - self.expenses
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Finance: {self.balance}"
+
+
+class BankStatement(models.Model):
+    name = models.CharField(
+        max_length=255
+    )
+    income_entry = models.ForeignKey(
+        Income,
+        on_delete=models.CASCADE,
+        related_name='income_entry'
+    )
+    attachment = CloudinaryField(
+        'file', 
+        blank=True, 
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Bank Statement"
+        verbose_name_plural = "Bank Statements"
+        ordering = ["-created_at"]
+        
+    def __str__(self):
+        return self.name
+
+
 class Asset(models.Model):
     ASSET_TYPE_CHOICES = (
         ('Building', 'Building'),
@@ -49,7 +148,7 @@ class Asset(models.Model):
         max_length=255, 
         choices=ASSET_TYPE_CHOICES
     )
-    description = models.TextField()
+    description = models.TextField(blank=True)
     supplier = models.CharField(max_length=255, blank=True)
     quantity = models.IntegerField()
     purchase_price = models.DecimalField(
@@ -103,8 +202,8 @@ class Expenditure(models.Model):
     )
     invoice_number = models.CharField(max_length=255, blank=True)
     invoice_date = models.DateField()
-    title = models.CharField(max_length=255)
-    desc = models.TextField(blank=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     expense_type = models.CharField(
         max_length=255, 
         choices=EXPENSE_TYPE_CHOICES
@@ -123,107 +222,34 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
-    receipt = models.FileField(upload_to='finance/receipts/', blank=True, null=True)
+    receipt = CloudinaryField(
+        'image', 
+        blank=True, 
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
         
     class Meta:
-        verbose_name = 'expenditure'
-        verbose_name_plural = 'expenditure'
+        verbose_name = 'Expenditure'
+        verbose_name_plural = 'Expenditure'
         ordering = ['-created_at']
         
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.name}'
 
     def save(self, *args, **kwargs):
         self.total = self.price * self.quantity
         super().save(*args, **kwargs)
 
-
-
-class Income(models.Model):
-    church = models.ForeignKey(
-        Church, 
-        on_delete=models.CASCADE,
-        related_name='income'
-    )
-    tithes = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    offering = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    pledges = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    fundraising = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    thanksgiving = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    funds_received = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    sum = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    expenses = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    balance = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    bank_statement = models.FileField(
-        upload_to='finance/statements/', 
-        null=True,
-        blank=True,
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
-    class Meta:
-        verbose_name = "finance"
-        verbose_name_plural = "finances"
-        ordering = ["-created_at"]
-        
-        
-    def save(self, *args, **kwargs):
-        self.sum = self.tithes + self.offering + self.pledges + self.thanksgiving + self.fundraising + self.funds_received
-        expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
-        self.expenses = expenses['total__sum'] or Decimal('0.00')
-        self.balance = self.sum - self.expenses
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Finance: {self.balance}"
-
-
 
 class Payroll(models.Model):
     church = models.ForeignKey(
         Church, 
+        on_delete=models.CASCADE,
         related_name='employer', 
-        on_delete=models.CASCADE
     )
     euid = models.CharField(max_length=255)
     date = models.DateField()
