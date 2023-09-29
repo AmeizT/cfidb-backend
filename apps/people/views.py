@@ -53,7 +53,7 @@ class MemberView(viewsets.ModelViewSet):
     lookup_field = "phone"
 
     def get_queryset(self):
-        return Members.objects.filter(church=self.request.user.church)  # type: ignore
+        return Member.objects.filter(church=self.request.user.church)  # type: ignore
 
 
 class CreateMemberView(viewsets.ModelViewSet):
