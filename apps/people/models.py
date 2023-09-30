@@ -139,11 +139,15 @@ class Member(models.Model):
     )
 
     PREFIX_CHOICES = (
-        ("Mr", "Mr"),
-        ("Ms", "Ms"),
-        ("Mrs", "Mrs"),
         ("Dr", "Dr"),
+        ("Eng", "Eng"),
+        ("Hon", "Hon"),
+        ("Miss", "Miss"),
+        ("Mr", "Mr"),
+        ("Mrs", "Mrs"),
+        ("Ms", "Ms"),
         ("Prof", "Prof"),
+        ("Rev", "Rev"),
     )
 
     CHURCH_POSITIONS_CHOICES = [
@@ -186,7 +190,7 @@ class Member(models.Model):
     member_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
-        unique=False
+        unique=True
     )
     avatar_fallback_color = models.CharField(
         max_length=24, 
@@ -222,13 +226,24 @@ class Member(models.Model):
         max_length=255, 
         blank=True
     )
-    address = models.TextField(blank=True)
-    city = models.CharField(max_length=255, blank=True)
+    address = models.TextField(
+        blank=True
+    )
+    city = models.CharField(
+        max_length=255, 
+        blank=True
+    )
     country = models.CharField(max_length=255)
-    phone = models.CharField(max_length=24, blank=True)
+    phone = models.CharField(
+        max_length=24, 
+        blank=True
+    )
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    date_of_baptism = models.DateField(blank=True)
+    date_of_baptism = models.DateField(
+        blank=True,
+        null=True,
+    )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -244,7 +259,6 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
-    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
