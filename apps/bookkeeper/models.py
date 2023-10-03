@@ -181,18 +181,19 @@ class Asset(models.Model):
 
 class Expenditure(models.Model):
     EXPENSE_TYPE_CHOICES = (
-        ('amenities', 'Amenities'),
-        ('conference', 'Conference'),
-        ('decor', 'Decor'),
-        ('fellowship', 'Fellowship'),
-        ('fixed', 'Fixed'),
-        ('humanitarian', 'Humanitarian'),
-        ('office', 'Office'),
-        ('other', 'Other'),
-        ('outreach', 'Outreach'),
-        ('repair', 'Repair'),
-        ('travel', 'Travel'),
-        ('wages', 'Wages'),
+        ('Amenities', 'Amenities'),
+        ('Conference', 'Conference'),
+        ('Decor', 'Decor'),
+        ('Fellowship', 'Fellowship'),
+        ('Fixed', 'Fixed'),
+        ('Hotel Bookings', 'Hotel Bookings'),
+        ('Humanitarian', 'Humanitarian'),
+        ('Office', 'Office'),
+        ('Other', 'Other'),
+        ('Outreach', 'Outreach'),
+        ('Repair', 'Repair'),
+        ('Travel', 'Travel'),
+        ('Wages', 'Wages'),
     )
     
     church = models.ForeignKey(
@@ -222,11 +223,11 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
-    receipt = CloudinaryField(
-        'image', 
-        blank=True, 
-        null=True
-    )
+    # receipt = CloudinaryField(
+    #     'image', 
+    #     blank=True, 
+    #     null=True
+    # )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

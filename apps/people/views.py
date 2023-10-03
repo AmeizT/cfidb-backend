@@ -1,15 +1,16 @@
 from apps.people.serializers import (
     AttendanceSerializer,
-    MemberSerializer,
     HCAttendanceSerializer,
-    HomeCellSerializer,
+    HomecellSerializer,
+    KinSerializer,
+    MemberSerializer,
 )
 from django.shortcuts import render
 from rest_framework.response import Response
 from apps.people.permissions import IsAdminOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
-from apps.people.models import Attendance, HCAttendance, Homecell, Member
+from apps.people.models import Attendance, HCAttendance, Homecell, Kin, Member
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -29,7 +30,7 @@ class AttendanceView(viewsets.ModelViewSet):
 
 class HomeCellView(viewsets.ModelViewSet):
     queryset = Homecell.objects.all()
-    serializer_class = HomeCellSerializer
+    serializer_class = HomecellSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -49,11 +50,22 @@ class HCAttendanceView(viewsets.ModelViewSet):
 class MemberView(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = "phone"
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = "member_id"
 
     def get_queryset(self):
         return Member.objects.filter(church=self.request.user.church)  # type: ignore
+    
+    
+
+class KinView(viewsets.ModelViewSet):
+    queryset = Kin.objects.all()
+    serializer_class = KinSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = "member_id"
+
+    def get_queryset(self):
+        return Kin.objects.filter(church=self.request.user.church)  # type: ignore
 
 
 class CreateMemberView(viewsets.ModelViewSet):

@@ -1,6 +1,7 @@
 import uuid
 from decimal import Decimal
 from django.db import models
+from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
 from django.forms import ValidationError
@@ -259,6 +260,13 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE, 
+        related_name="editor",
+        blank=True,
+        null=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -284,3 +292,94 @@ class Member(models.Model):
 
         # Save the member if no duplicate entries found
         super(Member, self).save(*args, **kwargs)
+        
+        
+        
+class Kin(models.Model):
+    GENDER_CHOICES = (
+        ("Male", "Male"),
+        ("Female", "Female"),
+    )
+
+    RELATIONSHIP_CHOICES = (
+        ("Aunt", "Aunt"),
+        ("Brother", "Brother"),
+        ("Child", "Child"),
+        ("Cousin", "Cousin"),
+        ("Father", "Father"),
+        ("Grandparent", "Grandparent"),
+        ("Mother", "Mother"),
+        ("Sister", "Sister"),
+        ("Spouse", "Spouse"),
+        ("Uncle", "Uncle"),
+    )
+
+    member_id = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        unique=True
+    )
+    avatar_fallback_color = models.CharField(
+        max_length=24, 
+        blank=True
+    )
+    church = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE, 
+        related_name="kin"
+    )
+    first_name = models.CharField(max_length=255)
+    middle_name = models.CharField(
+        max_length=255, 
+        blank=True
+    )
+    last_name = models.CharField(max_length=255)
+    date_of_birth = models.DateField()
+    gender = models.CharField(
+        max_length=255, 
+        choices=GENDER_CHOICES
+    )
+    guardian = models.ForeignKey(
+        Member,
+        on_delete=models.CASCADE,
+        related_name="guardian"
+    )
+    relation_with_guardian = models.CharField(
+        max_length=255, 
+        blank=True, 
+        choices=RELATIONSHIP_CHOICES
+    )
+    membersince = models.DateField()
+    date_of_baptism = models.DateField(
+        blank=True,
+        null=True,
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE, 
+        related_name="kin_creator",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "kin"
+        verbose_name_plural = "kins"
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            if Kin.objects.filter(
+                first_name=self.first_name,
+                last_name=self.last_name,
+                date_of_birth=self.date_of_birth,
+            ).exists():
+                raise ValidationError(
+                    "A member with the same name, date of birth, and phone number already exists."
+                )
+
+        # Save the member if no duplicate entries found
+        super(Kin, self).save(*args, **kwargs)

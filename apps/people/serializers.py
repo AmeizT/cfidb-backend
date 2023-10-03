@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.people.models import (
-    Attendance, Homecell, HCAttendance, Member, Testimony
+    Attendance, Homecell, HCAttendance, Kin, Member, Testimony
 )
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -9,7 +9,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
-class HomeCellSerializer(serializers.ModelSerializer):
+class HomecellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homecell
         fields = ['id', 'church', 'name', 'members', 'description']
@@ -22,7 +22,7 @@ class TestimonySerializer(serializers.ModelSerializer):
 
 
 class HCAttendanceSerializer(serializers.ModelSerializer):
-    homecell = HomeCellSerializer()
+    homecell = HomecellSerializer()
     testimonies = TestimonySerializer(many=True)
     class Meta:
         model = HCAttendance
@@ -55,5 +55,30 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member  
         fields = '__all__'
+        
+        
+class KinSerializer(serializers.ModelSerializer):
+    guardian = MemberSerializer()
+    class Meta:
+        model = Kin
+        fields = (
+            'id',
+            'member_id',
+            'avatar_fallback_color',
+            'church',
+            'first_name',
+            'middle_name',
+            'last_name',
+            'date_of_birth',
+            'gender',
+            'guardian',
+            'relation_with_guardian',
+            'membersince',
+            'date_of_baptism',
+            'created_by',
+            'created_at',
+            'updated_at',
+        )
+
         
                 

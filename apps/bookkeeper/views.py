@@ -37,7 +37,7 @@ class ExpenditureView(viewsets.ModelViewSet):
     queryset = Expenditure.objects.all()
     serializer_class = ExpenditureSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
     
     def get_queryset(self):
@@ -48,7 +48,6 @@ class IncomeView(viewsets.ModelViewSet):
     queryset = Income.objects.all()
     serializer_class = IncomeSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
     def get_queryset(self):
