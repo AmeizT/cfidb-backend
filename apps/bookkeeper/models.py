@@ -27,6 +27,10 @@ class Income(models.Model):
         on_delete=models.CASCADE,
         related_name='income'
     )
+    entry_date = models.DateTimeField(
+        blank=True,
+        null=True
+    )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 

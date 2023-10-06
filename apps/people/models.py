@@ -45,8 +45,8 @@ class Homecell(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Home Cell"
-        verbose_name_plural = "Home Cells"
+        verbose_name = "Homecell"
+        verbose_name_plural = "Homecells"
         ordering = ["-created_at"]
 
     def __str__(self):

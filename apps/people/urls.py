@@ -15,7 +15,7 @@ router = DefaultRouter()
 
 router.register(r'attendance', AttendanceView, basename='attendance')
 router.register(r'homecell', HomeCellView, basename='homecell')
-router.register(r'hcattendance', HCAttendanceView, basename='hcattendance')
+router.register(r'homecell-attendance', HCAttendanceView, basename='homecell_attendance')
 router.register(r'kin', KinView, basename='kin')
 router.register(r'members', MemberView, basename='members')
 router.register(r'member/add', CreateMemberView, basename='members_add')
