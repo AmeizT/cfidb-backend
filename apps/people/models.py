@@ -241,10 +241,10 @@ class Member(models.Model):
     )
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    date_of_baptism = models.DateField(
-        blank=True,
-        null=True,
-    )
+    # date_of_baptism = models.DateField(
+    #     blank=True,
+    #     null=True,
+    # )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
