@@ -17,19 +17,21 @@ cloudinary.config(
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
-if str(os.environ.get('DJANGO_ENV')) == 'local':
-    DEBUG = True
-else:
-    DEBUG = False
+# if str(os.environ.get('DJANGO_ENV')) == 'local':
+#     DEBUG = True
+# else:
+#     DEBUG = False
+
+DEBUG = True
     
   
-if DEBUG:
+if not DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
 else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
     
     
-if DEBUG:
+if not DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
        'localhost', 
@@ -43,7 +45,7 @@ else:
     ]
     
 
-if DEBUG:
+if not DEBUG:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000'
     ]
