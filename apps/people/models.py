@@ -175,7 +175,7 @@ class Member(models.Model):
         blank=True
     )
     country = models.CharField(max_length=255)
-    phone = models.CharField(
+    phone_number = models.CharField(
         max_length=24, 
         blank=True
     )
@@ -196,13 +196,13 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
-    baptised_at = models.DateField(
+    baptized_at = models.DateField(
         blank=True,
         null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    avatar_fallback_color = models.CharField(
+    avatar_fallback = models.CharField(
         max_length=24, 
         blank=True
     )
@@ -221,7 +221,7 @@ class Member(models.Model):
                 first_name=self.first_name,
                 last_name=self.last_name,
                 date_of_birth=self.date_of_birth,
-                phone=self.phone,
+                phone_number=self.phone_number,
             ).exists():
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone number already exists."
@@ -310,7 +310,7 @@ class Kin(models.Model):
                 date_of_birth=self.date_of_birth,
             ).exists():
                 raise ValidationError(
-                    "A member with the same name, date of birth, and phone number already exists."
+                    "A member with the same name, date of birth, and phone_number number already exists."
                 )
 
         # Save the member if no duplicate entries found
