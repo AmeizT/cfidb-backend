@@ -158,7 +158,7 @@ class Member(models.Model):
         max_length=255, 
         choices=GENDER_CHOICES
     )
-    relationship_status = models.CharField(
+    relationship = models.CharField(
         max_length=255, 
         blank=True, 
         choices=RELATIONSHIP_CHOICES
@@ -175,7 +175,7 @@ class Member(models.Model):
         blank=True
     )
     country = models.CharField(max_length=255)
-    phone_number = models.CharField(
+    phone = models.CharField(
         max_length=24, 
         blank=True
     )
@@ -196,13 +196,13 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
-    baptized_at = models.DateField(
+    baptised_at = models.DateField(
         blank=True,
         null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    avatar_fallback = models.CharField(
+    avatar_fallback_color = models.CharField(
         max_length=24, 
         blank=True
     )
@@ -221,7 +221,7 @@ class Member(models.Model):
                 first_name=self.first_name,
                 last_name=self.last_name,
                 date_of_birth=self.date_of_birth,
-                phone_number=self.phone_number,
+                phone=self.phone,
             ).exists():
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone number already exists."
