@@ -245,10 +245,6 @@ class Member(models.Model):
         blank=True,
         null=True,
     )
-    baptized_at = models.DateField(
-        blank=True,
-        null=True
-    )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
