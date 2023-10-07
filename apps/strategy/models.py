@@ -10,20 +10,27 @@ class Strategy(models.Model):
         on_delete=models.CASCADE,
         related_name='strategy'
     )
-    
-    
+    title = models.CharField(
+        max_length=255
+    )
+    content = models.TextField(
+        blank=True
+    )
+    file = models.TextField(
+        blank=True
+    )
     slug = models.SlugField(
         max_length=255,
         unique=True, 
         blank=True
     )
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = "strategy"
         verbose_name_plural = "strategies"
-        ordering = ["-created"]
+        ordering = ["-created_at"]
         
     # def __str__(self):
     #     return self.title

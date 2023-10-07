@@ -80,16 +80,16 @@ class Income(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "finance"
-        verbose_name_plural = "finances"
+        verbose_name = "income"
+        verbose_name_plural = "income"
         ordering = ["-created_at"]
         
         
     def save(self, *args, **kwargs):
         self.sum = self.tithes + self.offering + self.pledges + self.thanksgiving + self.fundraising + self.remittance
-        expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
-        self.expenses = expenses['total__sum'] or Decimal('0.00')
-        self.balance = self.sum - self.expenses
+        # expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
+        # self.expenses = expenses['total__sum'] or Decimal('0.00')
+        # self.balance = self.sum - self.expenses
         super().save(*args, **kwargs)
 
     def __str__(self):

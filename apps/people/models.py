@@ -45,8 +45,8 @@ class Homecell(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Homecell"
-        verbose_name_plural = "Homecells"
+        verbose_name = "homecell"
+        verbose_name_plural = "homecells"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -79,8 +79,8 @@ class HCAttendance(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Home Cell Attendance"
-        verbose_name_plural = "Home Cell Attendance"
+        verbose_name = "Homecell Attendance"
+        verbose_name_plural = "Homecell Attendance"
         ordering = ["-created_at"]
 
     def save(self, *args, **kwargs):
@@ -245,6 +245,10 @@ class Member(models.Model):
         blank=True,
         null=True,
     )
+    baptized_at = models.DateField(
+        blank=True,
+        null=True
+    )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -260,7 +264,7 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
-    created_by = models.ForeignKey(
+    editor = models.ForeignKey(
         User,
         on_delete=models.CASCADE, 
         related_name="editor",
