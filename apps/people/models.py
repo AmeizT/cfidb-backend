@@ -6,6 +6,13 @@ from django.utils.text import slugify
 from apps.churches.models import Church
 from django.forms import ValidationError
 from django.core.validators import RegexValidator
+from apps.people.choices import (
+    CHURCH_POSITIONS_CHOICES, 
+    GENDER_CHOICES, 
+    MINISTRY_CHOICES, 
+    PREFIX_CHOICES, 
+    RELATIONSHIP_CHOICES
+)
 
 
 class Attendance(models.Model):
@@ -118,89 +125,22 @@ class Testimony(models.Model):
 
 
 class Member(models.Model):
-    GENDER_CHOICES = (
-        ("Male", "Male"),
-        ("Female", "Female"),
-    )
-
-    RELATIONSHIP_CHOICES = (
-        ("Single", "Single"),
-        ("Married", "Married"),
-        ("Divorced", "Divorced"),
-        ("Widowed", "Widowed"),
-        ("Separated", "Separated"),
-        ("Engaged", "Engaged"),
-        ("In a Relationship", "In a Relationship"),
-        ("Domestic Partnership", "Domestic Partnership"),
-        ("Civil Union", "Civil Union"),
-        ("Committed", "Committed"),
-        ("Common-Law Marriage", "Common-Law Marriage"),
-        ("Traditional Marriage", "Traditional Marriage"),
-        ("Co-parenting", "Co-parenting"),
-    )
-
-    PREFIX_CHOICES = (
-        ("Dr", "Dr"),
-        ("Eng", "Eng"),
-        ("Hon", "Hon"),
-        ("Miss", "Miss"),
-        ("Mr", "Mr"),
-        ("Mrs", "Mrs"),
-        ("Ms", "Ms"),
-        ("Prof", "Prof"),
-        ("Rev", "Rev"),
-    )
-
-    CHURCH_POSITIONS_CHOICES = [
-        ("Sunday School Teacher", "Sunday School Teacher"),
-        ("Youth Leader", "Youth Leader"),
-        ("Deacon", "Deacon"),
-        ("Deaconess", "Deaconess"),
-        ("Elder", "Elder"),
-        ("Praise and Worship Director", "Praise and Worship Director"),
-        ("Pastor", "Pastor"),
-        ("Senior Pastor", "Senior Pastor"),
-        ("Overseer", "Overseer"),
-        ("President", "President"),
-        ("Media Director", "Media Director"),
-        ("WOE Leader", "WOE Leader"),
-        ("Gatekeepers Leader", "Gatekeepers Leader"),
-        ("House Keeper", "House Keeper"),
-        ("Home Cell Leader", "Home Cell Leader"),
-        ("Secretary", "Secretary"),
-        ("Treasurer", "Treasurer"),
-        ("Other", "Other"),
-    ]
-
-    MINISTRY_CHOICES = [
-        ("Administration", "Administration"),
-        ("Christian education", "Christian education"),
-        ("Counseling", "Counseling"),
-        ("Discernment", "Discernment"),
-        ("Evangelism", "Evangelism"),
-        ("Giving", "Giving"),
-        ("Hospitality", "Hospitality"),
-        ("Intercession", "Intercession"),
-        ("Leadership", "Leadership"),
-        ("Media and Communications", "Media and Communications"),
-        ("Other", "Other"),
-        ("Praise and Worship", "Praise and Worship"),
-        ("Ushering", "Ushering"),
-    ]
-
     member_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
     )
-    avatar_fallback_color = models.CharField(
-        max_length=24, 
-        blank=True
-    )
     church = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE, 
         related_name="members"
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="editor", 
+        blank=True, 
+        null=True
     )
     prefix = models.CharField(
         max_length=255, 
@@ -218,7 +158,7 @@ class Member(models.Model):
         max_length=255, 
         choices=GENDER_CHOICES
     )
-    relationship = models.CharField(
+    relationship_status = models.CharField(
         max_length=255, 
         blank=True, 
         choices=RELATIONSHIP_CHOICES
@@ -235,16 +175,12 @@ class Member(models.Model):
         blank=True
     )
     country = models.CharField(max_length=255)
-    phone = models.CharField(
+    phone_number = models.CharField(
         max_length=24, 
         blank=True
     )
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    # date_of_baptism = models.DateField(
-    #     blank=True,
-    #     null=True,
-    # )
     tithes = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -260,19 +196,16 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
-    baptised_at = models.DateField(
+    baptized_at = models.DateField(
         blank=True,
         null=True
     )
-    editor = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE, 
-        related_name="editor",
-        blank=True,
-        null=True,
-    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    avatar_fallback = models.CharField(
+        max_length=24, 
+        blank=True
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -288,7 +221,7 @@ class Member(models.Model):
                 first_name=self.first_name,
                 last_name=self.last_name,
                 date_of_birth=self.date_of_birth,
-                phone=self.phone,
+                phone_number=self.phone_number,
             ).exists():
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone number already exists."
@@ -300,11 +233,6 @@ class Member(models.Model):
         
         
 class Kin(models.Model):
-    GENDER_CHOICES = (
-        ("Male", "Male"),
-        ("Female", "Female"),
-    )
-
     RELATIONSHIP_CHOICES = (
         ("Aunt", "Aunt"),
         ("Brother", "Brother"),
@@ -387,3 +315,8 @@ class Kin(models.Model):
 
         # Save the member if no duplicate entries found
         super(Kin, self).save(*args, **kwargs)
+
+
+
+
+
