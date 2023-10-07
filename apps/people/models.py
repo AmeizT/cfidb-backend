@@ -260,6 +260,10 @@ class Member(models.Model):
         blank=True, 
         choices=CHURCH_POSITIONS_CHOICES
     )
+    baptised_at = models.DateField(
+        blank=True,
+        null=True
+    )
     editor = models.ForeignKey(
         User,
         on_delete=models.CASCADE, 
