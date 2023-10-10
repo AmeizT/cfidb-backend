@@ -3,6 +3,19 @@ GENDER_CHOICES = (
     ("Female", "Female"),
 )
 
+GUARDIAN_RELATIONSHIP_CHOICES = [
+    ("Aunt", "Aunt"),
+    ("Brother", "Brother"),
+    ("Child", "Child"),
+    ("Cousin", "Cousin"),
+    ("Father", "Father"),
+    ("Grandparent", "Grandparent"),
+    ("Mother", "Mother"),
+    ("Sister", "Sister"),
+    ("Spouse", "Spouse"),
+    ("Uncle", "Uncle"),
+]
+
 RELATIONSHIP_CHOICES = (
     ("Single", "Single"),
     ("Married", "Married"),

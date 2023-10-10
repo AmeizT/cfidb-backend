@@ -1,8 +1,10 @@
 from apps.people.serializers import (
     AttendanceSerializer,
+    AttendanceRegisterSerializer,
     HCAttendanceSerializer,
     HomecellSerializer,
-    KinSerializer,
+    KindredSerializer,
+    CreateKindredSerializer,
     MemberSerializer,
 )
 from django.shortcuts import render
@@ -10,7 +12,7 @@ from rest_framework.response import Response
 from apps.people.permissions import IsAdminOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
-from apps.people.models import Attendance, HCAttendance, Homecell, Kin, Member
+from apps.people.models import Attendance, AttendanceRegister, HCAttendance, Homecell, Kindred, Member
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -26,6 +28,16 @@ class AttendanceView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Attendance.objects.filter(church=self.request.user.church)  # type: ignore
+    
+    
+
+class AttendanceRegisterView(viewsets.ModelViewSet):
+    queryset = AttendanceRegister.objects.all()
+    serializer_class = AttendanceRegisterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return AttendanceRegister.objects.filter(branch=self.request.user.church)  # type: ignore
 
 
 class HomeCellView(viewsets.ModelViewSet):
@@ -58,14 +70,25 @@ class MemberView(viewsets.ModelViewSet):
     
     
 
-class KinView(viewsets.ModelViewSet):
-    queryset = Kin.objects.all()
-    serializer_class = KinSerializer
+class CreateKindredView(viewsets.ModelViewSet):
+    queryset = Kindred.objects.all()
+    serializer_class = CreateKindredSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = "member_id"
 
     def get_queryset(self):
-        return Kin.objects.filter(church=self.request.user.church)  # type: ignore
+        return Kindred.objects.filter(church=self.request.user.church)  # type: ignore
+
+    
+        
+class KindredView(viewsets.ModelViewSet):
+    queryset = Kindred.objects.all()
+    serializer_class = KindredSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = "member_id"
+
+    def get_queryset(self):
+        return Kindred.objects.filter(church=self.request.user.church)  # type: ignore
 
 
 class CreateMemberView(viewsets.ModelViewSet):

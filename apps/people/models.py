@@ -1,4 +1,5 @@
 import uuid
+from enum import Enum
 from decimal import Decimal
 from django.db import models
 from apps.users.models import User
@@ -11,7 +12,8 @@ from apps.people.choices import (
     GENDER_CHOICES, 
     MINISTRY_CHOICES, 
     PREFIX_CHOICES, 
-    RELATIONSHIP_CHOICES
+    RELATIONSHIP_CHOICES,
+    GUARDIAN_RELATIONSHIP_CHOICES
 )
 
 
@@ -20,15 +22,15 @@ class Attendance(models.Model):
         Church, on_delete=models.CASCADE, related_name="attendance"
     )
     sunday = models.BigIntegerField(default=0)
-    home = models.BigIntegerField(default=0)
     friday = models.BigIntegerField(default=0)
     outreach = models.BigIntegerField(default=0)
     kids = models.BigIntegerField(default=0)
     adults = models.BigIntegerField(default=0)
     visitors = models.BigIntegerField(default=0)
-    new = models.BigIntegerField(default=0)
-    baptized = models.BigIntegerField(default=0)
-    repented = models.BigIntegerField(default=0)
+    new_members = models.BigIntegerField(default=0)
+    baptism = models.BigIntegerField(default=0)
+    altar_call = models.BigIntegerField(default=0)
+    attendance_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -39,6 +41,10 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"{self.church}"
+    
+    
+
+
 
 
 class Homecell(models.Model):
@@ -232,33 +238,16 @@ class Member(models.Model):
         
         
         
-class Kin(models.Model):
-    RELATIONSHIP_CHOICES = (
-        ("Aunt", "Aunt"),
-        ("Brother", "Brother"),
-        ("Child", "Child"),
-        ("Cousin", "Cousin"),
-        ("Father", "Father"),
-        ("Grandparent", "Grandparent"),
-        ("Mother", "Mother"),
-        ("Sister", "Sister"),
-        ("Spouse", "Spouse"),
-        ("Uncle", "Uncle"),
-    )
-
+class Kindred(models.Model):
     member_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
     )
-    avatar_fallback_color = models.CharField(
-        max_length=24, 
-        blank=True
-    )
     church = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE, 
-        related_name="kin"
+        related_name="kindred"
     )
     first_name = models.CharField(max_length=255)
     middle_name = models.CharField(
@@ -276,35 +265,39 @@ class Kin(models.Model):
         on_delete=models.CASCADE,
         related_name="guardian"
     )
-    relation_with_guardian = models.CharField(
+    guardian_relationship = models.CharField(
         max_length=255, 
         blank=True, 
-        choices=RELATIONSHIP_CHOICES
+        choices=GUARDIAN_RELATIONSHIP_CHOICES
     )
     membersince = models.DateField()
-    date_of_baptism = models.DateField(
-        blank=True,
-        null=True,
-    )
-    created_by = models.ForeignKey(
+    editor = models.ForeignKey(
         User,
         on_delete=models.CASCADE, 
-        related_name="kin_creator",
+        related_name="kindred_creator",
+    )
+    avatar_fallback = models.CharField(
+        max_length=24, 
+        blank=True
+    )
+    baptized_at = models.DateField(
+        blank=True,
+        null=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "kin"
-        verbose_name_plural = "kins"
+        verbose_name = "kindred"
+        verbose_name_plural = "kindred"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            if Kin.objects.filter(
+            if Kindred.objects.filter(
                 first_name=self.first_name,
                 last_name=self.last_name,
                 date_of_birth=self.date_of_birth,
@@ -314,7 +307,73 @@ class Kin(models.Model):
                 )
 
         # Save the member if no duplicate entries found
-        super(Kin, self).save(*args, **kwargs)
+        super(Kindred, self).save(*args, **kwargs)
+        
+                
+class AttendanceRegister(models.Model):
+    branch = models.ForeignKey(
+        Church,
+        on_delete=models.CASCADE, 
+        related_name="member_assembly"
+    )
+    member = models.ForeignKey(
+        Member, 
+        on_delete=models.CASCADE, 
+        related_name="attendance_register"
+    )
+    attendance_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-attendance_date"]
+        unique_together = ('member', 'attendance_date')
+        verbose_name = "attendance register"
+        verbose_name_plural = "attendance register"
+        
+
+    def __str__(self):
+        return f"{self.member.first_name} {self.member.last_name} - {self.attendance_date}"
+    
+    
+class AttendanceType(Enum):
+    SUNDAY = "Sunday"
+    HOME = "Home"
+    FRIDAY = "Friday"
+    OUTREACH = "Outreach"
+    KIDS = "Kids"
+    ADULTS = "Adults"
+    VISITORS = "Visitors"
+    NEW_MEMBERS = "New Members"
+    BAPTIZED = "Baptized"
+    REPENTED = "Repented"
+
+# In your ChurchAttendance model, use the enum values for choices
+class ChurchAttendance(models.Model):
+    church = models.ForeignKey(
+        Church, on_delete=models.CASCADE, related_name="church_attendance"
+    )
+    attendance_type = models.CharField(
+        max_length=50,
+        choices=[(tag.value, tag.value) for tag in AttendanceType],  # Use enum values
+    )
+    count = models.BigIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Church Attendance"
+        verbose_name_plural = "Church Attendance"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.church} - {self.attendance_type}"
+
+
+
+
+
+
 
 
 

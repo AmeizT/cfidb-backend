@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.people.models import (
-    Attendance, Homecell, HCAttendance, Kin, Member, Testimony
+    Attendance, Homecell, HCAttendance, Kindred, Member, AttendanceRegister, Testimony
 )
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -8,6 +8,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = '__all__'
         
+        
+
 
 class HomecellSerializer(serializers.ModelSerializer):
     class Meta:
@@ -57,14 +59,20 @@ class MemberSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-class KinSerializer(serializers.ModelSerializer):
+class CreateKindredSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Kindred
+        fields = '__all__'
+        
+        
+class KindredSerializer(serializers.ModelSerializer):
     guardian = MemberSerializer()
     class Meta:
-        model = Kin
+        model = Kindred
         fields = (
             'id',
             'member_id',
-            'avatar_fallback_color',
+            'avatar_fallback',
             'church',
             'first_name',
             'middle_name',
@@ -72,13 +80,18 @@ class KinSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'gender',
             'guardian',
-            'relation_with_guardian',
+            'guardian_relationship',
             'membersince',
-            'date_of_baptism',
-            'created_by',
+            'baptized_at',
+            'editor',
             'created_at',
             'updated_at',
         )
 
         
                 
+class AttendanceRegisterSerializer(serializers.ModelSerializer):
+    member = MemberSerializer()
+    class Meta:
+        model = AttendanceRegister
+        fields = ['id', 'branch', 'member', 'attendance_date', 'created_at', 'updated_at']
