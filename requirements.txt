@@ -8,6 +8,7 @@ cryptography==41.0.3
 defusedxml==0.7.1
 dj-user-login-history==1.0.5
 Django==4.2.3
+django-cloudinary-storage==0.3.0
 django-cors-headers==4.1.0
 django-dotenv==1.4.2
 django-filter==23.2

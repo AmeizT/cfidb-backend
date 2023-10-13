@@ -169,7 +169,7 @@ class Asset(models.Model):
         max_length=255, 
         choices=CONDITION_CHOICES
     )
-    image = CloudinaryField('image', null=True)
+    image = models.ImageField(upload_to='finance/assets/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -227,11 +227,7 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
-    # receipt = CloudinaryField(
-    #     'image', 
-    #     blank=True, 
-    #     null=True
-    # )
+    receipt = models.FileField(upload_to='finance/expenditure/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -239,7 +235,7 @@ class Expenditure(models.Model):
     class Meta:
         verbose_name = 'Expenditure'
         verbose_name_plural = 'Expenditure'
-        ordering = ['-created_at']
+        ordering = ['-invoice_date']
         
     def __str__(self):
         return f'{self.name}'

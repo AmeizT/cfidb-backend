@@ -7,11 +7,7 @@ import cloudinary.api
 import cloudinary.uploader
 
 
-cloudinary.config( 
-    cloud_name = str(os.environ.get('CLOUDINARY_NAME')), 
-    api_key = str(os.environ.get('CLOUDINARY_API_KEY')), 
-    api_secret = str(os.environ.get('CLOUDINARY_API_SECRET')),
-)
+
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
@@ -62,6 +58,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 INSTALLED_APPS = [
+    'cloudinary_storage',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -174,10 +171,18 @@ USE_TZ = True
 #     STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': str(os.environ.get('CLOUDINARY_NAME')), 
+    'API_KEY': str(os.environ.get('CLOUDINARY_API_KEY')), 
+    'API_SECRET': str(os.environ.get('CLOUDINARY_API_SECRET')),
+}
+
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # if not DEBUG:
