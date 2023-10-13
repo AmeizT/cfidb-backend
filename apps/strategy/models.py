@@ -59,12 +59,12 @@ class Strategy(models.Model):
                 self.slug = f"{base_slug}-{counter}"
                 counter += 1
 
-        # Customize the upload_to parameter based on church and filename
-        self.attachment.field.upload_to = self.generate_upload_path
+        # # Customize the upload_to parameter based on church and filename
+        # self.attachment.field.upload_to = self.generate_upload_path
 
         super().save(*args, **kwargs)
 
-    def generate_upload_path(self, instance, filename):
-        # Create the upload path dynamically using church and filename
-        church_name = slugify(instance.church.name)  # Customize as needed
-        return f"documents/strategy/{church_name}/{filename}"
+    # def generate_upload_path(self, instance, filename):
+    #     # Create the upload path dynamically using church and filename
+    #     church_name = slugify(instance.church.name)  # Customize as needed
+    #     return f"documents/strategy/{church_name}/{filename}"
