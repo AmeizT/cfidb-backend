@@ -31,12 +31,6 @@ class PaymentMethod(models.TextChoices):
 
 
 class Tithe(models.Model):    
-    id = models.UUIDField(
-        default=uuid.uuid4, 
-        editable=False, 
-        primary_key=True,
-        unique=True
-    )
     branch = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE,
@@ -84,12 +78,6 @@ class Tithe(models.Model):
     
 
 class Pledge(models.Model):    
-    id = models.UUIDField(
-        default=uuid.uuid4, 
-        editable=False, 
-        primary_key=True,
-        unique=True
-    )
     branch = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE,
