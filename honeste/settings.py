@@ -10,7 +10,7 @@ import cloudinary.uploader
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
-if not str(os.environ.get('DJANGO_ENV')) == 'local':
+if str(os.environ.get('DJANGO_ENV')) == 'local':
     DEBUG = True
 else:
     DEBUG = False
