@@ -98,14 +98,14 @@ class Event(models.Model):
 
         super().save(*args, **kwargs)
         
-        try:
-            img = Image.open(self.banner.path)
-            if img.height > 800 or img.width > 1200:
-                output_size = (1200, 800)
-                img.thumbnail(output_size)
-                img.save(self.banner.path)
-        except (FileNotFoundError, OSError) as e:
-            print(f"An error occurred: {e}")
+        # try:
+        #     img = Image.open(self.banner.path)
+        #     if img.height > 800 or img.width > 1200:
+        #         output_size = (1200, 800)
+        #         img.thumbnail(output_size)
+        #         img.save(self.banner.path)
+        # except (FileNotFoundError, OSError) as e:
+        #     print(f"An error occurred: {e}")
         
         # Check if event has expired
         now = timezone.now()

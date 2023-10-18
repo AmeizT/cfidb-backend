@@ -286,20 +286,20 @@ class Income(models.Model):
     
     
     
-    def calculate_monthly_tithes(self):
-        if self.timestamp is not None:
-            month_tithes = Tithe.objects.filter(
-                branch=self.church,
-                created_at__date__month=self.timestamp.month,
-                created_at__date__year=self.timestamp.year,
-            ).aggregate(total_tithes=Sum('tithes'))['total_tithes']
+    # def calculate_monthly_tithes(self):
+    #     if self.timestamp is not None:
+    #         month_tithes = Tithe.objects.filter(
+    #             branch=self.church,
+    #             created_at__date__month=self.timestamp.month,
+    #             created_at__date__year=self.timestamp.year,
+    #         ).aggregate(total_tithes=Sum('tithes'))['total_tithes']
 
-            if month_tithes is None:
-                month_tithes = Decimal('0.00')
+    #         if month_tithes is None:
+    #             month_tithes = Decimal('0.00')
 
-            return month_tithes
-        else:
-            return Decimal('0.00')
+    #         return month_tithes
+    #     else:
+    #         return Decimal('0.00')
         
         
 

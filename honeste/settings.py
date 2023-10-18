@@ -82,7 +82,7 @@ INSTALLED_APPS = [
     'apps.projects',
     'apps.resources',
     'apps.posts',
-    'apps.strategy',
+    # 'apps.strategy',
 ]
 
 MIDDLEWARE = [

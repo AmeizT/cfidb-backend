@@ -17,12 +17,12 @@ from apps.bookkeeper.views import (
 router = DefaultRouter()
 
 router.register(r'assets', AssetView, basename='assets')
-router.register(r'create-tithe', CreateTitheView, basename='create_tithe')
 router.register(r'expenditure', ExpenditureView, basename='expenditure')
 router.register(r'fixed-expenditure', FixedExpenditureView, basename='fixed_expenditure')
 router.register(r'income', IncomeView, basename='income')
 router.register(r'payroll', PayrollView, basename='payroll')
 router.register(r'pledge', PledgeView, basename='pledge')
+router.register(r'create-tithe', CreateTitheView, basename='create_tithe')
 router.register(r'tithes', TitheView, basename='tithes')
 
 # ADMIN URLS

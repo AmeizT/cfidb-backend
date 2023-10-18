@@ -13,12 +13,6 @@ def strategy_file_path(instance, filename):
     )
 
 class StrategyLegacy(models.Model):
-    id = models.UUIDField(
-        default=uuid.uuid4,
-        primary_key=True, 
-        editable=False, 
-        unique=True
-    )
     branch = models.ForeignKey(
         Church,
         on_delete=models.CASCADE,
@@ -73,12 +67,6 @@ class StrategyLegacy(models.Model):
 
 
 class Strategy(models.Model):
-    id = models.UUIDField(
-        default=uuid.uuid4,
-        primary_key=True, 
-        editable=False, 
-        unique=True
-    )
     branch = models.ForeignKey(
         Church,
         on_delete=models.CASCADE,
