@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from apps.strategy.models import Strategy
+from apps.strategy.models import StrategyLegacy
 
-class StrategySerializer(serializers.ModelSerializer):
+class StrategyLegacySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Strategy
+        model = StrategyLegacy
         fields = '__all__'

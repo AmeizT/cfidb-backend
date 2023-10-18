@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'djoser',
     'login_history',
+    'imagekit',
     'apps',
     'apps.users',
     'apps.churches',

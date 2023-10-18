@@ -1,11 +1,12 @@
 from apps.people.serializers import (
     AttendanceSerializer,
     AttendanceRegisterSerializer,
+    CreateKindredSerializer,
     HCAttendanceSerializer,
     HomecellSerializer,
     KindredSerializer,
-    CreateKindredSerializer,
     MemberSerializer,
+    TestimonySerializer,
 )
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -57,6 +58,33 @@ class HCAttendanceView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return HCAttendance.objects.filter(church=self.request.user.church)  # type: ignore
+    
+    
+    # def create(self, request, *args, **kwargs):
+    #     # Extract data from the request
+    #     hcattendance_data = request.data.get('hcattendance', {})
+    #     testimonies_data = request.data.get('testimonies', [])
+
+    #     # Create HCAttendance object
+    #     hcattendance_serializer = HCAttendanceSerializer(data=hcattendance_data)
+    #     if hcattendance_serializer.is_valid():
+    #         hcattendance = hcattendance_serializer.save()
+
+    #         # Create Testimony objects associated with HCAttendance
+    #         for testimony_data in testimonies_data:
+    #             testimony_data['homecell'] = hcattendance.id  # Associate with HCAttendance
+    #             testimony_serializer = TestimonySerializer(data=testimony_data)
+    #             if testimony_serializer.is_valid():
+    #                 testimony_serializer.save()
+    #             else:
+    #                 # Handle validation errors for Testimony objects
+    #                 return Response(testimony_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    #         return Response({'message': 'HCAttendance and Testimonies created successfully'}, status=status.HTTP_201_CREATED)
+    #     else:
+    #         # Handle validation errors for HCAttendance object
+    #         return Response(hcattendance_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class MemberView(viewsets.ModelViewSet):
@@ -114,3 +142,9 @@ class MemberAdminView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["church__name"]
     pagination_class = StandardPagination
+
+
+
+
+
+    

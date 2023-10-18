@@ -20,9 +20,9 @@ router.register(r'attendance-register', AttendanceRegisterView, basename='attend
 router.register(r'homecell', HomeCellView, basename='homecell')
 router.register(r'homecell-attendance', HCAttendanceView, basename='homecell_attendance')
 router.register(r'kindred', KindredView, basename='kindred')
-router.register(r'kindred-create', CreateKindredView, basename='kindred_create')
+router.register(r'create-kindred', CreateKindredView, basename='create_kindred')
 router.register(r'members', MemberView, basename='members')
-router.register(r'member/add', CreateMemberView, basename='members_add')
+router.register(r'create-member', CreateMemberView, basename='create_members')
 router.register(r'attendance-tracker', AttendanceAdminView, basename='admin_attendance')
 router.register(r'members-tracker', MemberAdminView, basename='admin_members')
 

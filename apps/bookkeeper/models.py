@@ -2,22 +2,218 @@ import uuid
 from PIL import Image
 from decimal import Decimal
 from django.db import models
+from django.dispatch import receiver
+from apps.users.models import User
+from apps.people.models import Member
 from apps.churches.models import Church
+from django.db.models.signals import post_save
 from cloudinary.models import CloudinaryField
+from apps.bookkeeper.utils import (
+    asset_image_path,
+    bank_statement_path, 
+    expenditure_receipt_path,
+    fixed_expenditure_receipt_path,
+    pledge_receipt_path,
+    tithe_receipt_path, 
+)
+from django.db.models import Sum
+from apps.projects.models import Project
+from django.db.models.functions import TruncMonth
+from django.core.exceptions import ObjectDoesNotExist
 
 
-def receipt_file_path(instance, filename):
-    # 'instance' refers to the model instance, in this case, Church
-    # 'filename' is the original name of the uploaded file
-    # You can customize this function to generate a dynamic path as needed
-    return f'files/{instance.church.name}/finance/receipt/' + filename
+class PaymentMethod(models.TextChoices):
+    BANK = 'Bank', 'Bank'
+    CASH = 'Cash', 'Cash'
+    CHEQUE = 'Cheque', 'Cheque'
+    EFT = 'EFT', 'EFT'
+    OTHER = 'Other', 'Other'
 
 
-def bank_statement_file_path(instance, filename):
-    # 'instance' refers to the model instance, in this case, Church
-    # 'filename' is the original name of the uploaded file
-    # You can customize this function to generate a dynamic path as needed
-    return f'files/{instance.church.name}/finance/bank-statement/' + filename
+class Tithe(models.Model):    
+    id = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        primary_key=True,
+        unique=True
+    )
+    branch = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='tithe_branch'
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="tithe_editor", 
+        blank=True, 
+        null=True
+    )
+    member = models.ForeignKey(
+        Member, 
+        on_delete=models.CASCADE,
+        related_name='tither'
+    )
+    amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices, 
+        default=PaymentMethod.BANK, 
+    )
+    receipt = models.FileField(
+        upload_to=tithe_receipt_path, 
+        blank=True, 
+        null=True
+    )
+    timestamp = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'tithe'
+        verbose_name_plural = 'tithes'
+        ordering = ['-created_at']
+        
+        
+    def __str__(self):
+        return f'{self.member.first_name} {self.member.last_name} - {self.amount}'
+    
+
+class Pledge(models.Model):    
+    id = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        primary_key=True,
+        unique=True
+    )
+    branch = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='pledge_branch'
+    )
+    member = models.ForeignKey(
+        Member, 
+        on_delete=models.CASCADE,
+        related_name='pledger'
+    )
+    project = models.ForeignKey(
+        Project, 
+        on_delete=models.CASCADE,
+        related_name='project_pledge'
+    )
+    amount = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices, 
+        default=PaymentMethod.BANK, 
+    )
+    receipt = models.FileField(
+        upload_to=pledge_receipt_path, 
+        blank=True, 
+        null=True
+    )
+    deadline = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_fulfilled = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = 'pledge'
+        verbose_name_plural = 'pledges'
+        ordering = ['-created_at']
+        
+        
+    def __str__(self):
+        return f'{self.member.first_name} {self.member.last_name} - {self.amount}'
+
+
+
+class FixedExpenditure(models.Model):
+    branch = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='fixed_expenditure'
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name='fixed_expenditure_editor', 
+        blank=True, 
+        null=True
+    )
+    central_account_remittance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    rent = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    water = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    electricity = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    telephone = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    internet = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    security = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    fuel = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    wages = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    insurance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    remarks = models.TextField(
+        blank=True
+    )
+    receipt = models.FileField(
+        upload_to=fixed_expenditure_receipt_path,
+        blank=True
+    )
+    timestamp = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Fixed Expenditure'
+        verbose_name_plural = 'Fixed Expenditures'
+        ordering = ['-created_at']
 
 
 
@@ -27,7 +223,7 @@ class Income(models.Model):
         on_delete=models.CASCADE,
         related_name='income'
     )
-    entry_date = models.DateTimeField(
+    timestamp = models.DateTimeField(
         blank=True,
         null=True
     )
@@ -76,13 +272,18 @@ class Income(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
+    statement = models.FileField(
+        upload_to=bank_statement_path,
+        blank=True,
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "income"
-        verbose_name_plural = "income"
-        ordering = ["-created_at"]
+        verbose_name = 'income'
+        verbose_name_plural = 'income'
+        ordering = ['-created_at']
         
         
     def save(self, *args, **kwargs):
@@ -93,7 +294,43 @@ class Income(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Finance: {self.balance}"
+        return f'Finance: {self.balance}'
+    
+    
+    
+    def calculate_monthly_tithes(self):
+        if self.timestamp is not None:
+            month_tithes = Tithe.objects.filter(
+                branch=self.church,
+                created_at__date__month=self.timestamp.month,
+                created_at__date__year=self.timestamp.year,
+            ).aggregate(total_tithes=Sum('tithes'))['total_tithes']
+
+            if month_tithes is None:
+                month_tithes = Decimal('0.00')
+
+            return month_tithes
+        else:
+            return Decimal('0.00')
+        
+        
+
+
+
+# @receiver(post_save, sender=Tithes)
+# def update_income_tithes(sender, instance, **kwargs):
+#     try:
+#         # Try to find an existing Income instance
+#         income = Income.objects.get(church=instance.branch, timestamp__month=instance.created_at.month, timestamp__year=instance.created_at.year)
+#     except ObjectDoesNotExist:
+#         # If no Income instance is found, create a new one
+#         income = Income(church=instance.branch, timestamp=instance.created_at)
+#         income.save()
+
+#     # Calculate and update the tithes field in the Income instance
+#     income.tithes = income.calculate_monthly_tithes()
+#     income.save()
+
 
 
 class BankStatement(models.Model):
@@ -114,9 +351,9 @@ class BankStatement(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = "Bank Statement"
-        verbose_name_plural = "Bank Statements"
-        ordering = ["-created_at"]
+        verbose_name = 'Bank Statement'
+        verbose_name_plural = 'Bank Statements'
+        ordering = ['-created_at']
         
     def __str__(self):
         return self.name
@@ -141,6 +378,7 @@ class Asset(models.Model):
         related_name='asset', 
         on_delete=models.CASCADE
     )
+    
     asset_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
@@ -169,18 +407,21 @@ class Asset(models.Model):
         max_length=255, 
         choices=CONDITION_CHOICES
     )
-    image = models.ImageField(upload_to='finance/assets/', blank=True, null=True)
+    image = models.ImageField(
+        upload_to=asset_image_path, 
+        blank=True, 
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Asset"
-        verbose_name_plural = "Assets"
-        ordering = ["-created_at"]
+        verbose_name = 'Asset'
+        verbose_name_plural = 'Assets'
+        ordering = ['-created_at']
         
     def __str__(self):
         return self.name
-
 
 
 class Expenditure(models.Model):
@@ -227,7 +468,7 @@ class Expenditure(models.Model):
         decimal_places=2, 
         editable=False
     )
-    receipt = models.FileField(upload_to='finance/expenditure/', blank=True, null=True)
+    receipt = models.FileField(upload_to=expenditure_receipt_path, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

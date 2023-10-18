@@ -46,90 +46,6 @@ class Attendance(models.Model):
 
 
 
-
-class Homecell(models.Model):
-    church = models.ForeignKey(
-        Church, on_delete=models.CASCADE, related_name="homecell"
-    )
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    members = models.BigIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "homecell"
-        verbose_name_plural = "homecells"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class HCAttendance(models.Model):
-    church = models.ForeignKey(
-        Church, on_delete=models.CASCADE, related_name="hc_church"
-    )
-    homecell = models.ForeignKey(
-        Homecell, on_delete=models.CASCADE, related_name="hc_attendance", null=True
-    )
-    leader = models.CharField(max_length=255, blank=True)
-    topic = models.CharField(max_length=255, blank=True)
-    venue = models.CharField(max_length=255)
-    attendance = models.BigIntegerField(default=0)
-    adults = models.BigIntegerField(default=0)
-    kids = models.BigIntegerField(default=0)
-    visitors = models.BigIntegerField(default=0)
-    new = models.BigIntegerField(default=0)
-    repented = models.BigIntegerField(default=0)
-    scriptures = models.TextField(blank=True)
-    summary = models.TextField(blank=True)
-    achievements = models.TextField(blank=True)
-    slug = models.SlugField(max_length=255, blank=True)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "Homecell Attendance"
-        verbose_name_plural = "Homecell Attendance"
-        ordering = ["-created_at"]
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            name_slug = slugify(self.homecell.name)  # type: ignore
-            base_slug = slugify(self.topic)  # type: ignore
-            self.slug = f"{name_slug}-{base_slug}"
-            counter = 1
-            while HCAttendance.objects.filter(slug=self.slug).exists():
-                self.slug = f"{name_slug}-{base_slug}-{counter}"
-                counter += 1
-
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.homecell}"
-
-
-class Testimony(models.Model):
-    homecell = models.ForeignKey(
-        HCAttendance, on_delete=models.CASCADE, related_name="testimonies"
-    )
-    member = models.CharField(max_length=255, blank=True)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "testimony"
-        verbose_name_plural = "testimonies"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.homecell.homecell.name} {self.member}"  # type: ignore
-
-
 class Member(models.Model):
     member_id = models.UUIDField(
         default=uuid.uuid4, 
@@ -368,6 +284,103 @@ class ChurchAttendance(models.Model):
 
     def __str__(self):
         return f"{self.church} - {self.attendance_type}"
+       
+       
+class Homecell(models.Model):
+    church = models.ForeignKey(
+        Church, on_delete=models.CASCADE, related_name="homecell"
+    )
+    group_name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    members = models.ManyToManyField(Member, blank=True)
+    leader = models.ForeignKey(
+        Member, 
+        on_delete=models.SET_NULL, 
+        related_name="homecell_leader", 
+        blank=True, 
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "homecell"
+        verbose_name_plural = "homecells"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.group_name}"
+
+
+class HCAttendance(models.Model):
+    church = models.ForeignKey(
+        Church, on_delete=models.CASCADE, related_name="hc_church"
+    )
+    homecell = models.ForeignKey(
+        Homecell, on_delete=models.CASCADE, related_name="hc_attendance", null=True
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="homecell_editor", 
+        blank=True, 
+        null=True
+    )
+    coordinator = models.CharField(max_length=255, blank=True)
+    topic = models.CharField(max_length=255, blank=True)
+    venue = models.CharField(max_length=255)
+    total_attendance = models.BigIntegerField(default=0)
+    adults = models.BigIntegerField(default=0)
+    kids = models.BigIntegerField(default=0)
+    visitors = models.BigIntegerField(default=0)
+    new_members = models.BigIntegerField(default=0)
+    altar_call = models.BigIntegerField(default=0)
+    scriptures = models.TextField(blank=True)
+    summary = models.TextField(blank=True)
+    achievements = models.TextField(blank=True)
+    slug = models.SlugField(max_length=255, blank=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Homecell Attendance"
+        verbose_name_plural = "Homecell Attendance"
+        ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            name_slug = slugify(self.homecell.group_name)  # type: ignore
+            base_slug = slugify(self.topic)  # type: ignore
+            self.slug = f"{name_slug}-{base_slug}"
+            counter = 1
+            while HCAttendance.objects.filter(slug=self.slug).exists():
+                self.slug = f"{name_slug}-{base_slug}-{counter}"
+                counter += 1
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.homecell}"
+
+
+class Testimony(models.Model):
+    homecell = models.ForeignKey(
+        HCAttendance, on_delete=models.CASCADE, related_name="testimonies"
+    )
+    member = models.CharField(max_length=255, blank=True)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "testimony"
+        verbose_name_plural = "testimonies"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.homecell.homecell.name} {self.member}"  # type: ignore
 
 
 

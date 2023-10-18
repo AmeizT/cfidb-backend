@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='expenditure',
             name='receipt',
-            field=models.FileField(null=True, upload_to=apps.bookkeeper.models.receipt_file_path),
+            field=models.FileField(null=True),
         ),
         migrations.AddField(
             model_name='income',
             name='bank_statement',
-            field=models.FileField(null=True, upload_to=apps.bookkeeper.models.bank_statement_file_path),
+            field=models.FileField(null=True),
         ),
     ]

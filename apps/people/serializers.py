@@ -14,7 +14,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
 class HomecellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homecell
-        fields = ['id', 'church', 'name', 'members', 'description']
+        fields = '__all__'
         
         
 class TestimonySerializer(serializers.ModelSerializer):
@@ -24,34 +24,39 @@ class TestimonySerializer(serializers.ModelSerializer):
 
 
 class HCAttendanceSerializer(serializers.ModelSerializer):
-    homecell = HomecellSerializer()
-    testimonies = TestimonySerializer(many=True)
     class Meta:
         model = HCAttendance
-        fields = [
-            'id',
-            'church',
-            'homecell',
-            'leader',
-            'topic',
-            'venue',
-            'attendance',
-            'adults',
-            'kids',
-            'visitors',
-            'new',
-            'repented',
-            'scriptures',
-            'testimonies',
-            'summary',
-            'achievements',
-            'testimonies',
-            'slug',
-            'start_time',
-            'end_time',
-            'created_at',
-            'updated_at',
-        ]
+        fields = '__all__'
+        
+        
+# class HCAttendanceSerializer(serializers.ModelSerializer):
+#     testimonies = TestimonySerializer(many=True)
+#     class Meta:
+#         model = HCAttendance
+#         fields = [
+#             'id',
+#             'church',
+#             'homecell',
+#             'coordinator',
+#             'topic',
+#             'venue',
+#             'attendance',
+#             'adults',
+#             'kids',
+#             'visitors',
+#             'new',
+#             'repented',
+#             'scriptures',
+#             'summary',
+#             'achievements',
+#             'testimonies',
+#             'slug',
+#             'start_time',
+#             'end_time',
+#             'created_at',
+#             'updated_at',
+#         ]
+ 
      
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
