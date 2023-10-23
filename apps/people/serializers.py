@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from apps.people.models import (
-    Attendance, Homecell, HCAttendance, Kindred, Member, AttendanceRegister, Testimony
+    Attendance, 
+    Homecell, 
+    HCAttendance, 
+    Kindred, 
+    Member, 
+    AttendanceRegister, 
+    Tally, 
+    Testimony
 )
 
 class AttendanceSerializer(serializers.ModelSerializer):
@@ -8,8 +15,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
         model = Attendance
         fields = '__all__'
         
-        
-
 
 class HomecellSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,6 +26,13 @@ class TestimonySerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimony
         fields = '__all__'
+        
+        
+        
+class TallySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tally
+        fields = '__all__'        
 
 
 class HCAttendanceSerializer(serializers.ModelSerializer):

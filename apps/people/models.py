@@ -13,7 +13,8 @@ from apps.people.choices import (
     MINISTRY_CHOICES, 
     PREFIX_CHOICES, 
     RELATIONSHIP_CHOICES,
-    GUARDIAN_RELATIONSHIP_CHOICES
+    GUARDIAN_RELATIONSHIP_CHOICES,
+    SERVICE_CHOICES
 )
 
 
@@ -225,6 +226,32 @@ class Kindred(models.Model):
         # Save the member if no duplicate entries found
         super(Kindred, self).save(*args, **kwargs)
         
+ 
+class Tally(models.Model):
+    branch = models.ForeignKey(
+        Church,
+        on_delete=models.CASCADE, 
+        related_name="member_branch"
+    )
+    members = models.ManyToManyField(Member, blank=True)
+    service = models.CharField(
+        max_length=24, 
+        blank=True, 
+        choices=SERVICE_CHOICES
+    )
+    timestamp = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-timestamp"]
+        verbose_name = "tally"
+        verbose_name_plural = "tallies"
+        
+
+    def __str__(self):
+        return f"{self.branch.name}"
+ 
                 
 class AttendanceRegister(models.Model):
     branch = models.ForeignKey(

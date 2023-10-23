@@ -9,6 +9,7 @@ from apps.people.views import (
     CreateMemberView,
     AttendanceAdminView,
     MemberAdminView,
+    TallyView,
 )
 from django.urls import path, include, re_path
 from rest_framework.routers import DefaultRouter
@@ -25,6 +26,7 @@ router.register(r'members', MemberView, basename='members')
 router.register(r'create-member', CreateMemberView, basename='create_members')
 router.register(r'attendance-tracker', AttendanceAdminView, basename='admin_attendance')
 router.register(r'members-tracker', MemberAdminView, basename='admin_members')
+router.register(r'tally', TallyView, basename='tally')
 
 
 urlpatterns = [

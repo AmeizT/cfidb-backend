@@ -7,13 +7,22 @@ from apps.people.serializers import (
     KindredSerializer,
     MemberSerializer,
     TestimonySerializer,
+    TallySerializer,
 )
 from django.shortcuts import render
 from rest_framework.response import Response
-from apps.people.permissions import IsAdminOrOverseer
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
-from apps.people.models import Attendance, AttendanceRegister, HCAttendance, Homecell, Kindred, Member
+from apps.people.models import (
+    Attendance, 
+    AttendanceRegister, 
+    HCAttendance, 
+    Homecell, 
+    Kindred, 
+    Member, 
+    Tally
+)
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -29,7 +38,6 @@ class AttendanceView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Attendance.objects.filter(church=self.request.user.church)  # type: ignore
-    
     
 
 class AttendanceRegisterView(viewsets.ModelViewSet):
@@ -86,7 +94,6 @@ class HCAttendanceView(viewsets.ModelViewSet):
     #         return Response(hcattendance_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class MemberView(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
@@ -97,22 +104,30 @@ class MemberView(viewsets.ModelViewSet):
         return Member.objects.filter(church=self.request.user.church)  # type: ignore
     
     
+class TallyView(viewsets.ModelViewSet):
+    queryset = Tally.objects.all()
+    serializer_class = TallySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+
+    def get_queryset(self):
+        return Tally.objects.filter(branch=self.request.user.church)  # type: ignore
+    
 
 class CreateKindredView(viewsets.ModelViewSet):
     queryset = Kindred.objects.all()
     serializer_class = CreateKindredSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = "member_id"
 
     def get_queryset(self):
         return Kindred.objects.filter(church=self.request.user.church)  # type: ignore
 
-    
-        
+       
 class KindredView(viewsets.ModelViewSet):
     queryset = Kindred.objects.all()
     serializer_class = KindredSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     lookup_field = "member_id"
 
     def get_queryset(self):
@@ -123,7 +138,7 @@ class CreateMemberView(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
     http_method_names = ["post", "put", "patch"]
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class AttendanceAdminView(viewsets.ModelViewSet):

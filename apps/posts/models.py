@@ -20,7 +20,11 @@ class Post(models.Model):
     )
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
-    image = models.ImageField(upload_to=post_image_url, null=True, blank=True)
+    image = models.ImageField(
+        upload_to=post_image_url, 
+        null=True, 
+        blank=True
+    )
     views = models.PositiveIntegerField(default=0) 
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     is_private = models.BooleanField(default=False)
@@ -66,7 +70,7 @@ class PostImage(models.Model):
         upload_to=post_images_path,
         processors=[ResizeToFill(800, 600)], # type: ignore
         format='WEBP', # type: ignore
-        options={'quality': 90} # type: ignore
+        options={'quality': 80} # type: ignore
     )
     alt = models.CharField(
         max_length=255,

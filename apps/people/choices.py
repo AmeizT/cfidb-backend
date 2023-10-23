@@ -3,6 +3,11 @@ GENDER_CHOICES = (
     ("Female", "Female"),
 )
 
+SERVICE_CHOICES = (
+    ("Sunday", "Sunday"),
+    ("Friday", "Friday"),
+)
+
 GUARDIAN_RELATIONSHIP_CHOICES = [
     ("Aunt", "Aunt"),
     ("Brother", "Brother"),
