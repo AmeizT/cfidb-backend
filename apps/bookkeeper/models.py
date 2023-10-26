@@ -231,7 +231,7 @@ class Income(models.Model):
         on_delete=models.CASCADE,
         related_name='income'
     )
-    timestamp = models.DateTimeField(
+    entry_date = models.DateTimeField(
         blank=True,
         null=True
     )

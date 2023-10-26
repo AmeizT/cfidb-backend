@@ -10,21 +10,19 @@ import cloudinary.uploader
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 
-# if str(os.environ.get('DJANGO_ENV')) == 'local':
-#     DEBUG = True
-# else:
-#     DEBUG = False
+if str(os.environ.get('DJANGO_ENV')) == 'local':
+    DEBUG = True
+else:
+    DEBUG = False
 
-DEBUG = True
-
-  
-if not DEBUG:
+ 
+if DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
 else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
     
     
-if not DEBUG:
+if DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
        'localhost', 
@@ -38,7 +36,7 @@ else:
     ]
     
 
-if not DEBUG:
+if DEBUG:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000'
     ]
