@@ -1,12 +1,10 @@
-from apps.churches.models import Church
 from rest_framework import serializers
+from apps.churches.models import Church
 from rest_framework.fields import CharField
 from apps.users.models import User, Account
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
-
-        
+      
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user: User):
@@ -50,26 +48,32 @@ class CreateUserSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {'password': {'write_only': True}}
 
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            email=validated_data['email'],
-        )
-        password = validated_data['password']
-        re_password = validated_data['re_password']
+    # def create(self, validated_data):
+    #     user = User.objects.create_user(
+    #         first_name=validated_data['first_name'],
+    #         last_name=validated_data['last_name'],
+    #         email=validated_data['email'],
+    #     )
+    #     password = validated_data['password']
+    #     re_password = validated_data['re_password']
 
-        if password != re_password:
-            raise serializers.ValidationError('Passwords do not match')
-        elif len(password) < 8 or len(re_password) < 8:
-            raise serializers.ValidationError(
-                'Password must contain at least 8 characters')
+    #     if password != re_password:
+    #         raise serializers.ValidationError('Passwords do not match')
+    #     elif len(password) < 8 or len(re_password) < 8:
+    #         raise serializers.ValidationError(
+    #             'Password must contain at least 8 characters')
 
-        user.set_password(password)
-        user.save()
-        return user
+    #     user.set_password(password)
+    #     user.save()
+    #     return user
   
- 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
 class ChurchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
@@ -80,17 +84,17 @@ class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = (
-        'user', 
-        'type',
-        'intervals', 
-        'sub_total',
-        'discount',
-        'amount_paid',
-        'amount_due',
-        'is_premium_active',
-        'expires',
-        'created',
-        'updated', 
+            'user', 
+            'type',
+            'intervals', 
+            'sub_total',
+            'discount',
+            'amount_paid',
+            'amount_due',
+            'is_premium_active',
+            'expires',
+            'created',
+            'updated', 
     )
  
   
@@ -106,6 +110,7 @@ class PasswordChangeSerializer(serializers.Serializer):
     
 class ListUserSerializer(serializers.ModelSerializer):
     account = AccountSerializer(many=True)
+    churches = ChurchSerializer(many=True)
     
     class Meta:
         model = User
@@ -113,6 +118,7 @@ class ListUserSerializer(serializers.ModelSerializer):
             'id',
             'user_id', 
             'church',
+            'churches',
             'first_name', 
             'last_name', 
             'username', 

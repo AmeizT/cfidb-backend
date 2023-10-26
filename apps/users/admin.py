@@ -55,6 +55,7 @@ class UserAdmin(BaseUserAdmin):
         'last_name', 
         'username', 
         'email', 
+        
         'is_overseer',
         'is_pastor',
         'is_secretary',
@@ -80,6 +81,7 @@ class UserAdmin(BaseUserAdmin):
                 'last_name', 
                 'username', 
                 'church', 
+                'churches',
                 'avatar', 
                 'avatar_fallback',
             ]
@@ -105,6 +107,7 @@ class UserAdmin(BaseUserAdmin):
                 'username', 
                 'email', 
                 'church', 
+                'churches',
                 'password', 
                 're_password'
             ),

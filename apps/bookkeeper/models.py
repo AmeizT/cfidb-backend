@@ -187,6 +187,26 @@ class FixedExpenditure(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
+    humanitarian = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    investment = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    car_maintenance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    bank_charges = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
     remarks = models.TextField(
         blank=True
     )

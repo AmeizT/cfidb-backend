@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 #     DEBUG = False
 
 DEBUG = True
-    
+
   
 if not DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
@@ -117,7 +117,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'honeste.wsgi.application'
 
 
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

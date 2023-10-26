@@ -4,7 +4,8 @@ from apps.users.views import (
     CustomTokenObtainPairView,
     RetrieveUserView,
     CreateUserView, 
-    UniqueUserCheckView
+    UniqueUserCheckView, 
+    UserView
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -16,6 +17,7 @@ from rest_framework import urlpatterns
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
+router.register(r'auth/user-church', UserView, basename="user_church")
 router.register(r'auth/signup', CreateUserView, basename="signup")
 router.register(r'auth/user', RetrieveUserView, basename='user')
 router.register(r'auth/account', AccountView, basename="account")

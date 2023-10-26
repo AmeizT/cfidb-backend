@@ -3,7 +3,7 @@ import random
 from PIL import Image
 from decimal import Decimal
 from django.db import models
-from apps.users.utils import avatarURL
+from apps.users.utils import avatarURL, user_avatar_url
 from django.db.models.expressions import Value
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
@@ -78,8 +78,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         blank=True
     )
+    churches = models.ManyToManyField(
+        "churches.Church",
+        related_name='branches', 
+        blank=True
+    )
     avatar = models.ImageField( 
-        upload_to=avatarURL, 
+        upload_to=user_avatar_url, 
         null=True, 
         blank=True
     )
@@ -107,14 +112,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         ordering = ['-created_at']
         
         
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        if self.avatar:
-            user_image = Image.open(self.avatar)
-            if user_image.height > 400 or user_image.width > 400:
-                output_size = (400, 400)
-                user_image.thumbnail(output_size)
-                user_image.save(self.avatar.path)
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     if self.avatar:
+    #         user_image = Image.open(self.avatar)
+    #         if user_image.height > 400 or user_image.width > 400:
+    #             output_size = (400, 400)
+    #             user_image.thumbnail(output_size)
+    #             user_image.save(self.avatar.path)
         
         
     def __str__(self):

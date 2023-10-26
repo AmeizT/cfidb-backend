@@ -8,7 +8,8 @@ from apps.users.serializers import (
     ListUserSerializer,
     AccountSerializer,
     UniqueUserCheckSerializer,
-    CreateUserSerializer
+    CreateUserSerializer,
+    UserSerializer,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -56,11 +57,17 @@ class RetrieveUserView(viewsets.ModelViewSet):
         return self.retrieve(request, *args, **kwargs)
     
 
-# class CreateUserView(viewsets.ModelViewSet):
-#     permission_classes = [permissions.AllowAny]
-#     queryset = User.objects.all()
-#     serializer_class = ListUserSerializer
-#     http_method_names = ['post', 'put', 'patch']
+class UserView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get', 'put', 'patch']
+    
+    def get_object(self):
+        return self.request.user
+
+    def list(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
     
     
     

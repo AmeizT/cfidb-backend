@@ -55,6 +55,14 @@ class ExpenditureView(viewsets.ModelViewSet):
         return Expenditure.objects.filter(church=self.request.user.church)  # type: ignore
     
     
+    # def get_queryset(self):
+    #     user = self.request.user
+
+    #     churches = user.churches.all() # type: ignore
+
+    #     return Expenditure.objects.filter(church__in=churches)
+    
+    
 class FixedExpenditureView(viewsets.ModelViewSet):
     queryset = FixedExpenditure.objects.all()
     serializer_class = FixedExpenditureSerializer
