@@ -22,6 +22,16 @@ class Attendance(models.Model):
     church = models.ForeignKey(
         Church, on_delete=models.CASCADE, related_name="attendance"
     )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="attendance_editor", 
+        blank=True, 
+        null=True
+    )
+    preacher = models.CharField(max_length=255, blank=True)
+    sermon = models.TextField(blank=True)
+    scriptures = models.TextField(blank=True)
     sunday = models.BigIntegerField(default=0)
     friday = models.BigIntegerField(default=0)
     outreach = models.BigIntegerField(default=0)
@@ -43,9 +53,6 @@ class Attendance(models.Model):
     def __str__(self):
         return f"{self.church}"
     
-    
-
-
 
 class Member(models.Model):
     member_id = models.UUIDField(
@@ -153,8 +160,7 @@ class Member(models.Model):
         # Save the member if no duplicate entries found
         super(Member, self).save(*args, **kwargs)
         
-        
-        
+                
 class Kindred(models.Model):
     member_id = models.UUIDField(
         default=uuid.uuid4, 
@@ -189,9 +195,11 @@ class Kindred(models.Model):
     )
     membersince = models.DateField()
     editor = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE, 
-        related_name="kindred_creator",
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="kindred_editor", 
+        blank=True, 
+        null=True
     )
     avatar_fallback = models.CharField(
         max_length=24, 
@@ -232,6 +240,13 @@ class Tally(models.Model):
         Church,
         on_delete=models.CASCADE, 
         related_name="member_branch"
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="tally_editor", 
+        blank=True, 
+        null=True
     )
     members = models.ManyToManyField(Member, blank=True)
     service = models.CharField(
@@ -291,7 +306,7 @@ class AttendanceType(Enum):
     BAPTIZED = "Baptized"
     REPENTED = "Repented"
 
-# In your ChurchAttendance model, use the enum values for choices
+
 class ChurchAttendance(models.Model):
     church = models.ForeignKey(
         Church, on_delete=models.CASCADE, related_name="church_attendance"
@@ -333,7 +348,7 @@ class Homecell(models.Model):
     class Meta:
         verbose_name = "homecell"
         verbose_name_plural = "homecells"
-        ordering = ["-created_at"]
+        ordering = ["group_name"]
 
     def __str__(self):
         return f"{self.group_name}"

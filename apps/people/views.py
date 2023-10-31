@@ -1,13 +1,16 @@
 from apps.people.serializers import (
     AttendanceSerializer,
     AttendanceRegisterSerializer,
+    CreateHomecellSerializer,
     CreateKindredSerializer,
+    CreateTallySerializer,
     HCAttendanceSerializer,
     HomecellSerializer,
     KindredSerializer,
     MemberSerializer,
     TestimonySerializer,
     TallySerializer,
+    
 )
 from django.shortcuts import render
 from rest_framework.response import Response
@@ -49,9 +52,19 @@ class AttendanceRegisterView(viewsets.ModelViewSet):
         return AttendanceRegister.objects.filter(branch=self.request.user.church)  # type: ignore
 
 
-class HomeCellView(viewsets.ModelViewSet):
+class HomecellView(viewsets.ModelViewSet):
     queryset = Homecell.objects.all()
     serializer_class = HomecellSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Homecell.objects.filter(church=self.request.user.church)  # type: ignore
+    
+    
+
+class CreateHomecellView(viewsets.ModelViewSet):
+    queryset = Homecell.objects.all()
+    serializer_class = CreateHomecellSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
@@ -107,6 +120,16 @@ class MemberView(viewsets.ModelViewSet):
 class TallyView(viewsets.ModelViewSet):
     queryset = Tally.objects.all()
     serializer_class = TallySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+
+    def get_queryset(self):
+        return Tally.objects.filter(branch=self.request.user.church)  # type: ignore
+    
+    
+class CreateTallyView(viewsets.ModelViewSet):
+    queryset = Tally.objects.all()
+    serializer_class = CreateTallySerializer
     permission_classes = [permissions.IsAuthenticated]
     
 

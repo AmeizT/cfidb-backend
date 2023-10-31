@@ -214,6 +214,11 @@ class FixedExpenditure(models.Model):
         upload_to=fixed_expenditure_receipt_path,
         blank=True
     )
+    total = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
     timestamp = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -221,7 +226,11 @@ class FixedExpenditure(models.Model):
     class Meta:
         verbose_name = 'Fixed Expenditure'
         verbose_name_plural = 'Fixed Expenditures'
-        ordering = ['-created_at']
+        ordering = ['timestamp']
+        
+    def save(self, *args, **kwargs):
+        self.total = self.central_account_remittance + self.rent + self.water + self.electricity + self.wages + self.bank_charges + self.car_maintenance + self.fuel + self.humanitarian + self.insurance + self.security + self.telephone + self.internet + self.investment
+        super().save(*args, **kwargs)
 
 
 
@@ -231,21 +240,11 @@ class Income(models.Model):
         on_delete=models.CASCADE,
         related_name='income'
     )
-    entry_date = models.DateTimeField(
+    timestamp = models.DateTimeField(
         blank=True,
         null=True
     )
-    tithes = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
     offering = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    pledges = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
@@ -295,7 +294,7 @@ class Income(models.Model):
         
         
     def save(self, *args, **kwargs):
-        self.sum = self.tithes + self.offering + self.pledges + self.thanksgiving + self.fundraising + self.remittance
+        self.sum = self.offering + self.thanksgiving + self.fundraising + self.remittance
         # expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
         # self.expenses = expenses['total__sum'] or Decimal('0.00')
         # self.balance = self.sum - self.expenses

@@ -9,32 +9,19 @@ from apps.people.models import (
     Tally, 
     Testimony
 )
+from apps.churches.serializers import ChurchSerializer
 
 class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = '__all__'
         
-
-class HomecellSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Homecell
-        fields = '__all__'
-        
-        
+           
 class TestimonySerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimony
         fields = '__all__'
         
-        
-        
-class TallySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tally
-        fields = '__all__'        
-
-
 class HCAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HCAttendance
@@ -105,10 +92,38 @@ class KindredSerializer(serializers.ModelSerializer):
             'updated_at',
         )
 
-        
-                
+              
 class AttendanceRegisterSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
     class Meta:
         model = AttendanceRegister
         fields = ['id', 'branch', 'member', 'attendance_date', 'created_at', 'updated_at']
+        
+        
+        
+class HomecellSerializer(serializers.ModelSerializer):
+    members = MemberSerializer(many=True)
+    church = ChurchSerializer()
+    
+    class Meta:
+        model = Homecell
+        fields = ['church', 'group_name', 'leader', 'description', 'members', 'created_at', 'updated_at']
+        
+        
+class CreateHomecellSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Homecell
+        fields = '__all__'   
+        
+ 
+class CreateTallySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tally
+        fields = '__all__'  
+        
+        
+class TallySerializer(serializers.ModelSerializer):
+    members = MemberSerializer(many=True)
+    class Meta:
+        model = Tally
+        fields = ['branch', 'editor', 'members', 'service', 'timestamp', 'created_at', 'updated_at'] 
