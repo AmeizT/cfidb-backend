@@ -1,7 +1,7 @@
 {
     "version": 2,
     "builds": [{
-        "src": "honeste/wsgi.py",
+        "src": "cfidb/wsgi.py",
         "use": "@vercel/python",
         "config": { 
             "maxLambaSize": "15mb",
@@ -11,7 +11,12 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "honeste/wsgi.py"
+            "dest": "cfidb/wsgi.py"
         }
     ]
 }
+
+
+
+
+
