@@ -42,6 +42,8 @@ class CustomUserManager(BaseUserManager):
         user.is_overseer=False
         user.is_pastor=False
         user.is_secretary=False
+        user.is_president=False
+        user.is_senior_pastor=False
         user.save(using=self._db)
         return user
     

@@ -126,6 +126,7 @@ class ListUserSerializer(serializers.ModelSerializer):
             'avatar', 
             'avatar_fallback',  
             'is_admin',
+            'is_overseer',
             'is_pastor',
             'is_secretary',
             'created_at', 

@@ -342,6 +342,7 @@ class Homecell(models.Model):
         blank=True, 
         null=True
     )
+    is_archived = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -359,7 +360,7 @@ class HCAttendance(models.Model):
         Church, on_delete=models.CASCADE, related_name="hc_church"
     )
     homecell = models.ForeignKey(
-        Homecell, on_delete=models.CASCADE, related_name="hc_attendance", null=True
+        Homecell, on_delete=models.CASCADE, related_name="homecell_attendance", null=True
     )
     editor = models.ForeignKey(
         User, 
@@ -389,7 +390,7 @@ class HCAttendance(models.Model):
     class Meta:
         verbose_name = "Homecell Attendance"
         verbose_name_plural = "Homecell Attendance"
-        ordering = ["-created_at"]
+        ordering = ["start_time"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
