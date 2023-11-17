@@ -102,6 +102,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_pastor = models.BooleanField(default=False)
     is_secretary = models.BooleanField(default=False)
     is_overseer = models.BooleanField(default=False)
+    is_president = models.BooleanField(default=False)
+    is_senior_pastor = models.BooleanField(default=False)
     
     objects = CustomUserManager()
 
@@ -113,17 +115,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'users'
         ordering = ['-created_at']
         
-        
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     if self.avatar:
-    #         user_image = Image.open(self.avatar)
-    #         if user_image.height > 400 or user_image.width > 400:
-    #             output_size = (400, 400)
-    #             user_image.thumbnail(output_size)
-    #             user_image.save(self.avatar.path)
-        
-        
+                
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 

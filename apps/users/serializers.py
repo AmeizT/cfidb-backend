@@ -83,19 +83,7 @@ class ChurchSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = (
-            'user', 
-            'type',
-            'intervals', 
-            'sub_total',
-            'discount',
-            'amount_paid',
-            'amount_due',
-            'is_premium_active',
-            'expires',
-            'created',
-            'updated', 
-    )
+        fields = '__all__'
  
   
 class PasswordChangeSerializer(serializers.Serializer):
@@ -129,6 +117,8 @@ class ListUserSerializer(serializers.ModelSerializer):
             'is_overseer',
             'is_pastor',
             'is_secretary',
+            'is_president',
+            'is_senior_pastor',
             'created_at', 
             'updated_at',
             'account',

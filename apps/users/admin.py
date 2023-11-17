@@ -55,10 +55,11 @@ class UserAdmin(BaseUserAdmin):
         'last_name', 
         'username', 
         'email', 
-        
         'is_overseer',
         'is_pastor',
         'is_secretary',
+        'is_president',
+        'is_senior_pastor',
         'last_login', 
         'created_at', 
         'updated_at',
@@ -69,6 +70,8 @@ class UserAdmin(BaseUserAdmin):
         'is_pastor', 
         'is_secretary',
         'is_overseer',
+        'is_president',
+        'is_senior_pastor',
     )
     fieldsets = (
         ('Authentication', {
@@ -94,6 +97,8 @@ class UserAdmin(BaseUserAdmin):
                 'is_pastor', 
                 'is_secretary',
                 'is_overseer',
+                'is_president',
+                'is_senior_pastor',
             ]
         }),
     )
@@ -117,24 +122,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ()
     filter_horizontal = ()
 
-
-
-class AccountAdmin(admin.ModelAdmin):
-    list_display = [
-        'user', 
-        'type',
-        'intervals', 
-        'sub_total',
-        'discount',
-        'amount_paid',
-        'amount_due',
-        'is_premium_active',
-        'expires',
-        'created',
-        'updated', 
-    ]
-
-
 admin.site.register(User, UserAdmin)
-admin.site.register(Account, AccountAdmin)
+admin.site.register(Account)
 
