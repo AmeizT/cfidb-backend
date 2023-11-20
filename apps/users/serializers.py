@@ -26,16 +26,62 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 
+# class CreateUserSerializer(serializers.ModelSerializer):
+#     password = CharField(style={
+#         'input_type': 'password'
+#     })
+#     re_password = CharField(
+#         style={'input_type': 'password'}, 
+#         label="Confirm Password",
+#         write_only=True
+#     )
+    
+#     class Meta:
+#         model = User
+#         fields = (
+#             'first_name',
+#             'last_name',
+#             'email',
+#             'church',
+#             'password',
+#             're_password',
+#         )
+#         extra_kwargs = {
+#             'password': {'write_only': True},
+#             're_password': {'write_only': True}
+#         }
+
+#     def create(self, validated_data):
+#         user = User.objects.create_user(
+#             first_name=validated_data['first_name'],
+#             last_name=validated_data['last_name'],
+#             email=validated_data['email'],
+#         )
+#         password = validated_data['password']
+#         re_password = validated_data['re_password']
+
+#         if password != re_password:
+#             raise serializers.ValidationError('Passwords do not match')
+#         elif len(password) < 8 or len(re_password) < 8:
+#             raise serializers.ValidationError(
+#                 'Password must contain at least 8 characters')
+
+#         user.set_password(password)
+#         user.save()
+#         return user
+
+
 class CreateUserSerializer(serializers.ModelSerializer):
-    password = CharField(style={
-        'input_type': 'password'
-    })
-    re_password = CharField(
-        style={'input_type': 'password'}, 
+    password = serializers.CharField(
+        style={'input_type': 'password'},
+        write_only=True,
+    )
+    re_password = serializers.CharField(
+        style={'input_type': 'password'},
         label="Confirm Password",
         write_only=True
     )
-    
+
     class Meta:
         model = User
         fields = (
@@ -46,26 +92,30 @@ class CreateUserSerializer(serializers.ModelSerializer):
             'password',
             're_password',
         )
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True},
+            're_password': {'write_only': True}
+        }
 
-    # def create(self, validated_data):
-    #     user = User.objects.create_user(
-    #         first_name=validated_data['first_name'],
-    #         last_name=validated_data['last_name'],
-    #         email=validated_data['email'],
-    #     )
-    #     password = validated_data['password']
-    #     re_password = validated_data['re_password']
+    def create(self, validated_data):
+        password = validated_data['password']
+        re_password = validated_data['re_password']
 
-    #     if password != re_password:
-    #         raise serializers.ValidationError('Passwords do not match')
-    #     elif len(password) < 8 or len(re_password) < 8:
-    #         raise serializers.ValidationError(
-    #             'Password must contain at least 8 characters')
+        if password != re_password:
+            raise serializers.ValidationError('Passwords do not match')
+        elif len(password) < 8:
+            raise serializers.ValidationError(
+                'Password must contain at least 8 characters')
 
-    #     user.set_password(password)
-    #     user.save()
-    #     return user
+        user = User.objects.create_user(
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            email=validated_data['email'],
+            password=password,  # Use the validated password here
+        )
+
+        return user
+
   
 
 class UserSerializer(serializers.ModelSerializer):

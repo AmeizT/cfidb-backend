@@ -21,16 +21,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class CreateUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAdminUser]
     
-    
-    # def post(self, request):
-    #     serializer = UserSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         user = serializer.save()
-    #         if user:
-    #             return Response({'message': 'created'}, status=status.HTTP_201_CREATED)
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
       
     
 class UniqueUserCheckView(viewsets.ModelViewSet):
@@ -43,12 +40,14 @@ class UniqueUserCheckView(viewsets.ModelViewSet):
 class AccountView(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
-    permission_classes = [permissions.AllowAny] 
+    permission_classes = [permissions.IsAuthenticated] 
       
         
 class RetrieveUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['head', 'get', 'put', 'patch']
     
     def get_object(self):
         return self.request.user
@@ -61,7 +60,7 @@ class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'put', 'patch']
+    http_method_names = ['head', 'get', 'put', 'patch']
     
     def get_object(self):
         return self.request.user

@@ -11,13 +11,16 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, username=str(uuid.uuid4()), password=None):
+    def create_user(self, first_name, last_name, email, username=None, password=None):
         if not first_name:
             raise ValueError('Users must have a first name')
         if not last_name:
             raise ValueError('Users must have a last name')
         if not email:
             raise ValueError('Users must have an email address')
+
+        if username is None:
+            username = str(uuid.uuid4())
     
         user = self.model(
             email=self.normalize_email(email),
@@ -29,7 +32,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user   
 
-    def create_superuser(self, first_name, last_name, email, username=str(uuid.uuid4()), password=None):
+    def create_superuser(self, first_name, last_name, email, username=None, password=None):
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
