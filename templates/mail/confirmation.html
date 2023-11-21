@@ -8,11 +8,11 @@
 {% blocktrans %}Hello {{ user }},{% endblocktrans %}
 
 {% blocktrans %}
-Your account has been created at {{ site_name}} and your temporary password is cfidb2023. You are required to reset your temporary password before logging into your new account. {%endblocktrans %}
+Your {{ site_name }} account has been created successfully, and your temporary password is 'cfidb2023.' Before logging in, please reset your temporary password.{% endblocktrans %}
 
 {{ protocol }}://{{ domain }}/{{ url|safe }}
 
-{% trans "If you require any assistance navigating through the database or wish to swap assemblies, please let me know." %}
+{% trans "If you require my assistance to reset your temporary password or if the assigned workspace is incorrect please contact me on this email or WhatsApp." %}
 
 {% trans "Blessings," %}
 
@@ -28,26 +28,22 @@ Your account has been created at {{ site_name}} and your temporary password is c
 </style>
 <main style="width: 100%; display: flex; margin: 0 auto;">
     <div style="width: 100%; margin: 0 auto;">
-        <!-- <h1 style="text-align: center; font-size: 24px; padding:24px 0; font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-weight:200;">
-            Welcome aboard the CFI Database!
-        </h1> -->
-
         <p style="font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 18px; color: #565a5c">
             {% blocktrans %}Hello {{ user }},{% endblocktrans %}
         </p>
 
         <p style="font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 18px; color: #565a5c">
-            {% blocktrans %}Your account has been created at {{ site_name}}, and your temporary password is <span style="color: #1155cc">cfidb2023</span>. You are required to reset your temporary password before logging into your new account.{% endblocktrans %}
+            {% blocktrans %}Your {{ site_name}} account has been created successfully, and your temporary password is <span style="color: #1155cc">cfidb2023</span>. Before logging in, please reset your temporary password.{% endblocktrans %}
         </p>
 
         <p style="padding: 16px 0; margin: 0 auto;">
-            <a href="{{ protocol }}://{{ domain }}/auth/reset/password/" style="margin: 0 auto; padding: 10px 16px 14px 16px; border-radius: 3px; text-decoration: none; font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 16px; font-weight: bold; color: #fff; background: #6c79ff;">
+            <a href="{{ protocol }}://{{ domain }}/auth/reset/password/" style="margin: 0 auto; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 16px; font-weight: bold; color: #fff; background: #6c79ff;">
                 Reset password
             </a>
         </p>
 
         <p style="font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 18px; color: #565a5c">
-            If you require any assistance navigating through the database or wish to swap assemblies, please let me know.
+            If you require my assistance to reset your temporary password or if the assigned workspace is incorrect please contact me on this email or WhatsApp.
         </p>
 
         <p style="font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 18px; color: #565a5c">
@@ -70,7 +66,7 @@ Your account has been created at {{ site_name}} and your temporary password is c
 
                 <br />
 
-                If you'd like my assistance to reset your temporary password, <a style="color: #1155cc" href="https://api.whatsapp.com/send/?phone=26775577933&text&type=phone_number&app_absent=0">let me know</a>.
+                For quick assistance with password reset, please contact me <a style="color: #1155cc" href="https://api.whatsapp.com/send/?phone=26775577933&text&type=phone_number&app_absent=0">here</a>.
             </div>
 
             <p style="font-family: Helvetica Neue,Helvetica,Lucida Grande,Roboto,Arial,Times New Roman,sans-serif; font-size: 12px; color: #abadae">
