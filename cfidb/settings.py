@@ -13,6 +13,10 @@ if DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
 else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
+
+
+print(f"DEBUG = {DEBUG}")
+
        
 if DEBUG:
    ALLOWED_HOSTS = [
@@ -25,6 +29,7 @@ else:
         '.vercel.app', 
         'cfi.church', 
         'honeste-backend.vercel.app'
+        'cfidb-backend.vercel.app'
     ]
     
 
@@ -222,7 +227,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
-
 
 if DEBUG:
     DOMAIN = 'localhost:3000'
