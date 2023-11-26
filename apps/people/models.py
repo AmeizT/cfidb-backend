@@ -185,8 +185,10 @@ class Kindred(models.Model):
     )
     guardian = models.ForeignKey(
         Member,
-        on_delete=models.CASCADE,
-        related_name="guardian"
+        on_delete=models.SET_NULL, 
+        related_name="guardian",
+        blank=True, 
+        null=True
     )
     guardian_relationship = models.CharField(
         max_length=255, 
