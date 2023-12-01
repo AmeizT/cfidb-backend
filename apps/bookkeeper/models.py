@@ -301,7 +301,7 @@ class Income(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Finance: {self.balance}'
+        return f'{self.church.name}'
     
     
     
