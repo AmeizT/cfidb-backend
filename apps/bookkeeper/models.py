@@ -290,7 +290,7 @@ class Income(models.Model):
     class Meta:
         verbose_name = 'income'
         verbose_name_plural = 'income'
-        ordering = ['-created_at']
+        ordering = ['timestamp']
         
         
     def save(self, *args, **kwargs):

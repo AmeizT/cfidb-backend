@@ -17,13 +17,7 @@ class StrategyLegacy(models.Model):
         on_delete=models.CASCADE,
         related_name='strategy_legacy'
     )
-    coordinator = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        related_name='strategy_coordinator', 
-        blank=True, 
-        null=True
-    )
+    coordinator = models.CharField(max_length=255, blank=True)
     title = models.CharField(
         max_length=255
     )
@@ -40,6 +34,7 @@ class StrategyLegacy(models.Model):
         unique=True, 
         blank=True
     )
+    color = models.CharField(max_length=12, blank=True)
     timestamp = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
