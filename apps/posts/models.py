@@ -68,9 +68,9 @@ class PostImage(models.Model):
     )
     image = ProcessedImageField(
         upload_to=post_images_path,
-        processors=[ResizeToFill(1080, 1920)], # type: ignore
+        processors=[ResizeToFill(1080, 1350)], # type: ignore
         format='WEBP', # type: ignore
-        options={'quality': 80} # type: ignore
+        options={'quality': 100} # type: ignore
     )
     alt = models.CharField(
         max_length=255,

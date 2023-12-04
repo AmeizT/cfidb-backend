@@ -15,9 +15,6 @@ else:
     SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
 
 
-print(f"DEBUG = {DEBUG}")
-
-       
 if DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
@@ -78,6 +75,7 @@ INSTALLED_APPS = [
     'apps.resources',
     'apps.posts',
     'apps.strategic',
+    'apps.forum',
 ]
 
 MIDDLEWARE = [

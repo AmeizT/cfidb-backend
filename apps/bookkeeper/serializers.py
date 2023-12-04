@@ -57,6 +57,7 @@ class TitheSerializer(serializers.ModelSerializer):
             'amount', 
             'payment_method', 
             'receipt', 
+            'timestamp',
             'created_at', 
             'updated_at'
         ]

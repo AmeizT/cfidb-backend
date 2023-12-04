@@ -147,7 +147,6 @@ class PasswordChangeSerializer(serializers.Serializer):
         
     
 class ListUserSerializer(serializers.ModelSerializer):
-    account = AccountSerializer(many=True)
     churches = ChurchSerializer(many=True)
     
     class Meta:
@@ -171,7 +170,6 @@ class ListUserSerializer(serializers.ModelSerializer):
             'is_senior_pastor',
             'created_at', 
             'updated_at',
-            'account',
         )  
         
         

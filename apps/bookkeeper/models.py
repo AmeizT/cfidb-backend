@@ -45,8 +45,10 @@ class Tithe(models.Model):
     )
     member = models.ForeignKey(
         Member, 
-        on_delete=models.CASCADE,
-        related_name='tither'
+        on_delete=models.SET_NULL, 
+        related_name='tither',
+        blank=True, 
+        null=True
     )
     amount = models.DecimalField(
         max_digits=10, 
@@ -70,11 +72,11 @@ class Tithe(models.Model):
     class Meta:
         verbose_name = 'tithe'
         verbose_name_plural = 'tithes'
-        ordering = ['-created_at']
+        ordering = ['-timestamp']
         
         
     def __str__(self):
-        return f'{self.member.first_name} {self.member.last_name} - {self.amount}'
+        return f'{self.branch.name}'
     
 
 class Pledge(models.Model):    
