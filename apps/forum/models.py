@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
@@ -48,12 +49,18 @@ class Forum(models.Model):
             
     def save(self, *args, **kwargs): 
         self.increase_views() 
-                       
+
         if not self.slug:
             base_slug = slugify(self.title)
-            slug_date = self.created_at.strftime('%Y-%m-%d')
+            
+            # Check if created_at is not None before formatting
+            slug_date = (
+                self.created_at.strftime('%Y-%m-%d') if self.created_at else timezone.now().strftime('%Y-%m-%d')
+            )
+            
             self.slug = f"{slug_date}-{base_slug}"
             counter = 1
+            
             while Forum.objects.filter(slug=self.slug).exists():
                 self.slug = f"{base_slug}-{counter}"
                 counter += 1

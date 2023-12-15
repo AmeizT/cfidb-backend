@@ -119,7 +119,7 @@ class Strategy(models.Model):
             base_slug = slugify(self.title)
             self.slug = base_slug
             counter = 1
-            while StrategyLegacy.objects.filter(slug=self.slug).exists():
+            while Strategy.objects.filter(slug=self.slug).exists():
                 self.slug = f'{base_slug}-{counter}'
                 counter += 1
 
