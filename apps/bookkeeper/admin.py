@@ -6,6 +6,8 @@ from apps.bookkeeper.models import (
     Income,
     Payroll,
     Pledge,
+    Remittance,
+    ShortfallPayment,
     Tithe
 )
 
@@ -15,4 +17,6 @@ admin.site.register(FixedExpenditure)
 admin.site.register(Income)
 admin.site.register(Payroll)
 admin.site.register(Pledge)
+admin.site.register(Remittance)
+admin.site.register(ShortfallPayment)
 admin.site.register(Tithe)

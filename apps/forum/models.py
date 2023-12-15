@@ -9,6 +9,7 @@ from apps.forum.helpers import forum_image_path
 class ForumCategory(models.TextChoices):
     ATN = 'Attendance', 'Attendance'
     AUT = 'Authentication', 'Authentication'
+    CLG = "Changelog", "Changelog"
     DEM = 'Demographics', 'Demographics'
     FIN = 'Finance', 'Finance'
     GEN = 'General', 'General'
@@ -50,7 +51,8 @@ class Forum(models.Model):
                        
         if not self.slug:
             base_slug = slugify(self.title)
-            self.slug = base_slug
+            slug_date = self.created_at.strftime('%Y-%m-%d')
+            self.slug = f"{slug_date}-{base_slug}"
             counter = 1
             while Forum.objects.filter(slug=self.slug).exists():
                 self.slug = f"{base_slug}-{counter}"

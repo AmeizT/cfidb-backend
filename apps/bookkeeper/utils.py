@@ -45,4 +45,19 @@ def pledge_receipt_path(instance, filename):
         instance.member.last_name, 
         filename
     )
+
+
+def remittance_receipt_path(instance, filename):
+    return 'cfidb/bookkeeper/{0}/remittances/{1}-{2}/'.format(
+        instance.branch.name, 
+        instance.timestamp, 
+        filename
+    )
+
+def shortfall_receipt_path(instance, filename):
+    return 'cfidb/bookkeeper/{0}/remit-shortfalls/{1}-{2}/'.format(
+        instance.remittance.branch.name, 
+        instance.timestamp,  
+        filename
+    )
     

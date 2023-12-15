@@ -15,11 +15,15 @@ from apps.bookkeeper.utils import (
     fixed_expenditure_receipt_path,
     pledge_receipt_path,
     tithe_receipt_path, 
+    remittance_receipt_path,
+    shortfall_receipt_path
 )
 from django.db.models import Sum
 from apps.projects.models import Project
 from django.db.models.functions import TruncMonth
 from django.core.exceptions import ObjectDoesNotExist
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill, SmartResize
 
 
 class PaymentMethod(models.TextChoices):
@@ -124,6 +128,112 @@ class Pledge(models.Model):
     def __str__(self):
         return f'{self.member.first_name} {self.member.last_name} - {self.amount}'
 
+
+class Remittance(models.Model):    
+    branch = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='remitter'
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="remittance_editor", 
+        blank=True, 
+        null=True
+    )
+    amount_due = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    amount_paid = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    shortfall = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices, 
+        default=PaymentMethod.BANK, 
+    )
+    attachment = models.FileField(
+        upload_to=remittance_receipt_path, 
+        blank=True, 
+        null=True
+    )
+    period = models.DateField(blank=False, null=True)
+    timestamp = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'remittance'
+        verbose_name_plural = 'remittances'
+        ordering = ['timestamp']
+           
+    def __str__(self):
+        return f'{self.branch.name} for {self.timestamp}'
+    
+    def calculate_shortfall_amount(self):
+        self.shortfall = self.amount_due - self.amount_paid
+        if self.shortfall < 0:
+            self.shortfall = Decimal(0.00)
+
+    def save(self, *args, **kwargs):
+        self.calculate_shortfall_amount()
+        super().save(*args, **kwargs)
+    
+    @property
+    def has_shortfall(self):
+        return self.shortfall > 0
+    
+
+class ShortfallPayment(models.Model):
+    branch = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE,
+        related_name='shortfall_branch'
+    )
+    remittance = models.ForeignKey(
+        Remittance, 
+        on_delete=models.CASCADE, 
+        related_name='shortfall_payments'
+    )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="shortfall_editor", 
+        blank=True, 
+        null=True
+    )
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0.00))
+    payment_method = models.CharField(
+        max_length=10,
+        choices=PaymentMethod.choices, 
+        default=PaymentMethod.BANK, 
+    )
+    attachment = models.FileField(
+        upload_to=shortfall_receipt_path, 
+        blank=True, 
+        null=True
+    )
+    timestamp = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Shortfall Payment'
+        verbose_name_plural = 'Shortfall Payments'
+        ordering = ['-timestamp']
+
+    def __str__(self):
+        return f'{self.remittance.branch.name} for {self.timestamp}'
 
 
 class FixedExpenditure(models.Model):
@@ -387,14 +497,20 @@ class Asset(models.Model):
         related_name='asset', 
         on_delete=models.CASCADE
     )
-    
     asset_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
     )
+    editor = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="assets_editor", 
+        blank=True, 
+        null=True
+    )
     purchase_date = models.DateField()
-    name = models.CharField(max_length=255)
+    asset_name = models.CharField(max_length=255)
     asset_group = models.CharField(
         max_length=255, 
         choices=ASSET_TYPE_CHOICES
@@ -416,10 +532,11 @@ class Asset(models.Model):
         max_length=255, 
         choices=CONDITION_CHOICES
     )
-    image = models.ImageField(
-        upload_to=asset_image_path, 
-        blank=True, 
-        null=True
+    image = ProcessedImageField(
+        upload_to=asset_image_path,
+        # processors=[SmartResize(width=1080, height=1350)],
+        format='WEBP', # type: ignore
+        options={'quality': 70} # type: ignore
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -430,7 +547,7 @@ class Asset(models.Model):
         ordering = ['-created_at']
         
     def __str__(self):
-        return self.name
+        return self.asset_name
 
 
 class Expenditure(models.Model):

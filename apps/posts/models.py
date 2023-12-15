@@ -2,7 +2,7 @@ from django.db import models
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
-from imagekit.processors import ResizeToFill
+from imagekit.processors import ResizeToFill, SmartResize
 from imagekit.models import ProcessedImageField
 from apps.posts.utils import post_images_path, post_image_url
 
@@ -68,9 +68,9 @@ class PostImage(models.Model):
     )
     image = ProcessedImageField(
         upload_to=post_images_path,
-        processors=[ResizeToFill(1080, 1350)], # type: ignore
+        # processors=[SmartResize(width=1080, height=1350)],
         format='WEBP', # type: ignore
-        options={'quality': 100} # type: ignore
+        options={'quality': 70} # type: ignore
     )
     alt = models.CharField(
         max_length=255,

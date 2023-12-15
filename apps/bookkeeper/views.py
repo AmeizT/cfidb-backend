@@ -7,6 +7,9 @@ from apps.bookkeeper.serializers import (
     PayrollSerializer,
     PledgeSerializer,
     TitheSerializer,
+    RemittanceSerializer,
+    RemittanceDataSerializer,
+    ShortfallPaymentSerializer,
 )
 from apps.bookkeeper.models import (
     Asset, 
@@ -15,6 +18,8 @@ from apps.bookkeeper.models import (
     Income, 
     Payroll, 
     Pledge, 
+    Remittance,
+    ShortfallPayment,
     Tithe
 )
 from django.shortcuts import render
@@ -34,14 +39,14 @@ class AssetView(viewsets.ModelViewSet):
     def get_queryset(self):
         return Asset.objects.filter(church=self.request.user.church)  # type: ignore
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = AssetSerializer(
-            instance, data=request.data, partial=kwargs.pop("partial", False)
-        )
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+    # def update(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = AssetSerializer(
+    #         instance, data=request.data, partial=kwargs.pop("partial", False)
+    #     )
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_update(serializer)
+    #     return Response(serializer.data)
 
 
 class ExpenditureView(viewsets.ModelViewSet):
@@ -91,7 +96,7 @@ class PayrollView(viewsets.ModelViewSet):
     pagination_class = StandardPagination
 
     def get_queryset(self):
-        return Asset.objects.filter(church=self.request.user.church)  # type: ignore
+        return Payroll.objects.filter(church=self.request.user.church)  # type: ignore
   
     
 class PledgeView(viewsets.ModelViewSet):
@@ -102,8 +107,35 @@ class PledgeView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Pledge.objects.filter(branch=self.request.user.church)  # type: ignore   
-   
     
+
+class RemittanceView(viewsets.ModelViewSet):
+    queryset = Remittance.objects.all()
+    serializer_class = RemittanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        return Remittance.objects.filter(branch=self.request.user.church)  # type: ignore
+    
+
+class RemittanceDataView(viewsets.ModelViewSet):
+    queryset = Remittance.objects.all()
+    serializer_class = RemittanceDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = StandardPagination
+
+    def get_queryset(self):
+        return Remittance.objects.filter(branch=self.request.user.church)  # type: ignore
+    
+    
+class ShortfallPaymentView(viewsets.ModelViewSet):
+    queryset = ShortfallPayment.objects.all()
+    serializer_class = ShortfallPaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['post', 'put', 'patch', 'head']
+
+     
 class CreateTitheView(viewsets.ModelViewSet):
     queryset = Tithe.objects.all()
     serializer_class = CreateTitheSerializer
@@ -132,9 +164,6 @@ class TitheView(viewsets.ModelViewSet):
         return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore
 
 
-
-
-
 class AssetAdminView(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
@@ -142,6 +171,7 @@ class AssetAdminView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["church__name"]
     pagination_class = StandardPagination
+    parser_classes = [MultiPartParser, FormParser]
 
 
 class IncomeAdminView(viewsets.ModelViewSet):

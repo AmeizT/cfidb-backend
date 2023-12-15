@@ -171,6 +171,17 @@ class ListUserSerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at',
         )  
+
+
+class MinifiedUserSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name', 
+            'last_name', 
+            'username', 
+        ) 
         
         
 class UniqueUserCheckSerializer(serializers.ModelSerializer):
