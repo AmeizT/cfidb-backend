@@ -536,7 +536,9 @@ class Asset(models.Model):
         upload_to=asset_image_path,
         # processors=[SmartResize(width=1080, height=1350)],
         format='WEBP', # type: ignore
-        options={'quality': 70} # type: ignore
+        options={'quality': 70}, 
+        blank=True,
+        null=True,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
