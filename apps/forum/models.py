@@ -15,6 +15,7 @@ class ForumCategory(models.TextChoices):
     FIN = 'Finance', 'Finance'
     GEN = 'General', 'General'
     STR = 'Strategy', 'Strategy'
+    TMP = 'Templates', 'Templates'
     UPD = 'Updates', 'Updates'
 
 class Forum(models.Model):
