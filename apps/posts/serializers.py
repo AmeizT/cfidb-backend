@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.posts.models import Comment, Post, PostImage, Reaction
+from apps.posts.models import Comment, Post, PostImage, Like
 from apps.churches.serializers import ChurchSerializer
 from apps.users.serializers import ListUserSerializer
 
@@ -62,6 +62,7 @@ class PostSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'slug',
+            'likes',
             'views',
             'images',
             'is_private',

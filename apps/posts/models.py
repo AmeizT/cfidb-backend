@@ -2,8 +2,8 @@ from django.db import models
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
-from imagekit.processors import ResizeToFill, SmartResize
 from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill, SmartResize
 from apps.posts.utils import post_images_path, post_image_url
 
 
@@ -23,6 +23,11 @@ class Post(models.Model):
     image = models.ImageField(
         upload_to=post_image_url, 
         null=True, 
+        blank=True
+    )
+    likes = models.ManyToManyField(
+        User, 
+        related_name='liked_posts',  
         blank=True
     )
     views = models.PositiveIntegerField(default=0) 
@@ -114,36 +119,24 @@ class Comment(models.Model):
         return self.post.title
    
     
-class Reaction(models.Model):
-    REACTION_CHOICES = (
-        ('like', 'Like'),
-        ('love', 'Love'),
-        ('wow', 'Wow'),
-        ('sad', 'Sad'),
-        ('angry', 'Angry'),
-    )
-    
+class Like(models.Model): 
     post = models.ForeignKey(
         Post, 
-        related_name='reactions', 
+        related_name='post_likes', 
         on_delete=models.CASCADE
     )
-    review_author = models.ForeignKey(
+    liker = models.ForeignKey(
         User, 
         on_delete=models.CASCADE,
-        related_name='review_author'
-    )
-    reaction = models.CharField(
-        max_length=10, 
-        choices=REACTION_CHOICES
+        related_name='liker'
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'reaction'
-        verbose_name_plural = 'reactions'
-        unique_together = ('post', 'review_author', 'reaction')
+        verbose_name = 'like'
+        verbose_name_plural = 'likes'
+        unique_together = ('post', 'liker',)
         
         
     def __str__(self):

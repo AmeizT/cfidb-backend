@@ -9,8 +9,6 @@ from apps.people.views import (
     CreateKindredView,
     MemberView,
     CreateMemberView,
-    AttendanceAdminView,
-    MemberAdminView,
     TallyView,
 )
 from django.urls import path, include, re_path
@@ -27,8 +25,6 @@ router.register(r'kindred', KindredView, basename='kindred')
 router.register(r'create-kindred', CreateKindredView, basename='create_kindred')
 router.register(r'members', MemberView, basename='members')
 router.register(r'create-member', CreateMemberView, basename='create_members')
-router.register(r'attendance-tracker', AttendanceAdminView, basename='admin_attendance')
-router.register(r'members-tracker', MemberAdminView, basename='admin_members')
 router.register(r'tally', TallyView, basename='tally')
 router.register(r'create-tally', CreateTallyView, basename='tally')
 

@@ -3,10 +3,13 @@ import random
 from PIL import Image
 from decimal import Decimal
 from django.db import models
-from apps.users.utils import avatarURL, user_avatar_url
+from apps.users.choices import UserRoles
+from apps.users.utils import user_avatar_url
 from django.db.models.expressions import Value
+from imagekit.models import ProcessedImageField
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from imagekit.processors import ResizeToFill, SmartResize
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 
@@ -88,25 +91,34 @@ class User(AbstractBaseUser, PermissionsMixin):
         related_name='branches', 
         blank=True
     )
-    avatar = models.ImageField( 
-        upload_to=user_avatar_url, 
-        null=True, 
-        blank=True
+    avatar = ProcessedImageField(
+        upload_to=user_avatar_url,
+        processors=[SmartResize(width=800, height=800)],
+        format='WEBP', 
+        options={'quality': 80},
+        blank=True,
+        null=True,
     )
     avatar_fallback = models.CharField(
-        max_length=255,
+        max_length=12,
         blank=True,
+    )
+    role = models.CharField(
+        max_length=24,
+        blank=True,
+        choices=UserRoles,
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_pastor = models.BooleanField(default=False)
-    is_secretary = models.BooleanField(default=False)
-    is_overseer = models.BooleanField(default=False)
+    is_moderator = models.BooleanField(default=False)
     is_president = models.BooleanField(default=False)
     is_senior_pastor = models.BooleanField(default=False)
+    is_overseer = models.BooleanField(default=False)
+    is_pastor = models.BooleanField(default=False)
+    is_secretary = models.BooleanField(default=False)
     
     objects = CustomUserManager()
 

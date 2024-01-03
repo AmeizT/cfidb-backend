@@ -62,11 +62,19 @@ class UserView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['head', 'get', 'put', 'patch']
     
-    def get_object(self):
-        return self.request.user
+    # def get_object(self):
+    #     return self.request.user
 
-    def list(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+    # def list(self, request, *args, **kwargs):
+    #     return self.retrieve(request, *args, **kwargs)
+    
+
+class ListUsersView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['head', 'get',]
+    
     
     
     

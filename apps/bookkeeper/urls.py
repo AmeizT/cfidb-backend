@@ -1,13 +1,10 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from apps.bookkeeper.views import (
-    AssetAdminView,
     AssetView,
     CreateTitheView,
-    ExpenditureAdminView,
     ExpenditureView,
     FixedExpenditureView,
-    IncomeAdminView,
     IncomeView,
     PayrollView,
     PledgeView,
@@ -30,11 +27,6 @@ router.register(r'tithes', TitheView, basename='tithes')
 router.register(r'remittance', RemittanceView, basename='remittance')
 router.register(r'get-remittance', RemittanceDataView, basename='remittance_data')
 router.register(r'shortfall', ShortfallPaymentView, basename='shortfall')
-
-# ADMIN URLS
-router.register(r'assets-tracker', AssetAdminView, basename='admin_assets')
-router.register(r'income-tracker', IncomeAdminView, basename='admin_income')
-router.register(r'expenditure-tracker', ExpenditureAdminView, basename='admin_expenditure')
 
 urlpatterns = [
     path('', include(router.urls)),

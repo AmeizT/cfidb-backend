@@ -55,6 +55,7 @@ class UserAdmin(BaseUserAdmin):
         'last_name', 
         'username', 
         'email', 
+        'role',
         'is_overseer',
         'is_pastor',
         'is_secretary',
@@ -72,6 +73,7 @@ class UserAdmin(BaseUserAdmin):
         'is_overseer',
         'is_president',
         'is_senior_pastor',
+        'role',
     )
     fieldsets = (
         ('Authentication', {
@@ -85,6 +87,7 @@ class UserAdmin(BaseUserAdmin):
                 'username', 
                 'church', 
                 'churches',
+                'role',
                 'avatar', 
                 'avatar_fallback',
             ]
@@ -113,6 +116,7 @@ class UserAdmin(BaseUserAdmin):
                 'email', 
                 'church', 
                 'churches',
+                'role',
                 'password', 
                 're_password'
             ),

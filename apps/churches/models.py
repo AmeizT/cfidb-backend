@@ -5,12 +5,22 @@ from apps.users.models import User
 from apps.churches.utils import church_images_path
 from django.utils.translation import gettext_lazy as _
 
+class ChurchStatus(models.TextChoices):
+    OPEN = 'Open', 'Open'
+    CLOSED = 'Closed', 'Closed'
 
 class Church(models.Model):
     church_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
+    )
+    pastor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL, 
+        related_name='pastor',
+        blank=True, 
+        null=True
     )
     name = models.CharField(
         max_length=100, 
@@ -30,6 +40,11 @@ class Church(models.Model):
         upload_to=church_images_path, 
         blank=True
     )
+    status = models.CharField(
+        max_length=10,
+        choices=ChurchStatus.choices, 
+        default=ChurchStatus.OPEN, 
+    )
     banner = models.ImageField(
         upload_to=church_images_path,
         blank=True
@@ -38,8 +53,8 @@ class Church(models.Model):
         max_length=12, 
         blank=True
     )
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = 'church'

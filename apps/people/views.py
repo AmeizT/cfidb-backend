@@ -164,23 +164,6 @@ class CreateMemberView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class AttendanceAdminView(viewsets.ModelViewSet):
-    queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-
-
-class MemberAdminView(viewsets.ModelViewSet):
-    queryset = Member.objects.all()
-    serializer_class = MemberSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-
 
 
 

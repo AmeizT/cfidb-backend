@@ -164,29 +164,4 @@ class TitheView(viewsets.ModelViewSet):
         return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore
 
 
-class AssetAdminView(viewsets.ModelViewSet):
-    queryset = Asset.objects.all()
-    serializer_class = AssetSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-    parser_classes = [MultiPartParser, FormParser]
 
-
-class IncomeAdminView(viewsets.ModelViewSet):
-    queryset = Income.objects.all()
-    serializer_class = IncomeSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-
-
-class ExpenditureAdminView(viewsets.ModelViewSet):
-    queryset = Expenditure.objects.all()
-    serializer_class = ExpenditureSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination

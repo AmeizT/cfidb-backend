@@ -3,4 +3,4 @@ def avatarURL(instance, filename):
 
 
 def user_avatar_url(instance, filename):
-    return 'user/avatar/{0}/{1}'.format(instance.username, filename)
+    return 'avatars/{0}/{1}'.format(instance.first_name, filename)

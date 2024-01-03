@@ -24,28 +24,26 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = [
         '.vercel.app', 
-        'cfi.church', 
+        'cfidb.com', 
         'honeste-backend.vercel.app'
         'cfidb-backend.vercel.app'
     ]
     
-
 if DEBUG:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000'
     ]
 else:
     CORS_ALLOWED_ORIGINS = [
-        'https://cfi.church',
-        'https://www.cfi.church',
+        'https://cfidb.com',
+        'https://www.cfidb.com',
         'https://honeste.vercel.app',
     ]
     
-
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000', 
-    'https://cfi.church',
-    'https://www.cfi.church'
+    'https://cfidb.com',
+    'https://www.cfidb.com',
 ]
 
 INSTALLED_APPS = [
@@ -63,6 +61,7 @@ INSTALLED_APPS = [
     'djoser',
     'login_history',
     'imagekit',
+    # 'easyaudit',
     'apps',
     'apps.users',
     'apps.churches',
@@ -88,6 +87,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 ]
 
 ROOT_URLCONF = 'cfidb.urls'
