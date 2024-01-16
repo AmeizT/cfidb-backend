@@ -5,9 +5,9 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
 
 if str(os.environ.get('DJANGO_ENV')) == 'LOCAL':
-    DEBUG = True
-else:
     DEBUG = False
+else:
+    DEBUG = True
 
 if DEBUG:
     SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
@@ -109,7 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfidb.wsgi.application'
 
-if DEBUG:
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
