@@ -24,8 +24,8 @@ if DEBUG:
 else:
     ALLOWED_HOSTS = [
         'cfidb.com', 
-        'honeste-backend.vercel.app'
-        'cfidb-backend.vercel.app'
+        'honeste-backend.vercel.app',
+        'cfidb-backend.vercel.app',
     ]
     
 if DEBUG:
