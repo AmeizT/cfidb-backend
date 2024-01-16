@@ -42,6 +42,7 @@ class Church(models.Model):
     )
     status = models.CharField(
         max_length=10,
+        blank=True,
         choices=ChurchStatus.choices, 
         default=ChurchStatus.OPEN, 
     )

@@ -502,7 +502,11 @@ class Asset(models.Model):
         editable=False, 
         unique=True
     )
-    editor = models.ForeignKey(
+    serial_number = models.CharField(
+        max_length=255,
+        blank=True,
+    )
+    created_by = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
         related_name="assets_editor", 
@@ -511,7 +515,7 @@ class Asset(models.Model):
     )
     purchase_date = models.DateField()
     asset_name = models.CharField(max_length=255)
-    asset_group = models.CharField(
+    category = models.CharField(
         max_length=255, 
         choices=ASSET_TYPE_CHOICES
     )

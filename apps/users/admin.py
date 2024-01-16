@@ -56,11 +56,6 @@ class UserAdmin(BaseUserAdmin):
         'username', 
         'email', 
         'role',
-        'is_overseer',
-        'is_pastor',
-        'is_secretary',
-        'is_president',
-        'is_senior_pastor',
         'last_login', 
         'created_at', 
         'updated_at',
@@ -68,11 +63,6 @@ class UserAdmin(BaseUserAdmin):
     list_filter = (
         'church', 
         'is_admin', 
-        'is_pastor', 
-        'is_secretary',
-        'is_overseer',
-        'is_president',
-        'is_senior_pastor',
         'role',
     )
     fieldsets = (
@@ -97,11 +87,6 @@ class UserAdmin(BaseUserAdmin):
                 'is_active', 
                 'is_admin', 
                 'is_superuser', 
-                'is_pastor', 
-                'is_secretary',
-                'is_overseer',
-                'is_president',
-                'is_senior_pastor',
             ]
         }),
     )

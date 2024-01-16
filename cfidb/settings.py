@@ -23,7 +23,6 @@ if DEBUG:
     ] 
 else:
     ALLOWED_HOSTS = [
-        '.vercel.app', 
         'cfidb.com', 
         'honeste-backend.vercel.app'
         'cfidb-backend.vercel.app'
@@ -118,7 +117,7 @@ if DEBUG:
         }
     }
 else:
-    print("PRODUCTION_DB_ACTIVE")
+    print("Production DB")
     DATABASES = {
         'default': {
             'ENGINE': str(os.environ.get('DB_ENGINE')),

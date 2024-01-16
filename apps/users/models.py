@@ -12,9 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.processors import ResizeToFill, SmartResize
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
-
 class CustomUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, username=None, password=None):
+    def create_user(self, first_name, last_name, email, username=None, password=None, role=None, church=None):
         if not first_name:
             raise ValueError('Users must have a first name')
         if not last_name:
@@ -24,32 +23,34 @@ class CustomUserManager(BaseUserManager):
 
         if username is None:
             username = str(uuid.uuid4())
+
+        if role is None:
+            role = 'Secretary'
     
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
             username=username,
+            role=role,
+            church=church,
         )
         user.set_password(password)
         user.save(using=self._db)
-        return user   
 
-    def create_superuser(self, first_name, last_name, email, username=None, password=None):
+        return user
+
+    def create_superuser(self, first_name, last_name, email, username=None, password=None, role=None):
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
             email=email,
             username=username,
+            role=role,
             password=password,
         )
         user.is_admin=True
         user.is_superuser=True
-        user.is_overseer=False
-        user.is_pastor=False
-        user.is_secretary=False
-        user.is_president=False
-        user.is_senior_pastor=False
         user.save(using=self._db)
         return user
     
@@ -113,17 +114,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_moderator = models.BooleanField(default=False)
-    is_president = models.BooleanField(default=False)
-    is_senior_pastor = models.BooleanField(default=False)
-    is_overseer = models.BooleanField(default=False)
-    is_pastor = models.BooleanField(default=False)
-    is_secretary = models.BooleanField(default=False)
     
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'role', 'church']
 
     class Meta:
         verbose_name = 'user'

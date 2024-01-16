@@ -13,15 +13,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['last_name'] = user.last_name
         token['username'] = user.username
         token['email'] = user.email
+        token['role'] = user.role
         token['church'] = user.church.id if user.church else None
         token['avatar'] = user.avatar.url if user.avatar else None
         token['avatar_fallback'] = user.avatar_fallback
         token['created_at'] = str(user.created_at)
         token['is_active'] = user.is_active
         token['is_admin'] = user.is_admin
-        token['is_pastor'] = user.is_pastor
-        token['is_secretary'] = user.is_secretary
-        token['is_overseer'] = user.is_overseer
 
         return token
     
@@ -88,7 +86,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
+            'role',
             'church',
+            'churches',
             'password',
             're_password',
         )
@@ -111,6 +111,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             email=validated_data['email'],
+            role=validated_data['role'],
             password=password,  # Use the validated password here
         )
 
@@ -165,12 +166,6 @@ class ListUserSerializer(serializers.ModelSerializer):
             'avatar_fallback',  
             'is_active',
             'is_admin',
-            'is_moderator',
-            'is_overseer',
-            'is_pastor',
-            'is_secretary',
-            'is_president',
-            'is_senior_pastor',
             'created_at', 
             'updated_at',
         )  

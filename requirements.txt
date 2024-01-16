@@ -1,13 +1,14 @@
 APScheduler==3.10.1
 asgiref==3.7.2
-certifi==2023.5.7
+beautifulsoup4==4.12.2
+certifi==2023.11.17
 cffi==1.15.1
 charset-normalizer==3.2.0
 cloudinary==1.33.0
 cryptography==41.0.3
 defusedxml==0.7.1
 dj-user-login-history==1.0.5
-Django==4.2.3
+Django==5.0.1
 django-appconf==1.0.5
 django-cloudinary-storage==0.3.0
 django-cors-headers==4.1.0
@@ -17,7 +18,7 @@ django-imagekit==5.0.0
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
-djoser==2.2.2
+djoser==2.2.0
 gunicorn==20.1.0
 idna==3.4
 oauthlib==3.2.2
@@ -34,6 +35,7 @@ setuptools==68.2.2
 six==1.16.0
 social-auth-app-django==5.2.0
 social-auth-core==4.4.2
+soupsieve==2.5
 sqlparse==0.4.4
 tzdata==2023.3
 tzlocal==5.0.1

@@ -2,7 +2,8 @@ from django.db import models
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
-from apps.office.utils import meeting_file_path
+from apps.office.utils import meeting_file_path, document_path
+from apps.office.choices import DocumentCategoryChoices, MeetingCategoryChoices, StatusChoices
 
 class MeetingChoices(models.TextChoices):
     BANK = 'Bank', 'Bank'
@@ -10,6 +11,15 @@ class MeetingChoices(models.TextChoices):
     CHEQUE = 'Cheque', 'Cheque'
     EFT = 'EFT', 'EFT'
     OTHER = 'Other', 'Other'
+
+
+def strategy_file_path(instance, filename):
+    return 'cfidb/document/{0}/{1}/{2}'.format(
+        instance.branch.name,  
+        instance.category,  
+        filename
+    )
+
 
 class Meeting(models.Model):
     MEETING_MODE_CHOICES = (
@@ -22,16 +32,19 @@ class Meeting(models.Model):
         ('meet', 'Google Meet'),
         ('teams', 'Microsoft Teams'),
         ('telegram', 'Telegram'),
-        ('youtube', 'YouTube'),
+        ('whatsapp', 'WhatsApp'),
         ('zoom', 'Zoom'),
     )
     
     branch = models.ForeignKey(
         Church, 
-        on_delete=models.CASCADE,
-        related_name='meeting_branch'
+        related_name='meeting_branch',
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True
     )
     title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
     venue = models.CharField(max_length=255)
     mode = models.CharField(
         max_length=255, 
@@ -44,9 +57,21 @@ class Meeting(models.Model):
         choices=MEETING_PLATFORM_CHOICES, 
         blank=True
     )
-    timestamp_start = models.DateTimeField()
-    timestamp_end = models.DateTimeField()
-    color_id = models.CharField(max_length=255, blank=True)
+    category = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=MeetingCategoryChoices,
+    )
+    meeting_thumbnail_fallback = models.CharField(max_length=255, blank=True)
+    meeting_start_time = models.DateTimeField()
+    meeting_end_time = models.DateTimeField()
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL, 
+        related_name='meeting_created_by',
+        blank=True, 
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -70,7 +95,7 @@ class Minutes(models.Model):
         on_delete=models.CASCADE,
         related_name='meeting'
     )
-    attachment = models.FileField(
+    uploaded_file = models.FileField(
         upload_to=meeting_file_path, 
         blank=True, 
         null=True
@@ -87,19 +112,13 @@ class Minutes(models.Model):
         return f'{self.meeting.title}'
 
 
-
-def strategy_file_path(instance, filename):
-    return 'cfidb/circular/{0}/{1}/{2}'.format(
-        instance.branch.name,  
-        instance.timestamp,  
-        filename
-    )
-
-class Circular(models.Model):
+class Document(models.Model):
     branch = models.ForeignKey(
         Church,
-        on_delete=models.CASCADE,
-        related_name='circular_branch'
+        on_delete=models.SET_NULL, 
+        related_name='document',
+        blank=True, 
+        null=True
     )
     title = models.CharField(
         max_length=255
@@ -107,8 +126,8 @@ class Circular(models.Model):
     description = models.TextField(
         blank=True
     )
-    attachment = models.FileField(
-        upload_to=strategy_file_path,
+    uploaded_document = models.FileField(
+        upload_to=document_path,
         null=True,
         blank=True
     )
@@ -117,25 +136,50 @@ class Circular(models.Model):
         unique=True, 
         blank=True
     )
-    color_id = models.CharField(max_length=255, blank=True)
-    timestamp = models.DateField()
+    category = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=DocumentCategoryChoices,
+    )
+    status = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
+    )
+    remarks = models.TextField(blank=True)
+    document_thumbnail_fallback = models.CharField(max_length=255, blank=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL, 
+        related_name='document_creator',
+        blank=True, 
+        null=True
+    )
+    moderated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL, 
+        related_name='document_moderator',
+        blank=True, 
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = 'circular'
-        verbose_name_plural = 'circular'
+        verbose_name = 'document'
+        verbose_name_plural = 'documents'
         ordering = ['-created_at']
         
     def __str__(self):
         return self.title
     
-    def save(self, *args, **kwargs):                
+    def save(self, *args, **kwargs):               
         if not self.slug:
             base_slug = slugify(self.title)
             self.slug = base_slug
             counter = 1
-            while Circular.objects.filter(slug=self.slug).exists():
+            while Document.objects.filter(slug=self.slug).exists():
                 self.slug = f'{base_slug}-{counter}'
                 counter += 1
 
