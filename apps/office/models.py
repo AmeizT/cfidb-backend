@@ -60,7 +60,7 @@ class Meeting(models.Model):
     category = models.CharField(
         max_length=255, 
         blank=True,
-        choices=MeetingCategoryChoices,
+        choices=MeetingCategoryChoices.choices,
     )
     meeting_thumbnail_fallback = models.CharField(max_length=255, blank=True)
     meeting_start_time = models.DateTimeField()
@@ -139,7 +139,7 @@ class Document(models.Model):
     category = models.CharField(
         max_length=255, 
         blank=True,
-        choices=DocumentCategoryChoices,
+        choices=DocumentCategoryChoices.choices,
     )
     status = models.CharField(
         max_length=255, 
