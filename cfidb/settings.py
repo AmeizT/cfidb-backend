@@ -228,7 +228,7 @@ EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
 if DEBUG:
     DOMAIN = 'localhost:3000'
 else:
-    DOMAIN = 'cfi.church'
+    DOMAIN = 'cfidb.com'
     
 SITE_NAME = 'CFI Database'
 
