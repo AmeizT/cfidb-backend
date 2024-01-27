@@ -2,57 +2,24 @@ import uuid
 from enum import Enum
 from decimal import Decimal
 from django.db import models
+from django.utils import timezone
 from apps.users.models import User
+from datetime import date, datetime
 from django.utils.text import slugify
 from apps.churches.models import Church
 from django.forms import ValidationError
 from django.core.validators import RegexValidator
 from apps.people.choices import (
-    CHURCH_POSITIONS_CHOICES, 
-    GENDER_CHOICES, 
-    MINISTRY_CHOICES, 
-    PREFIX_CHOICES, 
-    RELATIONSHIP_CHOICES,
-    GUARDIAN_RELATIONSHIP_CHOICES,
-    SERVICE_CHOICES
+    AttendanceCategories,
+    ChurchRoles, 
+    Gender, 
+    GuardianRelationship,
+    MembershipStatus,
+    Ministries, 
+    Prefixes, 
+    Relationship,
 )
 
-
-class Attendance(models.Model):
-    church = models.ForeignKey(
-        Church, on_delete=models.CASCADE, related_name="attendance"
-    )
-    editor = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        related_name="attendance_editor", 
-        blank=True, 
-        null=True
-    )
-    preacher = models.CharField(max_length=255, blank=True)
-    sermon = models.TextField(blank=True)
-    scriptures = models.TextField(blank=True)
-    sunday = models.BigIntegerField(default=0)
-    friday = models.BigIntegerField(default=0)
-    outreach = models.BigIntegerField(default=0)
-    kids = models.BigIntegerField(default=0)
-    adults = models.BigIntegerField(default=0)
-    visitors = models.BigIntegerField(default=0)
-    new_members = models.BigIntegerField(default=0)
-    baptism = models.BigIntegerField(default=0)
-    altar_call = models.BigIntegerField(default=0)
-    attendance_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "attendance"
-        verbose_name_plural = "attendance"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.church}"
-    
 
 class Member(models.Model):
     member_id = models.UUIDField(
@@ -65,7 +32,7 @@ class Member(models.Model):
         on_delete=models.CASCADE, 
         related_name="members"
     )
-    editor = models.ForeignKey(
+    created_by = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
         related_name="editor", 
@@ -74,7 +41,7 @@ class Member(models.Model):
     )
     prefix = models.CharField(
         max_length=255, 
-        choices=PREFIX_CHOICES, 
+        choices=Prefixes.choices, 
         blank=True
     )
     first_name = models.CharField(max_length=255)
@@ -86,12 +53,12 @@ class Member(models.Model):
     date_of_birth = models.DateField()
     gender = models.CharField(
         max_length=255, 
-        choices=GENDER_CHOICES
+        choices=Gender.choices
     )
     relationship = models.CharField(
         max_length=255, 
         blank=True, 
-        choices=RELATIONSHIP_CHOICES
+        choices=Relationship.choices
     )
     occupation = models.CharField(
         max_length=255, 
@@ -111,24 +78,31 @@ class Member(models.Model):
     )
     email = models.EmailField(blank=True)
     membersince = models.DateField()
-    tithes = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
+    membership_status = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=MembershipStatus.choices,
+        default=MembershipStatus.ESTABLISHED
     )
     ministry = models.CharField(
         max_length=255, 
         blank=True, 
-        choices=MINISTRY_CHOICES
+        choices=Ministries.choices
     )
     position = models.CharField(
         max_length=255, 
         blank=True, 
-        choices=CHURCH_POSITIONS_CHOICES
+        choices=ChurchRoles.choices
     )
     baptized_at = models.DateField(
         blank=True,
-        null=True
+        null=True,
+        default=date(1900, 1, 1),
+    )
+    tithes = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -156,8 +130,6 @@ class Member(models.Model):
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone number already exists."
                 )
-
-        # Save the member if no duplicate entries found
         super(Member, self).save(*args, **kwargs)
         
                 
@@ -181,7 +153,7 @@ class Kindred(models.Model):
     date_of_birth = models.DateField()
     gender = models.CharField(
         max_length=255, 
-        choices=GENDER_CHOICES
+        choices=Gender.choices
     )
     guardian = models.ForeignKey(
         Member,
@@ -193,23 +165,30 @@ class Kindred(models.Model):
     guardian_relationship = models.CharField(
         max_length=255, 
         blank=True, 
-        choices=GUARDIAN_RELATIONSHIP_CHOICES
+        choices=GuardianRelationship.choices
     )
     membersince = models.DateField()
-    editor = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        related_name="kindred_editor", 
-        blank=True, 
-        null=True
+    membership_status = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=MembershipStatus.choices,
+        default=MembershipStatus.ESTABLISHED
+    )
+    baptized_at = models.DateField(
+        blank=True,
+        null=True,
+        default=date(1900, 1, 1)
     )
     avatar_fallback = models.CharField(
         max_length=24, 
         blank=True
     )
-    baptized_at = models.DateField(
-        blank=True,
-        null=True,
+    created_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="kindred_editor", 
+        blank=True, 
+        null=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -232,8 +211,6 @@ class Kindred(models.Model):
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone_number number already exists."
                 )
-
-        # Save the member if no duplicate entries found
         super(Kindred, self).save(*args, **kwargs)
         
  
@@ -241,22 +218,27 @@ class Tally(models.Model):
     branch = models.ForeignKey(
         Church,
         on_delete=models.CASCADE, 
-        related_name="member_branch"
+        related_name="tally_branch"
     )
-    editor = models.ForeignKey(
+    members = models.ManyToManyField(Member, blank=True)
+    category = models.CharField(
+        max_length=24, 
+        blank=True, 
+        choices=AttendanceCategories.choices,
+        default=AttendanceCategories.SUNDAY
+    )
+    timestamp = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        default=datetime(1900, 1, 1, 0, 0, 0)
+    )
+    created_by = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 
         related_name="tally_editor", 
         blank=True, 
         null=True
     )
-    members = models.ManyToManyField(Member, blank=True)
-    service = models.CharField(
-        max_length=24, 
-        blank=True, 
-        choices=SERVICE_CHOICES
-    )
-    timestamp = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -269,67 +251,7 @@ class Tally(models.Model):
     def __str__(self):
         return f"{self.branch.name}"
  
-                
-class AttendanceRegister(models.Model):
-    branch = models.ForeignKey(
-        Church,
-        on_delete=models.CASCADE, 
-        related_name="member_assembly"
-    )
-    member = models.ForeignKey(
-        Member, 
-        on_delete=models.CASCADE, 
-        related_name="attendance_register"
-    )
-    attendance_date = models.DateField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ["-attendance_date"]
-        unique_together = ('member', 'attendance_date')
-        verbose_name = "attendance register"
-        verbose_name_plural = "attendance register"
-        
-
-    def __str__(self):
-        return f"{self.member.first_name} {self.member.last_name} - {self.attendance_date}"
-    
-    
-class AttendanceType(Enum):
-    SUNDAY = "Sunday"
-    HOME = "Home"
-    FRIDAY = "Friday"
-    OUTREACH = "Outreach"
-    KIDS = "Kids"
-    ADULTS = "Adults"
-    VISITORS = "Visitors"
-    NEW_MEMBERS = "New Members"
-    BAPTIZED = "Baptized"
-    REPENTED = "Repented"
-
-
-class ChurchAttendance(models.Model):
-    church = models.ForeignKey(
-        Church, on_delete=models.CASCADE, related_name="church_attendance"
-    )
-    attendance_type = models.CharField(
-        max_length=50,
-        choices=[(tag.value, tag.value) for tag in AttendanceType],  # Use enum values
-    )
-    count = models.BigIntegerField(default=0)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "Church Attendance"
-        verbose_name_plural = "Church Attendance"
-        ordering = ["-created_at"]
-
-    def __str__(self):
-        return f"{self.church} - {self.attendance_type}"
-       
-       
+                         
 class Homecell(models.Model):
     church = models.ForeignKey(
         Church, on_delete=models.CASCADE, related_name="homecell"
@@ -355,6 +277,84 @@ class Homecell(models.Model):
 
     def __str__(self):
         return f"{self.group_name}"
+    
+
+class Attendance(models.Model):
+    church = models.ForeignKey(
+        Church, 
+        on_delete=models.CASCADE, 
+        related_name="attendance"
+    )
+    created_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="attendance_editor", 
+        blank=True, 
+        null=True
+    )
+    homecell = models.ForeignKey(
+        Homecell, 
+        on_delete=models.SET_NULL, 
+        related_name="homecell_attendance", 
+        blank=True, 
+        null=True
+    )
+    category = models.CharField(
+        max_length=24, 
+        blank=True, 
+        choices=AttendanceCategories.choices,
+        default=AttendanceCategories.SUNDAY
+    )
+    preacher = models.CharField(max_length=255, blank=True)
+    sermon = models.TextField(blank=True)
+    scriptures = models.TextField(blank=True)
+    attendance_count = models.BigIntegerField(default=0)
+    adults = models.BigIntegerField(default=0)
+    children = models.BigIntegerField(default=0)
+    visitors = models.BigIntegerField(default=0)
+    newcomers = models.BigIntegerField(default=0)
+    altar_call = models.BigIntegerField(default=0)
+    baptism = models.BigIntegerField(default=0)
+    summary = models.TextField(blank=True)
+    achievements = models.TextField(blank=True)
+    slug = models.SlugField(max_length=255, blank=True)
+    start_time = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        default=timezone.make_aware(datetime(1900, 1, 1, 0, 0, 0))
+    )
+    end_time = models.DateTimeField(
+        null=True, 
+        blank=True, 
+        default=timezone.make_aware(datetime(1900, 1, 1, 0, 0, 0))
+    )
+    attendance_date = models.DateField(
+        null=True, 
+        blank=True, 
+        default=date(1900, 1, 1),
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "attendance"
+        verbose_name_plural = "attendance"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.church}"
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.church.name, allow_unicode=True)
+            sermon_slug = slugify(self.sermon, allow_unicode=True)
+            self.slug = f"{sermon_slug}-{base_slug}"
+            counter = 1
+            while Attendance.objects.filter(slug=self.slug).exists():
+                self.slug = f"{sermon_slug}-{base_slug}-{counter}"
+                counter += 1
+
+        super().save(*args, **kwargs)
 
 
 class HCAttendance(models.Model):
@@ -362,7 +362,7 @@ class HCAttendance(models.Model):
         Church, on_delete=models.CASCADE, related_name="hc_church"
     )
     homecell = models.ForeignKey(
-        Homecell, on_delete=models.CASCADE, related_name="homecell_attendance", null=True
+        Homecell, on_delete=models.CASCADE, related_name="homecell_attend", null=True
     )
     editor = models.ForeignKey(
         User, 
@@ -410,22 +410,24 @@ class HCAttendance(models.Model):
         return f"{self.homecell}"
 
 
-class Testimony(models.Model):
-    homecell = models.ForeignKey(
-        HCAttendance, on_delete=models.CASCADE, related_name="testimonies"
-    )
-    member = models.CharField(max_length=255, blank=True)
-    description = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+# class Testimony(models.Model):
+#     attendance = models.ForeignKey(
+#         Attendance, 
+#         on_delete=models.CASCADE, 
+#         related_name="testimonies"
+#     )
+#     member = models.CharField(max_length=255, blank=True)
+#     description = models.TextField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        verbose_name = "testimony"
-        verbose_name_plural = "testimonies"
-        ordering = ["-created_at"]
+#     class Meta:
+#         verbose_name = "testimony"
+#         verbose_name_plural = "testimonies"
+#         ordering = ["-created_at"]
 
-    def __str__(self):
-        return f"{self.homecell.homecell.name} {self.member}"  # type: ignore
+#     def __str__(self):
+#         return f"{self.attendance.church.name} {self.member}"  # type: ignore
 
 
 

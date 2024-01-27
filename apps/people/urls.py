@@ -1,6 +1,5 @@
 from apps.people.views import (
     AttendanceView,
-    AttendanceRegisterView,
     CreateHomecellView,
     CreateTallyView,
     HCAttendanceView,
@@ -17,7 +16,6 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
 router.register(r'attendance', AttendanceView, basename='attendance')
-router.register(r'attendance-register', AttendanceRegisterView, basename='attendance_register')
 router.register(r'homecell', HomecellView, basename='homecell')
 router.register(r'create-homecell', CreateHomecellView, basename='create-homecell')
 router.register(r'homecell-attendance', HCAttendanceView, basename='homecell_attendance')

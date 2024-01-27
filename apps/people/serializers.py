@@ -5,9 +5,7 @@ from apps.people.models import (
     HCAttendance, 
     Kindred, 
     Member, 
-    AttendanceRegister, 
     Tally, 
-    Testimony
 )
 from apps.churches.serializers import ChurchSerializer
 
@@ -15,13 +13,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attendance
         fields = '__all__'
-        
-           
-class TestimonySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Testimony
-        fields = '__all__'
-        
+                
 class HCAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HCAttendance
@@ -71,6 +63,7 @@ class CreateKindredSerializer(serializers.ModelSerializer):
         
 class KindredSerializer(serializers.ModelSerializer):
     guardian = MemberSerializer()
+
     class Meta:
         model = Kindred
         fields = (
@@ -86,30 +79,32 @@ class KindredSerializer(serializers.ModelSerializer):
             'guardian',
             'guardian_relationship',
             'membersince',
+            'membership_status',
             'baptized_at',
             'editor',
             'created_at',
             'updated_at',
         )
 
-              
-class AttendanceRegisterSerializer(serializers.ModelSerializer):
-    member = MemberSerializer()
-    class Meta:
-        model = AttendanceRegister
-        fields = ['id', 'branch', 'member', 'attendance_date', 'created_at', 'updated_at']
-        
-        
-        
+                      
 class HomecellSerializer(serializers.ModelSerializer):
     leader = MemberSerializer()
     church = ChurchSerializer()
     members = MemberSerializer(many=True)
-    homecell_attendance = HCAttendanceSerializer(many=True)
     
     class Meta:
         model = Homecell
-        fields = ['id', 'church', 'group_name', 'leader', 'description', 'members', 'is_archived', 'created_at', 'updated_at', 'homecell_attendance']
+        fields = [
+            'id', 
+            'church', 
+            'group_name', 
+            'leader', 
+            'description', 
+            'members', 
+            'is_archived', 
+            'created_at', 
+            'updated_at', 
+        ]
         
         
 class CreateHomecellSerializer(serializers.ModelSerializer):
@@ -126,6 +121,15 @@ class CreateTallySerializer(serializers.ModelSerializer):
         
 class TallySerializer(serializers.ModelSerializer):
     members = MemberSerializer(many=True)
+    
     class Meta:
         model = Tally
-        fields = ['branch', 'editor', 'members', 'service', 'timestamp', 'created_at', 'updated_at'] 
+        fields = [
+            'branch', 
+            'created_by', 
+            'members', 
+            'category', 
+            'timestamp', 
+            'created_at', 
+            'updated_at'
+        ] 

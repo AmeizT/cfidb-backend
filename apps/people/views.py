@@ -1,6 +1,5 @@
 from apps.people.serializers import (
     AttendanceSerializer,
-    AttendanceRegisterSerializer,
     CreateHomecellSerializer,
     CreateKindredSerializer,
     CreateTallySerializer,
@@ -8,7 +7,6 @@ from apps.people.serializers import (
     HomecellSerializer,
     KindredSerializer,
     MemberSerializer,
-    TestimonySerializer,
     TallySerializer,
     
 )
@@ -19,7 +17,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, pagination, status
 from apps.people.models import (
     Attendance, 
-    AttendanceRegister, 
     HCAttendance, 
     Homecell, 
     Kindred, 
@@ -43,15 +40,6 @@ class AttendanceView(viewsets.ModelViewSet):
         return Attendance.objects.filter(church=self.request.user.church)  # type: ignore
     
 
-class AttendanceRegisterView(viewsets.ModelViewSet):
-    queryset = AttendanceRegister.objects.all()
-    serializer_class = AttendanceRegisterSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return AttendanceRegister.objects.filter(branch=self.request.user.church)  # type: ignore
-
-
 class HomecellView(viewsets.ModelViewSet):
     queryset = Homecell.objects.all()
     serializer_class = HomecellSerializer
@@ -59,7 +47,6 @@ class HomecellView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Homecell.objects.filter(church=self.request.user.church)  # type: ignore
-    
     
 
 class CreateHomecellView(viewsets.ModelViewSet):
@@ -119,10 +106,14 @@ class MemberView(viewsets.ModelViewSet):
     
 class TallyView(viewsets.ModelViewSet):
     queryset = Tally.objects.all()
-    serializer_class = TallySerializer
     permission_classes = [permissions.IsAuthenticated]
-    
 
+    def get_serializer_class(self):    
+        if self.action == 'create':
+            return CreateTallySerializer
+        else:
+            return TallySerializer
+    
     def get_queryset(self):
         return Tally.objects.filter(branch=self.request.user.church)  # type: ignore
     

@@ -1,87 +1,99 @@
-GENDER_CHOICES = (
-    ("Male", "Male"),
-    ("Female", "Female"),
-)
+from django.db import models
 
-SERVICE_CHOICES = (
-    ("Sunday", "Sunday"),
-    ("Friday", "Friday"),
-)
+class Gender(models.TextChoices):
+    MALE = 'Male', 'Male'
+    FEMALE = 'Female', 'Female'
 
-GUARDIAN_RELATIONSHIP_CHOICES = [
-    ("Aunt", "Aunt"),
-    ("Brother", "Brother"),
-    ("Child", "Child"),
-    ("Cousin", "Cousin"),
-    ("Father", "Father"),
-    ("Grandparent", "Grandparent"),
-    ("Mother", "Mother"),
-    ("Sister", "Sister"),
-    ("Spouse", "Spouse"),
-    ("Uncle", "Uncle"),
-]
 
-RELATIONSHIP_CHOICES = (
-    ("Single", "Single"),
-    ("Married", "Married"),
-    ("Divorced", "Divorced"),
-    ("Widowed", "Widowed"),
-    ("Separated", "Separated"),
-    ("Engaged", "Engaged"),
-    ("In a Relationship", "In a Relationship"),
-    ("Domestic Partnership", "Domestic Partnership"),
-    ("Civil Union", "Civil Union"),
-    ("Committed", "Committed"),
-    ("Common-Law Marriage", "Common-Law Marriage"),
-    ("Traditional Marriage", "Traditional Marriage"),
-    ("Co-parenting", "Co-parenting"),
-)
+class MembershipStatus(models.TextChoices):
+    ESTABLISHED = 'Established', 'Established'
+    NEWCOMER = 'Newcomer', 'Newcomer'
 
-PREFIX_CHOICES = (
-    ("Dr", "Dr"),
-    ("Eng", "Eng"),
-    ("Hon", "Hon"),
-    ("Miss", "Miss"),
-    ("Mr", "Mr"),
-    ("Mrs", "Mrs"),
-    ("Ms", "Ms"),
-    ("Prof", "Prof"),
-    ("Rev", "Rev"),
-)
+class AttendanceCategories(models.TextChoices):
+    FRIDAY = 'midweek', 'Midweek/Friday Prayer'
+    HOMECELL = 'homecell', 'Homecell'
+    OUTREACH = 'outreach', 'Outreach'
+    OTHER = 'other', 'Other'
+    SUNDAY = 'sunday', 'Sunday'
 
-CHURCH_POSITIONS_CHOICES = [
-    ("Sunday School Teacher", "Sunday School Teacher"),
-    ("Youth Leader", "Youth Leader"),
-    ("Deacon", "Deacon"),
-    ("Deaconess", "Deaconess"),
-    ("Elder", "Elder"),
-    ("Praise and Worship Director", "Praise and Worship Director"),
-    ("Pastor", "Pastor"),
-    ("Senior Pastor", "Senior Pastor"),
-    ("Overseer", "Overseer"),
-    ("President", "President"),
-    ("Media Director", "Media Director"),
-    ("WOE Leader", "WOE Leader"),
-    ("Gatekeepers Leader", "Gatekeepers Leader"),
-    ("House Keeper", "House Keeper"),
-    ("Home Cell Leader", "Home Cell Leader"),
-    ("Secretary", "Secretary"),
-    ("Treasurer", "Treasurer"),
-    ("Other", "Other"),
-]
+class GuardianRelationship(models.TextChoices):
+    AUNT = "Aunt", "Aunt"
+    BROTHER = "Brother", "Brother"
+    CHILD = "Child", "Child"
+    COUSIN = "Cousin", "Cousin"
+    FATHER = "Father", "Father"
+    GRANDPARENT = "Grandparent", "Grandparent"
+    MOTHER = "Mother", "Mother"
+    SISTER = "Sister", "Sister"
+    SPOUSE = "Spouse", "Spouse"
+    UNCLE = "Uncle", "Uncle"
 
-MINISTRY_CHOICES = [
-    ("Administration", "Administration"),
-    ("Christian education", "Christian education"),
-    ("Counseling", "Counseling"),
-    ("Discernment", "Discernment"),
-    ("Evangelism", "Evangelism"),
-    ("Giving", "Giving"),
-    ("Hospitality", "Hospitality"),
-    ("Intercession", "Intercession"),
-    ("Leadership", "Leadership"),
-    ("Media and Communications", "Media and Communications"),
-    ("Other", "Other"),
-    ("Praise and Worship", "Praise and Worship"),
-    ("Ushering", "Ushering"),
-]
+
+class Relationship(models.TextChoices):
+    SINGLE = 'Single', 'Single'
+    MARRIED = 'Married', 'Married'
+    DIVORCED = 'Divorced', 'Divorced'
+    WIDOWED = 'Widowed', 'Widowed'
+    SEPARATED = 'Separated', 'Separated'
+    ENGAGED = 'Engaged', 'Engaged'
+    IN_A_RELATIONSHIP = 'In a Relationship', 'In a Relationship'
+    DOMESTIC_PARTNERSHIP = 'Domestic Partnership', 'Domestic Partnership'
+    CIVIL_UNION = 'Civil Union', 'Civil Union'
+    COMMITTED = 'Committed', 'Committed'
+    COMMON_LAW_MARRIAGE = 'Common-Law Marriage', 'Common-Law Marriage'
+    TRADITIONAL_MARRIAGE = 'Traditional Marriage', 'Traditional Marriage'
+    CO_PARENTING = 'Co-parenting', 'Co-parenting'
+
+
+class Prefixes(models.TextChoices):
+    ADV = 'Advocate', 'Advocate'
+    DR = 'Dr', 'Dr'
+    ENG = 'Eng', 'Eng'
+    HON = 'Hon', 'Hon'
+    MISS = 'Miss', 'Miss'
+    MR = 'Mr', 'Mr'
+    MRS = 'Mrs', 'Mrs'
+    MS = 'Ms', 'Ms'
+    PROF = 'Prof', 'Prof'
+    REV = 'Rev', 'Rev'
+
+
+class ChurchRoles(models.TextChoices):
+    DEACON = 'Deacon', 'Deacon'
+    DEACONESS = 'Deaconess', 'Deaconess'
+    ELDER = 'Elder', 'Elder'
+    GATEKEEPERS_LEADER = 'Gatekeepers Leader', 'Gatekeepers Leader'
+    GENERAL_OVERSEER = 'General Overseer', 'General Overseer'
+    HOUSE_KEEPER = 'House Keeper', 'House Keeper'
+    HOME_CELL_LEADER = 'Home Cell Leader', 'Home Cell Leader'
+    MEDIA_DIRECTOR = 'Media Director', 'Media Director'
+    NATIONAL_OVERSEER = 'National Overseer', 'National Overseer'
+    OTHER = 'Other', 'Other'
+    PASTOR = 'Pastor', 'Pastor'
+    PRAISE_AND_WORSHIP_DIRECTOR = 'Praise and Worship Director', 'Praise and Worship Director'
+    PRESIDENT = 'President', 'President'
+    SECRETARY = 'Secretary', 'Secretary'
+    SECRETARY_GENERAL = 'Secretary General', 'Secretary General'
+    SENIOR_PASTOR = 'Senior Pastor', 'Senior Pastor'
+    SUNDAY_SCHOOL_TEACHER = 'Sunday School Teacher', 'Sunday School Teacher'
+    TREASURER = 'Treasurer', 'Treasurer'
+    USHER = 'Usher', 'Usher'
+    WOE_LEADER = 'WOE Leader', 'WOE Leader'
+    YOUTH_LEADER = 'Youth Leader', 'Youth Leader'
+
+
+class Ministries(models.TextChoices):
+    ADMINISTRATION = 'Administration', 'Administration'
+    CHRISTIAN_EDUCATION = 'Christian Education', 'Christian Education'
+    COUNSELING = 'Counseling', 'Counseling'
+    DISCERNMENT = 'Discernment', 'Discernment'
+    EVANGELISM = 'Evangelism', 'Evangelism'
+    GIVING = 'Giving', 'Giving'
+    HOSPITALITY = 'Hospitality', 'Hospitality'
+    INTERCESSION = 'Intercession', 'Intercession'
+    LEADERSHIP = 'Leadership', 'Leadership'
+    MEDIA = 'Media and Communications', 'Media and Communications'
+    OTHER = 'Other', 'Other'
+    PRAISE_AND_WORSHIP = 'Praise and Worship', 'Praise and Worship'
+    SUNDAY_SCHOOL = 'Sunday School', 'Sunday School'
+    USHERING = 'Ushering', 'Ushering'
