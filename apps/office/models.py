@@ -2,43 +2,20 @@ from django.db import models
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
-from apps.office.utils import meeting_file_path, document_path
-from apps.office.choices import DocumentCategoryChoices, MeetingCategoryChoices, StatusChoices
-
-class MeetingChoices(models.TextChoices):
-    BANK = 'Bank', 'Bank'
-    CASH = 'Cash', 'Cash'
-    CHEQUE = 'Cheque', 'Cheque'
-    EFT = 'EFT', 'EFT'
-    OTHER = 'Other', 'Other'
-
-
-def strategy_file_path(instance, filename):
-    return 'cfidb/document/{0}/{1}/{2}'.format(
-        instance.branch.name,  
-        instance.category,  
-        filename
-    )
-
+from apps.office.abstract import AbstractBaseDocument
+from apps.office.utils import meeting_file_path, uploaded_circular_path, uploaded_strategy_path
+from apps.office.choices import (
+    DocumentCategoryChoices, 
+    MeetingAttendanceChoices,
+    MeetingCategoryChoices, 
+    MeetingPlatformChoices,
+    StrategyStatusChoices, 
+)
 
 class Meeting(models.Model):
-    MEETING_MODE_CHOICES = (
-        ('in-person', 'In Person'),
-        ('virtual', 'Virtual'),
-    )
-    
-    MEETING_PLATFORM_CHOICES = (
-        ('facebook', 'Facebook'),
-        ('meet', 'Google Meet'),
-        ('teams', 'Microsoft Teams'),
-        ('telegram', 'Telegram'),
-        ('whatsapp', 'WhatsApp'),
-        ('zoom', 'Zoom'),
-    )
-    
-    branch = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
-        related_name='meeting_branch',
+        related_name='meeting_assembly',
         on_delete=models.SET_NULL, 
         blank=True, 
         null=True
@@ -48,13 +25,14 @@ class Meeting(models.Model):
     venue = models.CharField(max_length=255)
     mode = models.CharField(
         max_length=255, 
-        choices=MEETING_MODE_CHOICES, 
-        default='in-person', 
+        choices=MeetingAttendanceChoices.choices, 
+        default=MeetingAttendanceChoices.PERSON, 
         blank=True
     )
     platform = models.CharField(
         max_length=255, 
-        choices=MEETING_PLATFORM_CHOICES, 
+        choices=MeetingPlatformChoices.choices, 
+        default=MeetingPlatformChoices.ZOOM,
         blank=True
     )
     category = models.CharField(
@@ -85,10 +63,10 @@ class Meeting(models.Model):
 
 
 class Minutes(models.Model):
-    branch = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE,
-        related_name='minutes_branch'
+        related_name='assembly_minutes'
     )
     meeting = models.ForeignKey(
         Meeting,
@@ -112,28 +90,42 @@ class Minutes(models.Model):
         return f'{self.meeting.title}'
 
 
-class Document(models.Model):
-    branch = models.ForeignKey(
-        Church,
-        on_delete=models.SET_NULL, 
-        related_name='document',
-        blank=True, 
-        null=True
-    )
-    title = models.CharField(
-        max_length=255
-    )
-    description = models.TextField(
-        blank=True
-    )
+class Strategy(AbstractBaseDocument):
     uploaded_document = models.FileField(
-        upload_to=document_path,
+        upload_to=uploaded_strategy_path,
         null=True,
         blank=True
     )
-    slug = models.SlugField(
-        max_length=255,
-        unique=True, 
+    status = models.CharField(
+        max_length=255, 
+        blank=True,
+        choices=StrategyStatusChoices.choices,
+        default=StrategyStatusChoices.PENDING,
+    )
+    remarks = models.TextField(blank=True)
+    moderated_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL, 
+        related_name='strategy_moderator',
+        blank=True, 
+        null=True
+    )
+    assembly = models.ForeignKey(
+        Church,
+        on_delete=models.CASCADE, 
+        related_name='assembly_strategy',
+    )
+    
+    class Meta:
+        verbose_name = 'strategy'
+        verbose_name_plural = 'strategies'
+        ordering = ['-created_at']
+        
+
+class Circular(AbstractBaseDocument):
+    uploaded_document = models.FileField(
+        upload_to=uploaded_circular_path,
+        null=True,
         blank=True
     )
     category = models.CharField(
@@ -141,46 +133,9 @@ class Document(models.Model):
         blank=True,
         choices=DocumentCategoryChoices.choices,
     )
-    status = models.CharField(
-        max_length=255, 
-        blank=True,
-        choices=StatusChoices.choices,
-        default=StatusChoices.PENDING,
-    )
-    remarks = models.TextField(blank=True)
-    document_thumbnail_fallback = models.CharField(max_length=255, blank=True)
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL, 
-        related_name='document_creator',
-        blank=True, 
-        null=True
-    )
-    moderated_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL, 
-        related_name='document_moderator',
-        blank=True, 
-        null=True
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = 'document'
-        verbose_name_plural = 'documents'
+        verbose_name = 'Circular'
+        verbose_name_plural = 'Circulars'
         ordering = ['-created_at']
         
-    def __str__(self):
-        return self.title
-    
-    def save(self, *args, **kwargs):               
-        if not self.slug:
-            base_slug = slugify(self.title)
-            self.slug = base_slug
-            counter = 1
-            while Document.objects.filter(slug=self.slug).exists():
-                self.slug = f'{base_slug}-{counter}'
-                counter += 1
-
-        super().save(*args, **kwargs)

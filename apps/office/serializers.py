@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from apps.office.models import Document, Meeting, Minutes
+from apps.office.models import Circular, Meeting, Minutes, Strategy
 
-class DocumentSerializer(serializers.ModelSerializer):
+class CircularSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Document
+        model = Circular
         fields = '__all__'
 
 
@@ -13,17 +13,23 @@ class MeetingSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
-class MinutesSerializer(serializers.ModelSerializer):
+class GetMinutesSerializer(serializers.ModelSerializer):
     meeting = MeetingSerializer()
 
     class Meta:
         model = Minutes
-        fields = ['meeting', 'id', 'branch', 'attachment', 'created_at', 'updated_at']
+        fields = ['id', 'meeting', 'assembly', 'attachment', 'created_at', 'updated_at']
         
 
-class CreateMinutesSerializer(serializers.ModelSerializer):
+class MinutesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minutes
+        fields = '__all__'
+
+
+class StrategySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Strategy
         fields = '__all__'
 
 

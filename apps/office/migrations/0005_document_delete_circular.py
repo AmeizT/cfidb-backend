@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=255)),
                 ('description', models.TextField(blank=True)),
-                ('attachment', models.FileField(blank=True, null=True, upload_to=apps.office.utils.document_path)),
+                ('attachment', models.FileField(blank=True, null=True)),
                 ('slug', models.SlugField(blank=True, max_length=255, unique=True)),
                 ('category', models.CharField(blank=True, max_length=255)),
                 ('status', models.CharField(blank=True, max_length=255)),
