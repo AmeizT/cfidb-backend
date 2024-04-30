@@ -243,9 +243,9 @@ class Tally(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["-timestamp"]
         verbose_name = "tally"
         verbose_name_plural = "tallies"
+        ordering = ["-timestamp"]
         
 
     def __str__(self):
@@ -254,11 +254,12 @@ class Tally(models.Model):
                          
 class Homecell(models.Model):
     church = models.ForeignKey(
-        Church, on_delete=models.CASCADE, related_name="homecell"
+        Church, on_delete=models.PROTECT, related_name="homecell"
     )
     group_name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     members = models.ManyToManyField(Member, blank=True)
+    non_church_members = models.TextField(blank=True)
     leader = models.ForeignKey(
         Member, 
         on_delete=models.SET_NULL, 
@@ -273,7 +274,7 @@ class Homecell(models.Model):
     class Meta:
         verbose_name = "homecell"
         verbose_name_plural = "homecells"
-        ordering = ["group_name"]
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.group_name}"
@@ -339,7 +340,7 @@ class Attendance(models.Model):
     class Meta:
         verbose_name = "attendance"
         verbose_name_plural = "attendance"
-        ordering = ["-created_at"]
+        ordering = ["-attendance_date"] 
 
     def __str__(self):
         return f"{self.church}"
@@ -355,6 +356,9 @@ class Attendance(models.Model):
                 counter += 1
 
         super().save(*args, **kwargs)
+
+
+
 
 
 class HCAttendance(models.Model):

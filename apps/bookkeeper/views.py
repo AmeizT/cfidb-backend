@@ -3,6 +3,7 @@ from apps.bookkeeper.serializers import (
     CreateTitheSerializer,
     ExpenditureSerializer,
     FixedExpenditureSerializer,
+    CreateFixedExpenditureSerializer,
     IncomeSerializer,
     PayrollSerializer,
     PledgeSerializer,
@@ -70,13 +71,17 @@ class ExpenditureView(viewsets.ModelViewSet):
     
 class FixedExpenditureView(viewsets.ModelViewSet):
     queryset = FixedExpenditure.objects.all()
-    serializer_class = FixedExpenditureSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateFixedExpenditureSerializer
+        return FixedExpenditureSerializer
+
     def get_queryset(self):
-        return FixedExpenditure.objects.filter(branch=self.request.user.church)  # type: ignore
+        return FixedExpenditure.objects.filter(assembly=self.request.user.church)  # type: ignore
 
 
 class IncomeView(viewsets.ModelViewSet):
@@ -155,10 +160,15 @@ class CreateTitheView(viewsets.ModelViewSet):
     
 class TitheView(viewsets.ModelViewSet):
     queryset = Tithe.objects.all()
-    serializer_class = TitheSerializer
+    # serializer_class = TitheSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateTitheSerializer
+        return TitheSerializer
 
     def get_queryset(self):
         return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore

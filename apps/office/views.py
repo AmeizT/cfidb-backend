@@ -32,7 +32,7 @@ class MeetingView(viewsets.ModelViewSet):
 class CircularView(viewsets.ModelViewSet):
     queryset = Circular.objects.all()
     serializer_class = CircularSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
         

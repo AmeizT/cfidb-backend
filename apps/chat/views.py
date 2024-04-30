@@ -10,13 +10,9 @@ class MessageView(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ["church__name"]
     lookup_field = "umid"
-
-    def get_queryset(self):
-        return Message.objects.filter(church=self.request.user.church)  # type: ignore
 
 
 class MessengerView(viewsets.ModelViewSet):
@@ -25,12 +21,3 @@ class MessengerView(viewsets.ModelViewSet):
     permission_classes = [permissions.AllowAny]
     http_method_names = ["post", "put", "patch"]
 
-
-class MessageAdminView(viewsets.ModelViewSet):
-    queryset = Message.objects.all()
-    serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAdminUser]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ["church__name"]
-    pagination_class = StandardPagination
-    lookup_field = "umid"

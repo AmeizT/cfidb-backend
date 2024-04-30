@@ -27,29 +27,30 @@ from imagekit.processors import ResizeToFill, SmartResize
 
 
 class PaymentMethod(models.TextChoices):
-    BANK = 'Bank', 'Bank'
-    CASH = 'Cash', 'Cash'
-    CHEQUE = 'Cheque', 'Cheque'
-    EFT = 'EFT', 'EFT'
-    OTHER = 'Other', 'Other'
+    BANK = 'bank', 'Bank'
+    CASH = 'cash', 'Cash'
+    CHEQUE = 'cheque', 'Cheque'
+    EFT = 'eft', 'EFT'
+    MOBILE = 'mobile', 'Mobile'
+    OTHER = 'other', 'Other'
 
 
 class Tithe(models.Model):    
     branch = models.ForeignKey(
         Church, 
-        on_delete=models.CASCADE,
-        related_name='tithe_branch'
+        on_delete=models.PROTECT,
+        related_name='assembly'
     )
-    editor = models.ForeignKey(
+    created_by = models.ForeignKey(
         User, 
-        on_delete=models.SET_NULL, 
-        related_name="tithe_editor", 
+        on_delete=models.PROTECT, 
+        related_name="tithe_created_by", 
         blank=True, 
         null=True
     )
     member = models.ForeignKey(
         Member, 
-        on_delete=models.SET_NULL, 
+        on_delete=models.PROTECT, 
         related_name='tither',
         blank=True, 
         null=True
@@ -237,22 +238,17 @@ class ShortfallPayment(models.Model):
 
 
 class FixedExpenditure(models.Model):
-    branch = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='fixed_expenditure'
     )
-    editor = models.ForeignKey(
+    created_by = models.ForeignKey(
         User, 
-        on_delete=models.SET_NULL, 
+        on_delete=models.PROTECT, 
         related_name='fixed_expenditure_editor', 
         blank=True, 
         null=True
-    )
-    central_account_remittance = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
     )
     rent = models.DecimalField(
         max_digits=10, 
@@ -322,10 +318,11 @@ class FixedExpenditure(models.Model):
     remarks = models.TextField(
         blank=True
     )
-    receipt = models.FileField(
-        upload_to=fixed_expenditure_receipt_path,
-        blank=True
-    )
+    # receipt = models.FileField(
+    #     upload_to=fixed_expenditure_receipt_path,
+    #     null=True,
+    #     blank=True
+    # )
     total = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -341,9 +338,8 @@ class FixedExpenditure(models.Model):
         ordering = ['timestamp']
         
     def save(self, *args, **kwargs):
-        self.total = self.central_account_remittance + self.rent + self.water + self.electricity + self.wages + self.bank_charges + self.car_maintenance + self.fuel + self.humanitarian + self.insurance + self.security + self.telephone + self.internet + self.investment
+        self.total = self.rent + self.water + self.electricity + self.wages + self.bank_charges + self.car_maintenance + self.fuel + self.humanitarian + self.insurance + self.security + self.telephone + self.internet + self.investment
         super().save(*args, **kwargs)
-
 
 
 class Income(models.Model):
@@ -367,11 +363,6 @@ class Income(models.Model):
         default=Decimal(0.00)
     )
     thanksgiving = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    remittance = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
@@ -406,7 +397,7 @@ class Income(models.Model):
         
         
     def save(self, *args, **kwargs):
-        self.sum = self.offering + self.thanksgiving + self.fundraising + self.remittance
+        self.sum = self.offering + self.thanksgiving + self.fundraising
         # expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
         # self.expenses = expenses['total__sum'] or Decimal('0.00')
         # self.balance = self.sum - self.expenses
@@ -414,8 +405,6 @@ class Income(models.Model):
 
     def __str__(self):
         return f'{self.church.name}'
-    
-    
     
     # def calculate_monthly_tithes(self):
     #     if self.timestamp is not None:

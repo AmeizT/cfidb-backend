@@ -81,7 +81,7 @@ class KindredSerializer(serializers.ModelSerializer):
             'membersince',
             'membership_status',
             'baptized_at',
-            'editor',
+            'created_by',
             'created_at',
             'updated_at',
         )

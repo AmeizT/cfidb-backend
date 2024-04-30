@@ -4,60 +4,62 @@ from apps.churches.models import Church
 from django.utils.text import slugify
 from apps.chat.utils import generate_umid
 
+class CategoryChoices(models.TextChoices):
+    PRAISE = 'praise', 'Praise'
+    REQUEST = 'request', 'Request'
+    SUGGESTION = 'suggestion', 'Suggestion'
+    TESTIMONY = 'testimony', 'Testimony'
+
+class PriorityChoices(models.TextChoices):
+    LOW = 'low', 'Low'
+    MEDIUM = 'medium', 'Medium'
+    HIGH = 'high', 'High'
+    URGENT = 'urgent', 'Urgent'
+
 
 class Message(models.Model):    
-    PRIORITY_CHOICES = (
-        ('Low', 'Low'),
-        ('Medium', 'Medium'),
-        ('High', 'High'),
-        ('Urgent', 'Urgent'),
-    )
-    
-    TAG_CHOICES = (
-        ('Praise', 'Praise'),
-        ('Request', 'Request'),
-        ('Suggestion', 'Suggestion'),
-        ('Testimony', 'Testimony'),
-    )
-    
-    umid = models.CharField(
+    message_id = models.CharField(
         default=generate_umid, 
         max_length=24,
         unique=True,
         editable=False
     )
-    church = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
         related_name='message', 
         on_delete=models.CASCADE
     )
     author = models.CharField(max_length=255, blank=True)
-    title = models.CharField(max_length=255)
-    desc = models.TextField()
+    created_by = models.ForeignKey(
+        User, 
+        on_delete=models.PROTECT, 
+        related_name="message_author"
+    )
+    title = models.CharField(max_length=255, blank=True)
+    description = models.TextField()
     priority = models.CharField(
         max_length=24, 
-        choices=PRIORITY_CHOICES, 
-        default='Low'
+        blank=True,
+        choices=PriorityChoices.choices, 
     )
-    tag = models.CharField(
+    category = models.CharField(
         max_length=24, 
-        choices=TAG_CHOICES, 
-        default='request'
+        choices=CategoryChoices.choices, 
+        default=CategoryChoices.REQUEST
     )
-    contact = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(
         max_length=255,
         unique=True, 
         blank=True
     )
     isMarkAsRead = models.BooleanField(default=False)
-    createdAt = models.DateTimeField(auto_now_add=True)
-    updatedAt = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = 'Message'
         verbose_name_plural = 'Messages'
-        ordering = ['-createdAt']
+        ordering = ['-created_at']
         
     def save(self, *args, **kwargs):                
         if not self.slug:

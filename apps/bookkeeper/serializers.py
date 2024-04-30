@@ -30,6 +30,30 @@ class FixedExpenditureSerializer(serializers.ModelSerializer):
     class Meta:
         model = FixedExpenditure
         fields = '__all__'
+
+
+class CreateFixedExpenditureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FixedExpenditure
+        fields = [
+            "assembly",
+            "created_by",
+            "timestamp",
+            "rent",
+            "wages",
+            "water",
+            "electricity",
+            "telephone",
+            "internet",
+            "security",
+            "fuel",
+            "car_maintenance",
+            "humanitarian",
+            "investment",
+            "bank_charges",
+            "insurance",
+            "remarks"
+        ]
         
         
 class ExpenditureSerializer(serializers.ModelSerializer):
@@ -102,4 +126,10 @@ class TitheSerializer(serializers.ModelSerializer):
 class CreateTitheSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tithe
-        fields = '__all__'
+        fields = [
+            'branch', 
+            'member', 
+            'amount', 
+            'payment_method', 
+            'timestamp',
+        ]

@@ -42,8 +42,12 @@ class AttendanceView(viewsets.ModelViewSet):
 
 class HomecellView(viewsets.ModelViewSet):
     queryset = Homecell.objects.all()
-    serializer_class = HomecellSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateHomecellSerializer
+        return HomecellSerializer
 
     def get_queryset(self):
         return Homecell.objects.filter(church=self.request.user.church)  # type: ignore
