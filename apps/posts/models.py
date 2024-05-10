@@ -40,7 +40,6 @@ class Post(models.Model):
     def increase_views(self):
         self.views += 1
             
-    
     def save(self, *args, **kwargs): 
         self.increase_views() 
                        

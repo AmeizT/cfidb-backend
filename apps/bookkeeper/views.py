@@ -58,7 +58,7 @@ class ExpenditureView(viewsets.ModelViewSet):
     pagination_class = StandardPagination
     
     def get_queryset(self):
-        return Expenditure.objects.filter(church=self.request.user.church)  # type: ignore
+        return Expenditure.objects.filter(assembly=self.request.user.church)  # type: ignore
     
     
     # def get_queryset(self):

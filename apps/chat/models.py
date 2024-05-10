@@ -33,7 +33,9 @@ class Message(models.Model):
     created_by = models.ForeignKey(
         User, 
         on_delete=models.PROTECT, 
-        related_name="message_author"
+        related_name="message_author",
+        blank=True,
+        null=True
     )
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField()

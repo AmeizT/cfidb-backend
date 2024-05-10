@@ -2,6 +2,7 @@ from apps.people.serializers import (
     AttendanceSerializer,
     CreateHomecellSerializer,
     CreateKindredSerializer,
+    CreateAttendanceSerializer,
     CreateTallySerializer,
     HCAttendanceSerializer,
     HomecellSerializer,
@@ -35,6 +36,11 @@ class AttendanceView(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateAttendanceSerializer
+        return AttendanceSerializer
 
     def get_queryset(self):
         return Attendance.objects.filter(church=self.request.user.church)  # type: ignore

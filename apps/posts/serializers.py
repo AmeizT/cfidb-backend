@@ -46,7 +46,6 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
         return post
 
-        
 
 class PostSerializer(serializers.ModelSerializer):
     branch = ChurchSerializer()

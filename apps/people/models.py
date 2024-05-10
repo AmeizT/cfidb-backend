@@ -296,7 +296,7 @@ class Attendance(models.Model):
     homecell = models.ForeignKey(
         Homecell, 
         on_delete=models.SET_NULL, 
-        related_name="homecell_attendance", 
+        related_name="homecell", 
         blank=True, 
         null=True
     )
@@ -309,7 +309,7 @@ class Attendance(models.Model):
     preacher = models.CharField(max_length=255, blank=True)
     sermon = models.TextField(blank=True)
     scriptures = models.TextField(blank=True)
-    attendance_count = models.BigIntegerField(default=0)
+    headcount = models.BigIntegerField(default=0)
     adults = models.BigIntegerField(default=0)
     children = models.BigIntegerField(default=0)
     visitors = models.BigIntegerField(default=0)
@@ -343,7 +343,7 @@ class Attendance(models.Model):
         ordering = ["-attendance_date"] 
 
     def __str__(self):
-        return f"{self.church}"
+        return f"{self.church} - {self.category}"
     
     def save(self, *args, **kwargs):
         if not self.slug:

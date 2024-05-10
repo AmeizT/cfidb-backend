@@ -8,11 +8,6 @@ from apps.people.models import (
     Tally, 
 )
 from apps.churches.serializers import ChurchSerializer
-
-class AttendanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attendance
-        fields = '__all__'
                 
 class HCAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -133,3 +128,41 @@ class TallySerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at'
         ] 
+
+
+class AttendanceSerializer(serializers.ModelSerializer):
+    homecell = HomecellSerializer()
+
+    class Meta:
+        model = Attendance
+        fields = [
+            'id',
+            'church',
+            'created_by',
+            'homecell',
+            'category',
+            'preacher',
+            'sermon',
+            'scriptures',
+            'headcount',
+            'adults',
+            'children',
+            'visitors', 
+            'newcomers',
+            'altar_call', 
+            'baptism',
+            'summary',
+            'achievements',
+            'slug',
+            'start_time',
+            'end_time',
+            'attendance_date',
+            'created_at',
+            'updated_at'
+        ]
+
+
+class CreateAttendanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Attendance
+        fields = '__all__' 

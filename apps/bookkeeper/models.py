@@ -367,6 +367,11 @@ class Income(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
+    donations = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
     sum = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -547,31 +552,37 @@ class Asset(models.Model):
 
 class Expenditure(models.Model):
     EXPENSE_TYPE_CHOICES = (
-        ('Amenities', 'Amenities'),
-        ('Conference', 'Conference'),
-        ('Decor', 'Decor'),
-        ('Fellowship', 'Fellowship'),
-        ('Fixed', 'Fixed'),
-        ('Hotel Bookings', 'Hotel Bookings'),
-        ('Humanitarian', 'Humanitarian'),
-        ('Office', 'Office'),
-        ('Other', 'Other'),
-        ('Outreach', 'Outreach'),
-        ('Repair', 'Repair'),
-        ('Travel', 'Travel'),
-        ('Wages', 'Wages'),
+        ('amenities', 'Amenities'),
+        ('conference', 'Conference'),
+        ('decor', 'Decor'),
+        ('fellowship', 'Fellowship'),
+        ('hotel bookings', 'Hotel Bookings'),
+        ('humanitarian', 'Humanitarian'),
+        ('office', 'Office'),
+        ('other', 'Other'),
+        ('outreach', 'Outreach'),
+        ('repair', 'Repair'),
+        ('travel', 'Travel'),
+        ('wages', 'Wages'),
     )
     
-    church = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
         related_name='expenditure', 
         on_delete=models.CASCADE
+    )
+    created_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        related_name="expenditure_editor", 
+        blank=True, 
+        null=True
     )
     invoice_number = models.CharField(max_length=255, blank=True)
     invoice_date = models.DateField()
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    expense_type = models.CharField(
+    category = models.CharField(
         max_length=255, 
         choices=EXPENSE_TYPE_CHOICES
     )
