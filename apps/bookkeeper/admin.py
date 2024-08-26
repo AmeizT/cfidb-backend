@@ -8,10 +8,12 @@ from apps.bookkeeper.models import (
     Pledge,
     Remittance,
     ShortfallPayment,
-    Tithe
+    Tithe,
+    AssetImage
 )
 
 admin.site.register(Asset)
+admin.site.register(AssetImage)
 admin.site.register(Expenditure)
 admin.site.register(FixedExpenditure)
 admin.site.register(Income)

@@ -1,12 +1,12 @@
 from apps.people.serializers import (
     AttendanceSerializer,
     CreateHomecellSerializer,
-    CreateKindredSerializer,
+    CreateMinorMemberSerializer,
     CreateAttendanceSerializer,
     CreateTallySerializer,
     HCAttendanceSerializer,
     HomecellSerializer,
-    KindredSerializer,
+    MinorMemberSerializer,
     MemberSerializer,
     TallySerializer,
     
@@ -25,25 +25,31 @@ from apps.people.models import (
     Tally
 )
 
-
 class StandardPagination(pagination.PageNumberPagination):
-    page_size = 100
+    page_size = 60
     page_size_query_param = "page_size"
-    max_page_size = 1000000
+    max_page_size = 100000000000000
 
 
 class AttendanceView(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    pagination_class = StandardPagination
+ 
     def get_serializer_class(self):
         if hasattr(self, 'action') and self.action == 'create':
             return CreateAttendanceSerializer
         return AttendanceSerializer
-
+    
     def get_queryset(self):
-        return Attendance.objects.filter(church=self.request.user.church)  # type: ignore
+        category = self.request.query_params.get('category', None)
+
+        if category:
+            return Attendance.objects.filter(church=self.request.user.church, category=category)
+
+    # def get_queryset(self):
+    #     return Attendance.objects.filter(church=self.request.user.church)  # type: ignore
     
 
 class HomecellView(viewsets.ModelViewSet):
@@ -140,7 +146,7 @@ class CreateTallyView(viewsets.ModelViewSet):
 
 class CreateKindredView(viewsets.ModelViewSet):
     queryset = Kindred.objects.all()
-    serializer_class = CreateKindredSerializer
+    serializer_class = CreateMinorMemberSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = "member_id"
 
@@ -150,10 +156,15 @@ class CreateKindredView(viewsets.ModelViewSet):
        
 class KindredView(viewsets.ModelViewSet):
     queryset = Kindred.objects.all()
-    serializer_class = KindredSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = "member_id"
 
+    def get_serializer_class(self):    
+        if self.action == 'create' or self.action == 'partial_update':
+            return CreateMinorMemberSerializer
+        else:
+            return MinorMemberSerializer
+        
     def get_queryset(self):
         return Kindred.objects.filter(church=self.request.user.church)  # type: ignore
 

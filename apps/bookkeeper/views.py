@@ -11,6 +11,7 @@ from apps.bookkeeper.serializers import (
     RemittanceSerializer,
     RemittanceDataSerializer,
     ShortfallPaymentSerializer,
+    CreateAssetSerializer
 )
 from apps.bookkeeper.models import (
     Asset, 
@@ -37,8 +38,13 @@ class AssetView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
+    def get_serializer_class(self):
+        if hasattr(self, 'action') and self.action == 'create':
+            return CreateAssetSerializer
+        return AssetSerializer
+
     def get_queryset(self):
-        return Asset.objects.filter(church=self.request.user.church)  # type: ignore
+        return Asset.objects.filter(assembly=self.request.user.church)  # type: ignore
 
     # def update(self, request, *args, **kwargs):
     #     instance = self.get_object()

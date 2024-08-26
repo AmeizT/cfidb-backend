@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from apps.users.models import User, Account
+from apps.users.models import User, Account, AuthHistory
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -113,4 +113,5 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Account)
+admin.site.register(AuthHistory)
 

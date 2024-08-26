@@ -12,5 +12,5 @@ def save_account(sender, instance, created, **kwargs):
 
         generated_hex_code = '#%02X%02X%02X' % (generate_hex(), generate_hex(), generate_hex())
          
-        instance.brand = generated_hex_code
+        instance.avatar_fallback = generated_hex_code
         instance.save()

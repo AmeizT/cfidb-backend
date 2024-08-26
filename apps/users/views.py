@@ -1,6 +1,6 @@
 from django.http import Http404
-from apps.users.models import User, Account
 from rest_framework.response import Response
+from apps.users.models import User, AuthHistory
 from rest_framework import views, viewsets, permissions, status
 from rest_framework.parsers import MultiPartParser, FormParser
 from apps.users.serializers import (
@@ -10,6 +10,7 @@ from apps.users.serializers import (
     UniqueUserCheckSerializer,
     CreateUserSerializer,
     UserSerializer,
+    AuthHistorySerializer
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -34,15 +35,7 @@ class UniqueUserCheckView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UniqueUserCheckSerializer
     permission_classes = [permissions.AllowAny] 
-    
-    
-
-class AccountView(viewsets.ModelViewSet):
-    queryset = Account.objects.all()
-    serializer_class = AccountSerializer
-    permission_classes = [permissions.IsAuthenticated] 
-      
-        
+            
 class RetrieveUserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
@@ -75,6 +68,11 @@ class ListUsersView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['head', 'get',]
     
+
+class AuthHistoryView(viewsets.ModelViewSet):
+    queryset = AuthHistory.objects.all()
+    serializer_class = AuthHistorySerializer
+    permission_classes = [permissions.AllowAny]
     
     
     

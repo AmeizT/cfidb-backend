@@ -15,7 +15,7 @@ def bank_statement_path(instance, filename):
 
 def expenditure_receipt_path(instance, filename):
     return 'cfidb/bookkeeper/{0}/expenditure/{1}/{2}'.format(
-        instance.church.name, 
+        instance.assembly.name, 
         instance.invoice_date, 
         filename
     )
@@ -61,3 +61,8 @@ def shortfall_receipt_path(instance, filename):
         filename
     )
     
+def asset_images_path(instance, filename):
+    return 'cfidb/assets/{0}/{1}'.format(
+        instance.asset.assembly.name, 
+        filename
+    )

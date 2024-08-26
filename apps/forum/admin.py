@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.forum.models import Forum, Reply
+from apps.forum.models import Changelog
 
-admin.site.register(Forum)
-admin.site.register(Reply)
+admin.site.register(Changelog)
+

@@ -1,27 +1,12 @@
 from rest_framework import serializers
-from apps.forum.models import Forum, Reply
-from apps.users.serializers import ListUserSerializer
-
-class ForumReplySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reply
-        fields = '__all__'
-        
-
-class ForumReplyDataSerializer(serializers.ModelSerializer):
-    author = ListUserSerializer()
+from apps.forum.models import Changelog
+from apps.users.serializers import AuthorSerializer
     
-    class Meta:
-        model = Reply
-        fields = ['discussion', 'author', 'description', 'created_at', 'updated_at']
-
-    
-class ForumDataSerializer(serializers.ModelSerializer):
-    author = ListUserSerializer()
-    replies = ForumReplyDataSerializer(many=True)
+class ChangelogDataSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
 
     class Meta:
-        model = Forum
+        model = Changelog
         fields = [
             'id',
             'author',
@@ -29,12 +14,11 @@ class ForumDataSerializer(serializers.ModelSerializer):
             'description',
             'category',
             'image',
-            'viewCount',
+            'views',
             'slug',
             'is_draft',
             'created_at',
             'updated_at',
-            'replies',
         ]
 
     def to_representation(self, instance):
@@ -43,9 +27,9 @@ class ForumDataSerializer(serializers.ModelSerializer):
         return representation
 
 
-class ForumSerializer(serializers.ModelSerializer):
+class ChangelogSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Forum
+        model = Changelog
         fields = '__all__'
 
 

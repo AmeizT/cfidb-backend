@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from apps.churches.models import Church
 from rest_framework.fields import CharField
-from apps.users.models import User, Account
 from rest_framework.validators import UniqueValidator
+from apps.users.models import User, Account, AuthHistory
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
       
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -68,7 +68,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 #         user.save()
 #         return user
 
-
 class CreateUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         style={'input_type': 'password'},
@@ -117,19 +116,20 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
         return user
 
-  
+class AuthHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AuthHistory
+        fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
 
-
 class ChurchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
         fields = '__all__'
-
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
@@ -180,7 +180,17 @@ class MinifiedUserSerializer(serializers.ModelSerializer):
             'last_name', 
             'username', 
         ) 
-        
+
+
+class AuthorSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name', 
+            'last_name', 
+            'role', 
+        )       
         
 class UniqueUserCheckSerializer(serializers.ModelSerializer):
     class Meta:

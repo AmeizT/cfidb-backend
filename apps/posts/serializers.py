@@ -1,7 +1,36 @@
 from rest_framework import serializers
-from apps.posts.models import Comment, Post, PostImage, Like
+from apps.posts.models import Comment, Post, PostImage
 from apps.churches.serializers import ChurchSerializer
 from apps.users.serializers import ListUserSerializer
+from apps.churches.models import Church
+from apps.users.models import User
+
+class AssemblySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Church
+        fields = ['name', 'country', 'avatar_fallback']
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    church = AssemblySerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'role', 'church', 'avatar', 'avatar_fallback']
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer()
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'author', 'body', 'created_at', 'updated_at']
+        
+
+class CreateCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -19,11 +48,10 @@ class CreatePostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
-            'id',
             'author',
             'branch',
             'title',
-            'description',
+            'body',
             'slug',
             'views',
             'images',
@@ -49,8 +77,10 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     branch = ChurchSerializer()
-    author = ListUserSerializer()
+    author = AuthorSerializer()
     images = PostImageSerializer(many=True, read_only=True)
+    comments = CommentSerializer(many=True)
+    likes = AuthorSerializer(many=True)
 
     class Meta:
         model = Post
@@ -59,11 +89,12 @@ class PostSerializer(serializers.ModelSerializer):
             'author',
             'branch',
             'title',
-            'description',
+            'body',
             'slug',
             'likes',
             'views',
             'images',
+            'comments',
             'is_private',
             'is_draft',
             'created_at',
@@ -71,6 +102,10 @@ class PostSerializer(serializers.ModelSerializer):
         ]
 
 
+class UpdatePostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = '__all__'
         
 
 

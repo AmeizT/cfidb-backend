@@ -3,6 +3,7 @@ import random
 from PIL import Image
 from decimal import Decimal
 from django.db import models
+from datetime import date, datetime
 from apps.users.choices import UserRoles
 from apps.users.utils import user_avatar_url
 from django.db.models.expressions import Value
@@ -109,11 +110,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         choices=UserRoles,
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    last_login = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     objects = CustomUserManager()
 
@@ -124,7 +124,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'user'
         verbose_name_plural = 'users'
         ordering = ['-created_at']
-        
                 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -138,6 +137,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class AuthHistory(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="auth_history"
+    )
+    last_login = models.DateTimeField()
+    last_logout = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Auth History'
+        verbose_name_plural = 'Auth Histories'
+        ordering = ['-created_at']
+                
+    def __str__(self):
+        return f'{self.created_at} - {self.user.first_name} {self.user.last_name}'
 
 
 class Account(models.Model):

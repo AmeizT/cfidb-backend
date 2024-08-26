@@ -16,7 +16,8 @@ from apps.bookkeeper.utils import (
     pledge_receipt_path,
     tithe_receipt_path, 
     remittance_receipt_path,
-    shortfall_receipt_path
+    shortfall_receipt_path,
+    asset_images_path
 )
 from django.db.models import Sum
 from apps.projects.models import Project
@@ -67,8 +68,8 @@ class Tithe(models.Model):
     )
     receipt = models.FileField(
         upload_to=tithe_receipt_path, 
+        null=True,
         blank=True, 
-        null=True
     )
     timestamp = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -341,6 +342,9 @@ class FixedExpenditure(models.Model):
         self.total = self.rent + self.water + self.electricity + self.wages + self.bank_charges + self.car_maintenance + self.fuel + self.humanitarian + self.insurance + self.security + self.telephone + self.internet + self.investment
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f'{self.assembly.name} - {self.created_at}'
+
 
 class Income(models.Model):
     church = models.ForeignKey(
@@ -402,14 +406,14 @@ class Income(models.Model):
         
         
     def save(self, *args, **kwargs):
-        self.sum = self.offering + self.thanksgiving + self.fundraising
+        self.sum = self.offering + self.thanksgiving + self.fundraising + self.donations
         # expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
         # self.expenses = expenses['total__sum'] or Decimal('0.00')
         # self.balance = self.sum - self.expenses
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.church.name}'
+        return f'{self.church.name} - {self.created_at}'
     
     # def calculate_monthly_tithes(self):
     #     if self.timestamp is not None:
@@ -471,70 +475,71 @@ class BankStatement(models.Model):
     def __str__(self):
         return self.name
 
+class AssetType(models.TextChoices):
+    BUILDING = 'Building', 'Building'
+    INSTRUMENT = 'Instrument', 'Instrument'
+    VEHICLE = 'Vehicle', 'Vehicle'
+    FURNITURE = 'Furniture', 'Furniture'
+    ELECTRONICS = 'Electronics', 'Electronics'
+    MACHINERY = 'Machinery', 'Machinery'
+    SOFTWARE = 'Software', 'Software'
+    LAND = 'Land', 'Land'
+    OTHER = 'Other', 'Other'
+
+
+class Condition(models.TextChoices):
+    NEW = 'New', 'New'
+    GOOD = 'Good', 'Good'
+    FAIR = 'Fair', 'Fair'
+    OLD = 'Old', 'Old'
+    NOT_WORKING = 'Not Working', 'Not Working'
+
+
 
 class Asset(models.Model):
-    ASSET_TYPE_CHOICES = (
-        ('Building', 'Building'),
-        ('Other', 'Other'),
-        ('Instrument', 'Instrument'),
-        ('Vehicle', 'Vehicle'),
-    )
-    CONDITION_CHOICES = (
-        ('New', 'New'),
-        ('Good', 'Good'),
-        ('Fair', 'Fair'),
-        ('Old', 'Old'),
-        ('Not Working', 'Not Working'),
-    )
-    church = models.ForeignKey(
+    from django.db import models
+
+    assembly = models.ForeignKey(
         Church, 
-        related_name='asset', 
+        related_name='assets',
         on_delete=models.CASCADE
     )
-    asset_id = models.UUIDField(
-        default=uuid.uuid4, 
-        editable=False, 
-        unique=True
-    )
-    serial_number = models.CharField(
-        max_length=255,
-        blank=True,
-    )
+    serial_number = models.CharField(max_length=255, blank=True)
     created_by = models.ForeignKey(
-        User, 
-        on_delete=models.SET_NULL, 
-        related_name="assets_editor", 
-        blank=True, 
+        User,
+        on_delete=models.SET_NULL,
+        related_name="created_assets",
+        blank=True,
         null=True
     )
+    name = models.CharField(max_length=255)
     purchase_date = models.DateField()
-    asset_name = models.CharField(max_length=255)
-    category = models.CharField(
-        max_length=255, 
-        choices=ASSET_TYPE_CHOICES
+    asset_type = models.CharField(
+        max_length=20,
+        choices=AssetType.choices,
     )
     description = models.TextField(blank=True)
     supplier = models.CharField(max_length=255, blank=True)
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
     purchase_price = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal('0.00')
     )
-    valuation = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
+    current_value = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal('0.00')
     )
     condition = models.CharField(
-        max_length=255, 
-        choices=CONDITION_CHOICES
+        max_length=20,
+        choices=Condition.choices
     )
     image = ProcessedImageField(
         upload_to=asset_image_path,
-        # processors=[SmartResize(width=1080, height=1350)],
-        format='WEBP', # type: ignore
-        options={'quality': 70}, 
+        processors=[SmartResize(width=1080, height=1350)],
+        format='WEBP',
+        options={'quality': 70},
         blank=True,
         null=True,
     )
@@ -545,9 +550,30 @@ class Asset(models.Model):
         verbose_name = 'Asset'
         verbose_name_plural = 'Assets'
         ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.assembly.name} - {self.name}"
+
+class AssetImage(models.Model):
+    asset = models.ForeignKey(
+        Asset,
+        on_delete=models.CASCADE,
+        related_name='asset_images'
+    )
+    image = ProcessedImageField(
+        upload_to=asset_images_path,
+        # processors=[SmartResize(width=1080, height=1350)],
+        format='WEBP', # type: ignore
+        options={'quality': 80} # type: ignore
+    )
+    
+    class Meta:
+        verbose_name = 'Asset Image'
+        verbose_name_plural = 'Asset Images'
+        
         
     def __str__(self):
-        return self.asset_name
+        return self.asset.name
 
 
 class Expenditure(models.Model):
@@ -604,7 +630,6 @@ class Expenditure(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
-        
     class Meta:
         verbose_name = 'Expenditure'
         verbose_name_plural = 'Expenditure'

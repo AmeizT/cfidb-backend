@@ -12,12 +12,69 @@ from apps.bookkeeper.models import (
 from rest_framework import serializers
 from apps.people.serializers import MemberSerializer
 from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer
-
+from apps.churches.serializers import AssemblyISOSerializer
+from apps.bookkeeper.models import AssetImage
         
 class AssetSerializer(serializers.ModelSerializer):
+    assembly = AssemblyISOSerializer()
     class Meta:
         model = Asset
-        fields = '__all__'
+        fields = [
+            "name", 
+            "asset_type", 
+            "assembly", 
+            "condition",
+            "created_at",
+            "created_by",
+            "description", 
+            "id", 
+            "purchase_date", 
+            "purchase_price", 
+            "quantity", 
+            "serial_number", 
+            "supplier",
+            "updated_at",
+            "current_value",
+        ]
+
+
+class AssetImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AssetImage
+        fields = "__all__"
+
+
+class CreateAssetSerializer(serializers.ModelSerializer):
+    images = AssetImageSerializer(many=True, read_only=True)
+    asset_images = serializers.ListField(
+        child=serializers.ImageField(max_length=1000000, allow_empty_file=False, use_url=False),
+        write_only=True
+    )
+    class Meta:
+        model = Asset
+        fields = [
+            "name", 
+            "asset_type", 
+            "assembly", 
+            "condition",
+            "created_by",
+            "description", 
+            "purchase_date", 
+            "purchase_price", 
+            "quantity",
+            "images", 
+            "asset_images",
+            "serial_number", 
+            "supplier",
+            "current_value",
+        ]
+
+    def create(self, validated_data):
+        asset_images = validated_data.pop('asset_images')
+        asset = Asset.objects.create(**validated_data)
+        for image in asset_images:
+            AssetImage.objects.create(asset=asset, image=image)
+        return asset
         
     
 class IncomeSerializer(serializers.ModelSerializer):
@@ -106,8 +163,11 @@ class RemittanceDataSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
 
+
 class TitheSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
+    branch = AssemblyISOSerializer()
+
     class Meta:
         model = Tithe
         fields = [
@@ -126,10 +186,4 @@ class TitheSerializer(serializers.ModelSerializer):
 class CreateTitheSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tithe
-        fields = [
-            'branch', 
-            'member', 
-            'amount', 
-            'payment_method', 
-            'timestamp',
-        ]
+        fields = "__all__"

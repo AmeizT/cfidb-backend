@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from apps.users.models import User
 from django.utils.text import slugify
 from apps.churches.models import Church
@@ -16,10 +17,10 @@ class Post(models.Model):
     branch = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE, 
-        related_name='branch'
+        related_name='post_assembly'
     )
     title = models.CharField(max_length=255, blank=True)
-    description = models.TextField(blank=True)
+    body = models.TextField(blank=True)
     image = models.ImageField(
         upload_to=post_image_url, 
         null=True, 
@@ -44,8 +45,11 @@ class Post(models.Model):
         self.increase_views() 
                        
         if not self.slug:
-            base_slug = slugify(self.title)
-            self.slug = base_slug
+            base_slug = slugify(self.pk)
+            slug_date = (
+                self.created_at.strftime('%Y-%m-%d') if self.created_at else timezone.now().strftime('%Y-%m-%d')
+            )
+            self.slug = f"{slug_date}-{base_slug}"
             counter = 1
             while Post.objects.filter(slug=self.slug).exists():
                 self.slug = f"{base_slug}-{counter}"
@@ -74,7 +78,7 @@ class PostImage(models.Model):
         upload_to=post_images_path,
         # processors=[SmartResize(width=1080, height=1350)],
         format='WEBP', # type: ignore
-        options={'quality': 70} # type: ignore
+        options={'quality': 80} # type: ignore
     )
     alt = models.CharField(
         max_length=255,
@@ -100,22 +104,23 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments'
     )
-    comment_author = models.ForeignKey(
+    author = models.ForeignKey(
         User, 
         on_delete=models.CASCADE,
         related_name='comment_author'
     )
-    text = models.TextField()
+    body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True) 
     
     class Meta:
         verbose_name = 'comment'
         verbose_name_plural = 'comments'
+        ordering = ["-created_at"]
         
         
     def __str__(self):
-        return self.post.title
+        return self.post.branch.name
    
     
 class Like(models.Model): 

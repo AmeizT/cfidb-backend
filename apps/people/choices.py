@@ -10,7 +10,7 @@ class MembershipStatus(models.TextChoices):
     NEWCOMER = 'Newcomer', 'Newcomer'
 
 class AttendanceCategories(models.TextChoices):
-    FRIDAY = 'friday', 'Friday Prayer'
+    FRIDAY = 'friday', 'Friday'
     HOMECELL = 'homecell', 'Homecell'
     OUTREACH = 'outreach', 'Outreach'
     OTHER = 'other', 'Other'

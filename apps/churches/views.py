@@ -1,9 +1,10 @@
-from apps.churches.models import Church
+from apps.churches.models import Church, ImageUpload
 from rest_framework.response import Response
 from apps.churches.permissions import IsAdminUserOrOverseer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets, status
-from apps.churches.serializers import ChurchSerializer, ChurchTrackerSerializer
+from apps.churches.serializers import ChurchSerializer, ChurchTrackerSerializer, ImageUploadSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class StandardPagination(pagination.PageNumberPagination):
@@ -31,3 +32,10 @@ class ListChurchesView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = "name"
     http_method_names = ["head", "get"]
+
+
+class ImageUploadView(viewsets.ModelViewSet):
+    queryset = ImageUpload.objects.all()
+    serializer_class = ImageUploadSerializer
+    permission_classes = [permissions.AllowAny]
+    parser_classes = [MultiPartParser, FormParser]

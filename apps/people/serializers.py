@@ -8,55 +8,27 @@ from apps.people.models import (
     Tally, 
 )
 from apps.churches.serializers import ChurchSerializer
+from apps.users.serializers import AuthorSerializer
                 
 class HCAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HCAttendance
         fields = '__all__'
-        
-        
-# class HCAttendanceSerializer(serializers.ModelSerializer):
-#     testimonies = TestimonySerializer(many=True)
-#     class Meta:
-#         model = HCAttendance
-#         fields = [
-#             'id',
-#             'church',
-#             'homecell',
-#             'coordinator',
-#             'topic',
-#             'venue',
-#             'attendance',
-#             'adults',
-#             'kids',
-#             'visitors',
-#             'new',
-#             'repented',
-#             'scriptures',
-#             'summary',
-#             'achievements',
-#             'testimonies',
-#             'slug',
-#             'start_time',
-#             'end_time',
-#             'created_at',
-#             'updated_at',
-#         ]
- 
-     
+
+
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member  
         fields = '__all__'
         
         
-class CreateKindredSerializer(serializers.ModelSerializer):
+class CreateMinorMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Kindred
         fields = '__all__'
         
         
-class KindredSerializer(serializers.ModelSerializer):
+class MinorMemberSerializer(serializers.ModelSerializer):
     guardian = MemberSerializer()
 
     class Meta:
@@ -96,12 +68,26 @@ class HomecellSerializer(serializers.ModelSerializer):
             'leader', 
             'description', 
             'members', 
+            'non_church_members',
             'is_archived', 
             'created_at', 
             'updated_at', 
         ]
         
-        
+
+class SimplifiedHomecellSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Homecell
+        fields = [ 
+            'church', 
+            'group_name', 
+            'leader', 
+            'description', 
+            'members', 
+            'non_church_members'
+        ]
+
+
 class CreateHomecellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homecell
@@ -131,7 +117,8 @@ class TallySerializer(serializers.ModelSerializer):
 
 
 class AttendanceSerializer(serializers.ModelSerializer):
-    homecell = HomecellSerializer()
+    homecell = SimplifiedHomecellSerializer()
+    created_by = AuthorSerializer()
 
     class Meta:
         model = Attendance
@@ -139,7 +126,6 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'id',
             'church',
             'created_by',
-            'homecell',
             'category',
             'preacher',
             'sermon',
@@ -158,7 +144,8 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'end_time',
             'attendance_date',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'homecell',
         ]
 
 
