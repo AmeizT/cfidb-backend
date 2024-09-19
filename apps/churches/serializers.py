@@ -48,6 +48,12 @@ class AssemblyISOSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
         fields = ["id", "code", "lang", "currency"]
+
+
+class CountryInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Church
+        fields = ["id", "code", "lang", "currency"]
         
             
 

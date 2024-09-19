@@ -13,6 +13,17 @@ from django.utils.translation import gettext_lazy as _
 from imagekit.processors import ResizeToFill, SmartResize
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
+class UserRoles(models.TextChoices):
+    PRESIDENT = 'President', 'President'
+    SENIOR_PASTOR = 'Senior Pastor', 'Senior Pastor'
+    OVERSEER = 'Overseer', 'Overseer'
+    MODERATOR = 'Moderator', 'Moderator'
+    PASTOR = 'Pastor', 'Pastor'
+    SECRETARY = 'Secretary', 'Secretary'
+    SECRETARY_GENERAL = 'Secretary General', 'Secretary General'
+    ADMIN = 'Admin', 'Admin'
+    DELEGATE = 'Delegate', 'Delegate'
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, first_name, last_name, email, username=None, password=None, role=None, church=None):
         if not first_name:
@@ -108,7 +119,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(
         max_length=24,
         blank=True,
-        choices=UserRoles,
+        choices=UserRoles.choices,
+        default=UserRoles.SECRETARY
     )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -157,6 +169,25 @@ class AuthHistory(models.Model):
                 
     def __str__(self):
         return f'{self.created_at} - {self.user.first_name} {self.user.last_name}'
+
+
+
+class PermissionType(models.TextChoices):
+    FINANCE = 'finance', 'Finance'
+    ATTENDANCE = 'attendance', 'Attendance'
+
+class DelegatePermission(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    can_create = models.BooleanField(default=False)
+    can_edit = models.BooleanField(default=False)
+    can_delete = models.BooleanField(default=False)
+    permission_type = models.CharField(max_length=20, choices=PermissionType.choices)
+
+    class Meta:
+        unique_together = ('user', 'permission_type')
+
+    def __str__(self):
+        return f"{self.user.username} - {self.permission_type}"
 
 
 class Account(models.Model):

@@ -1,6 +1,7 @@
 from apps.bookkeeper.serializers import (
     AssetSerializer,
     CreateTitheSerializer,
+    CreateIncomeSerializer,
     ExpenditureSerializer,
     FixedExpenditureSerializer,
     CreateFixedExpenditureSerializer,
@@ -30,6 +31,8 @@ from rest_framework import viewsets, permissions
 from apps.bookkeeper.pagination import StandardPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+from rest_framework.permissions import BasePermission
+from apps.users.models import DelegatePermission, PermissionType
 
 class AssetView(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
@@ -90,14 +93,86 @@ class FixedExpenditureView(viewsets.ModelViewSet):
         return FixedExpenditure.objects.filter(assembly=self.request.user.church)  # type: ignore
 
 
+# class DelegateFinancePermission(BasePermission):
+#     def has_permission(self, request, view):
+#         permission = DelegatePermission.objects.filter(
+#             user=request.user, permission_type=PermissionType.FINANCE
+#         ).first()
+        
+#         if not permission:
+#             return False
+
+#         if request.method in ['POST'] and permission.can_create:
+#             return True
+#         if request.method in ['PUT', 'PATCH'] and permission.can_edit:
+#             return True
+#         if request.method == 'DELETE' and permission.can_delete:
+#             return True
+
+#         return False
+
+
+# class IncomeView(viewsets.ModelViewSet):
+#     queryset = Income.objects.all()
+#     permission_classes = [permissions.IsAuthenticated|DelegateFinancePermission]
+#     pagination_class = StandardPagination
+
+#     def get_serializer_class(self):
+#         if hasattr(self, 'action') and self.action == 'create':
+#             return CreateIncomeSerializer
+#         return IncomeSerializer
+
+#     def get_queryset(self):
+#         return Income.objects.filter(church=self.request.user.church)  
+
+
+class DelegateFinancePermission(BasePermission):
+    def has_permission(self, request, view):
+        # Fetch the delegate permission for finance
+        permission = DelegatePermission.objects.filter(
+            user=request.user, permission_type=PermissionType.FINANCE
+        ).first()
+
+        # If no permission object exists, deny access
+        if not permission:
+            return False
+
+        # Allow read operations (GET, HEAD, OPTIONS)
+        if view.action in ['list', 'retrieve']:
+            return True
+
+        if request.user.role == "Delegate":
+            if view.action == 'create' and permission.can_create:
+                return True
+            if view.action in ['update', 'partial_update'] and permission.can_edit:
+                return True
+            if view.action == 'destroy' and permission.can_delete:
+                return True
+        else:
+            if view.action == 'create':
+                return True
+            if view.action in ['update', 'partial_update']:
+                return True
+            if view.action == 'destroy':
+                return True
+
+        return False
+
+
+
 class IncomeView(viewsets.ModelViewSet):
     queryset = Income.objects.all()
-    serializer_class = IncomeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, DelegateFinancePermission]
     pagination_class = StandardPagination
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return CreateIncomeSerializer
+        return IncomeSerializer
 
     def get_queryset(self):
         return Income.objects.filter(church=self.request.user.church)  # type: ignore
+
 
 
 class PayrollView(viewsets.ModelViewSet):

@@ -33,20 +33,24 @@ class StandardPagination(pagination.PageNumberPagination):
 
 class AttendanceView(viewsets.ModelViewSet):
     queryset = Attendance.objects.all()
-    serializer_class = AttendanceSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = StandardPagination
  
     def get_serializer_class(self):
-        if hasattr(self, 'action') and self.action == 'create':
+        if self.action in ['create', 'update', 'partial_update']:
             return CreateAttendanceSerializer
         return AttendanceSerializer
     
     def get_queryset(self):
-        category = self.request.query_params.get('category', None)
+        if self.action == 'list':
+            category = self.request.query_params.get('category', None)
 
-        if category:
-            return Attendance.objects.filter(church=self.request.user.church, category=category)
+            if category:
+                return Attendance.objects.filter(church=self.request.user.church, category=category)
+            return Attendance.objects.filter(church=self.request.user.church)
+        
+        return Attendance.objects.all()
+
 
     # def get_queryset(self):
     #     return Attendance.objects.filter(church=self.request.user.church)  # type: ignore

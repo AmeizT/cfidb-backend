@@ -12,7 +12,7 @@ from apps.bookkeeper.models import (
 from rest_framework import serializers
 from apps.people.serializers import MemberSerializer
 from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer
-from apps.churches.serializers import AssemblyISOSerializer
+from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer
 from apps.bookkeeper.models import AssetImage
         
 class AssetSerializer(serializers.ModelSerializer):
@@ -78,6 +78,27 @@ class CreateAssetSerializer(serializers.ModelSerializer):
         
     
 class IncomeSerializer(serializers.ModelSerializer):
+    church = CountryInfoSerializer()
+    class Meta:
+        model = Income
+        fields = [
+            'id',
+            'church',
+            'timestamp',
+            'offering',
+            'fundraising',
+            'thanksgiving',
+            'donations',
+            'sum',
+            'expenses',
+            'balance',
+            'statement',
+            'created_at',
+            'updated_at',
+        ]
+
+
+class CreateIncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
         fields = '__all__'
