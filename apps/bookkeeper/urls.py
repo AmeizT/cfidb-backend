@@ -4,7 +4,7 @@ from apps.bookkeeper.views import (
     AssetView,
     CreateTitheView,
     ExpenditureView,
-    FixedExpenditureView,
+    RegularExpenditureView,
     IncomeView,
     PayrollView,
     PledgeView,
@@ -18,7 +18,7 @@ router = DefaultRouter()
 
 router.register(r'assets', AssetView, basename='assets')
 router.register(r'expenditure', ExpenditureView, basename='expenditure')
-router.register(r'fixed-expenditure', FixedExpenditureView, basename='fixed_expenditure')
+router.register(r'regular_expenditure', RegularExpenditureView, basename='regular_expenditure')
 router.register(r'income', IncomeView, basename='income')
 router.register(r'payroll', PayrollView, basename='payroll')
 router.register(r'pledge', PledgeView, basename='pledge')

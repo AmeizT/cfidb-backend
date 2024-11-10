@@ -1,15 +1,13 @@
-from django.urls import path, include, re_path
+from django.urls import path, include
+from apps.churches.views import ChurchView
 from rest_framework.routers import DefaultRouter
-from apps.churches.views import ChurchView, ListChurchesView, ImageUploadView
 
 router = DefaultRouter()
 
-router.register(r'churches', ChurchView, basename='churches')
-router.register(r'image-upload', ImageUploadView, basename='image_upload')
-router.register(r'church-list', ListChurchesView, basename='church-list')
+router.register(r"assemblies", ChurchView, basename="assemblies")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
 
 

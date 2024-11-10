@@ -133,7 +133,7 @@ class Member(models.Model):
         super(Member, self).save(*args, **kwargs)
         
                 
-class Kindred(models.Model):
+class JuniorMember(models.Model):
     member_id = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
@@ -195,15 +195,15 @@ class Kindred(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = "kindred"
-        verbose_name_plural = "kindred"
+        verbose_name = "Junior Member"
+        verbose_name_plural = "Junior Members"
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
     def save(self, *args, **kwargs):
         if self.pk is None:
-            if Kindred.objects.filter(
+            if JuniorMember.objects.filter(
                 first_name=self.first_name,
                 last_name=self.last_name,
                 date_of_birth=self.date_of_birth,
@@ -211,7 +211,7 @@ class Kindred(models.Model):
                 raise ValidationError(
                     "A member with the same name, date of birth, and phone_number number already exists."
                 )
-        super(Kindred, self).save(*args, **kwargs)
+        super(JuniorMember, self).save(*args, **kwargs)
         
  
 class Tally(models.Model):
@@ -329,7 +329,7 @@ class Attendance(models.Model):
         blank=True, 
         default=timezone.make_aware(datetime(1900, 1, 1, 0, 0, 0))
     )
-    attendance_date = models.DateField(
+    timestamp = models.DateField(
         null=True, 
         blank=True, 
         default=date(1900, 1, 1),
@@ -340,10 +340,10 @@ class Attendance(models.Model):
     class Meta:
         verbose_name = "attendance"
         verbose_name_plural = "attendance"
-        ordering = ["-attendance_date"] 
+        ordering = ["-timestamp"] 
 
     def __str__(self):
-        return f"{self.church} - {self.category}"
+        return f"{self.timestamp} - {self.church} - {self.category}"
     
     def save(self, *args, **kwargs):
         if not self.slug:

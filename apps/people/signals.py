@@ -2,7 +2,7 @@ import uuid
 import random
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from apps.people.models import Member, Kindred
+from apps.people.models import Member, JuniorMember
 
 @receiver(post_save, sender=Member)
 def save_member(sender, instance, created, **kwargs):
@@ -16,7 +16,7 @@ def save_member(sender, instance, created, **kwargs):
         instance.save()
         
         
-@receiver(post_save, sender=Kindred)
+@receiver(post_save, sender=JuniorMember)
 def save_kindred(sender, instance, created, **kwargs):
     if created:
         def generate_hex(): 

@@ -5,20 +5,19 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('cfidb/admin/', admin.site.urls),
-    path('api/', include('apps.bookkeeper.urls')),
-    path('api/', include('apps.chat.urls')),
-    path('api/', include('apps.churches.urls')),
-    path('api/', include('apps.events.urls')),
-    path('api/', include('apps.forum.urls')),
+    path('cfidb/cpanel/', admin.site.urls),
+    path('api/v1/', include('apps.bookkeeper.urls')),
+    path('api/v1/', include('apps.chat.urls')),
+    path('api/v1/', include('apps.churches.urls')),
+    path('api/v1/', include('apps.events.urls')),
+    path('api/v1/', include('apps.forum.urls')),
     path('', include('apps.home.urls')),
-    path('api/', include('apps.office.urls')),
-    path('api/', include('apps.people.urls')),
-    path('api/', include('apps.posts.urls')),
-    path('api/', include('apps.projects.urls')),
-    path('api/', include('apps.resources.urls')),
-    path('api/', include('apps.strategic.urls')),
-    path('api/', include('apps.users.urls')),
+    path('api/v1/', include('apps.office.urls')),
+    path('api/v1/', include('apps.people.urls')),
+    path('api/v1/', include('apps.posts.urls')),
+    path('api/v1/', include('apps.resources.urls')),
+    path('api/v1/', include('apps.strategic.urls')),
+    path('api/v1/', include('apps.users.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

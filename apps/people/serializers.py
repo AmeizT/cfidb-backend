@@ -2,37 +2,30 @@ from rest_framework import serializers
 from apps.people.models import (
     Attendance, 
     Homecell, 
-    HCAttendance, 
-    Kindred, 
+    JuniorMember, 
     Member, 
     Tally, 
 )
 from apps.churches.serializers import ChurchSerializer
 from apps.users.serializers import AuthorSerializer
                 
-class HCAttendanceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = HCAttendance
-        fields = '__all__'
-
-
 class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member  
         fields = '__all__'
         
         
-class CreateMinorMemberSerializer(serializers.ModelSerializer):
+class CreateJuniorMemberSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Kindred
+        model = JuniorMember
         fields = '__all__'
         
         
-class MinorMemberSerializer(serializers.ModelSerializer):
+class JuniorMemberSerializer(serializers.ModelSerializer):
     guardian = MemberSerializer()
 
     class Meta:
-        model = Kindred
+        model = JuniorMember
         fields = (
             'id',
             'member_id',
@@ -142,7 +135,7 @@ class AttendanceSerializer(serializers.ModelSerializer):
             'slug',
             'start_time',
             'end_time',
-            'attendance_date',
+            'timestamp',
             'created_at',
             'updated_at',
             'homecell',

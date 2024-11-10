@@ -1,6 +1,6 @@
 def asset_image_path(instance, filename):
     return 'cfidb/bookkeeper/{0}/assets/{1}'.format(
-        instance.church.name, 
+        instance.assembly.name, 
         filename
     )
     
@@ -48,9 +48,9 @@ def pledge_receipt_path(instance, filename):
 
 
 def remittance_receipt_path(instance, filename):
-    return 'cfidb/bookkeeper/{0}/remittances/{1}-{2}/'.format(
-        instance.branch.name, 
-        instance.timestamp, 
+    return 'cfidb/bookkeeper/remittances/{0}/{1}/{2}'.format(
+        instance.timestamp,
+        instance.assembly.name, 
         filename
     )
 

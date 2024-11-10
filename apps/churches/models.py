@@ -64,8 +64,17 @@ class Church(models.Model):
         
     def __str__(self):
         return self.name
-    
 
+    @property
+    def member_count(self):
+        return self.members.count()
+    
+    @property
+    def total_members(self):
+        members_count = self.members.count() 
+        minors_count = self.kindred.count()   
+        return members_count + minors_count
+    
 
 class ImageUpload(models.Model):
     name = models.CharField(max_length=255, blank=True)

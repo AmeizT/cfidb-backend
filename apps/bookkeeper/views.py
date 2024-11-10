@@ -78,10 +78,10 @@ class ExpenditureView(viewsets.ModelViewSet):
     #     return Expenditure.objects.filter(church__in=churches)
     
     
-class FixedExpenditureView(viewsets.ModelViewSet):
+class RegularExpenditureView(viewsets.ModelViewSet):
     queryset = FixedExpenditure.objects.all()
     permission_classes = [permissions.IsAuthenticated]
-    # parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
     def get_serializer_class(self):

@@ -1,4 +1,5 @@
 import uuid
+import calendar
 from PIL import Image
 from decimal import Decimal
 from django.db import models
@@ -34,7 +35,7 @@ class PaymentMethod(models.TextChoices):
     EFT = 'eft', 'EFT'
     MOBILE = 'mobile', 'Mobile'
     OTHER = 'other', 'Other'
-
+    
 
 class Tithe(models.Model):    
     branch = models.ForeignKey(
@@ -82,7 +83,7 @@ class Tithe(models.Model):
         
         
     def __str__(self):
-        return f'{self.branch.name}'
+        return f'{self.member}, {self.timestamp} - {self.branch.name}'
     
 
 class Pledge(models.Model):    
@@ -316,14 +317,29 @@ class FixedExpenditure(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
+    remittance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
     remarks = models.TextField(
         blank=True
     )
-    # receipt = models.FileField(
-    #     upload_to=fixed_expenditure_receipt_path,
-    #     null=True,
-    #     blank=True
-    # )
+    remittance_receipt = models.FileField(
+        upload_to=remittance_receipt_path,
+        null=True,
+        blank=True
+    )
+    remittance_moderator = models.ForeignKey(
+        User, 
+        on_delete=models.PROTECT, 
+        related_name='remittance_moderator', 
+        blank=True, 
+        null=True
+    )
+    is_remittance_verified = models.BooleanField(
+        default=False
+    )
     total = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -343,8 +359,42 @@ class FixedExpenditure(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.assembly.name} - {self.created_at}'
+        return f'{self.assembly.name} - {self.timestamp}'
+    
 
+    @receiver(post_save, sender=Tithe)
+    def update_remittance(sender, instance, **kwargs):
+        # Extract the month and year from the tithe's timestamp
+        tithe_month = instance.timestamp.month
+        tithe_year = instance.timestamp.year
+        branch = instance.branch
+
+        # Calculate the total tithes for that branch for the month and year
+        total_tithes = Tithe.objects.filter(
+            branch=branch, 
+            timestamp__year=tithe_year, 
+            timestamp__month=tithe_month
+        ).aggregate(Sum('amount'))['amount__sum'] or Decimal(0.00)
+
+        _, last_day_of_month = calendar.monthrange(tithe_year, tithe_month)
+
+        # Calculate 25% of the total tithes for remittance
+        remittance_amount = total_tithes * Decimal(0.25)
+
+        # Ensure the FixedExpenditure timestamp matches the Tithe timestamp
+        expenditure_timestamp = instance.timestamp  # Use the same date from the tithe
+
+        # Find or create FixedExpenditure for that branch with the same timestamp
+        fixed_expenditure, created = FixedExpenditure.objects.get_or_create(
+            assembly=branch,
+            timestamp=f"{tithe_year}-{tithe_month}-{last_day_of_month}",  # Ensure the same month and year
+            defaults={'remittance': remittance_amount}
+        )
+
+        # If it's not newly created, update the remittance value
+        if not created:
+            fixed_expenditure.remittance = remittance_amount
+            fixed_expenditure.save()
 
 class Income(models.Model):
     church = models.ForeignKey(
@@ -474,6 +524,7 @@ class BankStatement(models.Model):
         
     def __str__(self):
         return self.name
+    
 
 class AssetType(models.TextChoices):
     BUILDING = 'Building', 'Building'
@@ -497,43 +548,38 @@ class Condition(models.TextChoices):
 
 
 class Asset(models.Model):
-    from django.db import models
-
     assembly = models.ForeignKey(
         Church, 
         related_name='assets',
         on_delete=models.CASCADE
     )
-    serial_number = models.CharField(max_length=255, blank=True)
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name="created_assets",
-        blank=True,
-        null=True
-    )
-    name = models.CharField(max_length=255)
-    purchase_date = models.DateField()
+    item_code = models.CharField(max_length=255, blank=True)
+    item_name = models.CharField(max_length=255)
+    acquisition_date = models.DateField()
     asset_type = models.CharField(
         max_length=20,
         choices=AssetType.choices,
     )
-    description = models.TextField(blank=True)
-    supplier = models.CharField(max_length=255, blank=True)
-    quantity = models.PositiveIntegerField()
-    purchase_price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=Decimal('0.00')
-    )
-    current_value = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=Decimal('0.00')
-    )
     condition = models.CharField(
         max_length=20,
         choices=Condition.choices
+    )
+    description = models.TextField(max_length=2000, blank=True)
+    vendor = models.CharField(max_length=255, blank=True)
+    units = models.PositiveIntegerField()
+    acquisition_cost = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal('0.00')
+    )
+    residual = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=Decimal('0.00')
+    )
+    status = models.CharField(
+        max_length=255,
+        blank=True
     )
     image = ProcessedImageField(
         upload_to=asset_image_path,
@@ -543,16 +589,23 @@ class Asset(models.Model):
         blank=True,
         null=True,
     )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name="assets_editor",
+        blank=True,
+        null=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Asset'
         verbose_name_plural = 'Assets'
-        ordering = ['-created_at']
+        ordering = ['item_name']
 
     def __str__(self):
-        return f"{self.assembly.name} - {self.name}"
+        return f"{self.assembly.name} - {self.item_name}"
 
 class AssetImage(models.Model):
     asset = models.ForeignKey(
@@ -573,7 +626,7 @@ class AssetImage(models.Model):
         
         
     def __str__(self):
-        return self.asset.name
+        return self.asset.item_name
 
 
 class Expenditure(models.Model):
@@ -642,7 +695,6 @@ class Expenditure(models.Model):
         self.total = self.price * self.quantity
         super().save(*args, **kwargs)
 
-    
 
 class Payroll(models.Model):
     church = models.ForeignKey(
@@ -698,4 +750,16 @@ class Payroll(models.Model):
         self.gross = self.basic + self.allowances + self.benefits
         self.net = self.gross - self.deductions
         super().save(*args, **kwargs)
-    
+
+
+
+
+
+
+
+
+
+
+
+
+

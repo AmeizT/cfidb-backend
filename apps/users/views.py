@@ -73,6 +73,15 @@ class AuthHistoryView(viewsets.ModelViewSet):
     queryset = AuthHistory.objects.all()
     serializer_class = AuthHistorySerializer
     permission_classes = [permissions.AllowAny]
+
+
+class AssemblyAdminView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(church=self.request.user.church)  # type: ignore
     
     
     

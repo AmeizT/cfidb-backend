@@ -11,37 +11,59 @@ from apps.bookkeeper.models import (
 )
 from rest_framework import serializers
 from apps.people.serializers import MemberSerializer
-from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer
+from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer, UserNamesSerializer
 from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer
 from apps.bookkeeper.models import AssetImage
-        
-class AssetSerializer(serializers.ModelSerializer):
-    assembly = AssemblyISOSerializer()
-    class Meta:
-        model = Asset
-        fields = [
-            "name", 
-            "asset_type", 
-            "assembly", 
-            "condition",
-            "created_at",
-            "created_by",
-            "description", 
-            "id", 
-            "purchase_date", 
-            "purchase_price", 
-            "quantity", 
-            "serial_number", 
-            "supplier",
-            "updated_at",
-            "current_value",
-        ]
 
 
 class AssetImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssetImage
         fields = "__all__"
+        
+class AssetSerializer(serializers.ModelSerializer):
+    assembly = AssemblyISOSerializer()
+    asset_images = AssetImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Asset
+        fields = [
+            "id",
+            "assembly", 
+            "item_code", 
+            "item_name", 
+            "description", 
+            "condition",
+            "asset_type", 
+            "units",
+            "acquisition_date", 
+            "acquisition_cost", 
+            "residual",
+            "vendor",
+            "asset_images", 
+            "created_by",
+            "created_at",
+            "updated_at",
+
+            # "name", 
+            # "asset_type", 
+            # "assembly", 
+            # "condition",
+            # "created_at",
+            # "created_by",
+            # "description", 
+            # "id", 
+            # "purchase_date", 
+            # "purchase_price", 
+            # "quantity", 
+            # "serial_number", 
+            # "supplier",
+            # "updated_at",
+            # "current_value",
+        ]
+
+
+
 
 
 class CreateAssetSerializer(serializers.ModelSerializer):
@@ -53,20 +75,20 @@ class CreateAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Asset
         fields = [
-            "name", 
-            "asset_type", 
             "assembly", 
-            "condition",
-            "created_by",
+            "item_code", 
+            "item_name", 
             "description", 
-            "purchase_date", 
-            "purchase_price", 
-            "quantity",
+            "condition",
+            "asset_type", 
+            "units",
+            "acquisition_date", 
+            "acquisition_cost", 
+            "residual",
+            "vendor",
             "images", 
             "asset_images",
-            "serial_number", 
-            "supplier",
-            "current_value",
+            "created_by",
         ]
 
     def create(self, validated_data):
@@ -104,16 +126,20 @@ class CreateIncomeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FixedExpenditureSerializer(serializers.ModelSerializer):
+class CreateFixedExpenditureSerializer(serializers.ModelSerializer):
     class Meta:
         model = FixedExpenditure
         fields = '__all__'
 
 
-class CreateFixedExpenditureSerializer(serializers.ModelSerializer):
+class FixedExpenditureSerializer(serializers.ModelSerializer):
+    assembly = AssemblyISOSerializer()
+    remittance_moderator = UserNamesSerializer()
+    
     class Meta:
         model = FixedExpenditure
         fields = [
+            "id",
             "assembly",
             "created_by",
             "timestamp",
@@ -130,7 +156,11 @@ class CreateFixedExpenditureSerializer(serializers.ModelSerializer):
             "investment",
             "bank_charges",
             "insurance",
-            "remarks"
+            "remarks",
+            "remittance",
+            "remittance_receipt",
+            "remittance_moderator",
+            "is_remittance_verified"
         ]
         
         

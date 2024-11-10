@@ -16,7 +16,7 @@ class StandardPagination(pagination.PageNumberPagination):
 class ChurchView(viewsets.ModelViewSet):
     queryset = Church.objects.all()
     serializer_class = ChurchSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
     lookup_field = "name"
 
     def create(self, request, *args, **kwargs):
