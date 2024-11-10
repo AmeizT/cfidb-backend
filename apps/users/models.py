@@ -171,10 +171,10 @@ class AuthHistory(models.Model):
         return f'{self.created_at} - {self.user.first_name} {self.user.last_name}'
 
 
-
 class PermissionType(models.TextChoices):
     FINANCE = 'finance', 'Finance'
     ATTENDANCE = 'attendance', 'Attendance'
+    
 
 class DelegatePermission(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

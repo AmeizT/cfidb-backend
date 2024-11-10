@@ -128,12 +128,16 @@ class RegularExpenditureView(viewsets.ModelViewSet):
 
 class DelegateFinancePermission(BasePermission):
     def has_permission(self, request, view):
-        # Fetch the delegate permission for finance
+        # Grant full access to non-Delegate roles
+        if request.user.role != 'Delegate':
+            return view.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']
+
+        # Apply permissions only for Delegate role
         permission = DelegatePermission.objects.filter(
             user=request.user, permission_type=PermissionType.FINANCE
         ).first()
 
-        # If no permission object exists, deny access
+        # If no permission object exists for the Delegate, deny access
         if not permission:
             return False
 
@@ -141,23 +145,15 @@ class DelegateFinancePermission(BasePermission):
         if view.action in ['list', 'retrieve']:
             return True
 
-        if request.user.role == "Delegate":
-            if view.action == 'create' and permission.can_create:
-                return True
-            if view.action in ['update', 'partial_update'] and permission.can_edit:
-                return True
-            if view.action == 'destroy' and permission.can_delete:
-                return True
-        else:
-            if view.action == 'create':
-                return True
-            if view.action in ['update', 'partial_update']:
-                return True
-            if view.action == 'destroy':
-                return True
+        # For the Delegate role, enforce create/edit/delete permissions
+        if view.action == 'create' and permission.can_create:
+            return True
+        if view.action in ['update', 'partial_update'] and permission.can_edit:
+            return True
+        if view.action == 'destroy' and permission.can_delete:
+            return True
 
         return False
-
 
 
 class IncomeView(viewsets.ModelViewSet):

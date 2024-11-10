@@ -463,7 +463,7 @@ class Income(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.church.name} - {self.created_at}'
+        return f'{self.church.name} - {self.timestamp}'
     
     # def calculate_monthly_tithes(self):
     #     if self.timestamp is not None:
