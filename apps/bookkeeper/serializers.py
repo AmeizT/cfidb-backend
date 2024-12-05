@@ -238,3 +238,16 @@ class CreateTitheSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tithe
         fields = "__all__"
+
+
+
+from rest_framework import serializers
+
+class MonthlyIncomeSummarySerializer(serializers.Serializer):
+    month = serializers.IntegerField()
+    year = serializers.IntegerField()
+    total_offering = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_fundraising = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_thanksgiving = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_donations = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_income = serializers.DecimalField(max_digits=10, decimal_places=2)

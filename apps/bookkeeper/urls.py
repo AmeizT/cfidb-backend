@@ -4,6 +4,7 @@ from apps.bookkeeper.views import (
     AssetView,
     CreateTitheView,
     ExpenditureView,
+    MonthlyIncomeSummaryView,
     RegularExpenditureView,
     IncomeView,
     PayrollView,
@@ -27,6 +28,7 @@ router.register(r'tithes', TitheView, basename='tithes')
 router.register(r'remittance', RemittanceView, basename='remittance')
 router.register(r'get-remittance', RemittanceDataView, basename='remittance_data')
 router.register(r'shortfall', ShortfallPaymentView, basename='shortfall')
+router.register(r'monthly', MonthlyIncomeSummaryView, basename="monthly")
 
 urlpatterns = [
     path('', include(router.urls)),

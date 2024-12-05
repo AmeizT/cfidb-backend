@@ -464,6 +464,7 @@ class Income(models.Model):
 
     def __str__(self):
         return f'{self.church.name} - {self.timestamp}'
+
     
     # def calculate_monthly_tithes(self):
     #     if self.timestamp is not None:

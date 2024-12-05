@@ -27,12 +27,19 @@ from apps.bookkeeper.models import (
 )
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from apps.bookkeeper.pagination import StandardPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import BasePermission
 from apps.users.models import DelegatePermission, PermissionType
+
+
+
+
+from django.db.models import Sum
+from django.db.models.functions import ExtractMonth, ExtractYear
+from apps.bookkeeper.serializers import MonthlyIncomeSummarySerializer
 
 class AssetView(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
@@ -225,6 +232,12 @@ class CreateTitheView(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser, FormParser]
     http_method_names = ['post', 'put', 'patch', 'head']
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = CreateTitheSerializer(
@@ -249,6 +262,32 @@ class TitheView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore
+    
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class MonthlyIncomeSummaryView(viewsets.ViewSet):
+    def list(self, request):
+        # Fetch church-specific data
+        church_income = (
+            Income.objects.filter(church=request.user.church)
+            .annotate(month=ExtractMonth('timestamp'), year=ExtractYear('timestamp'))
+            .values('month', 'year')
+            .annotate(
+                total_offering=Sum('offering'),
+                total_fundraising=Sum('fundraising'),
+                total_thanksgiving=Sum('thanksgiving'),
+                total_donations=Sum('donations'),
+                total_income=Sum('offering') + Sum('fundraising') + Sum('thanksgiving') + Sum('donations')
+            )
+            .order_by('-year', '-month')
+        )
 
+        # Serialize and return data
+        serializer = MonthlyIncomeSummarySerializer(church_income, many=True)
+        return Response(serializer.data)
