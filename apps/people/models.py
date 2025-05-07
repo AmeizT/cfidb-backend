@@ -44,7 +44,7 @@ class Position(models.Model):
     def __str__(self):
         return self.name
 
-def generate_member_id():
+def generate_member_key():
     generate(size=12) 
 
 class Member(models.Model):
@@ -53,11 +53,13 @@ class Member(models.Model):
         on_delete=models.CASCADE, 
         related_name="members"
     )
-    member_id = models.CharField(
-        default=generate_member_id,
+    member_key = models.CharField(
+        default=generate_member_key,
         max_length=21,
         unique=True,
-        editable=False
+        editable=False,
+        null=True,
+        blank=True
     )
     created_by = models.ForeignKey(
         User, 
@@ -218,7 +220,7 @@ class Member(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['first_name', 'last_name', 'date_of_birth', 'phone_number'],
-                name='unique_member_identity'
+                name='unique_member_keyentity'
             )
         ]
 
@@ -247,11 +249,11 @@ class Member(models.Model):
             raise ValidationError({"marriage_date": "Marriage date cannot be set if member is not married."})
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.member_id}"
+        return f"{self.first_name} {self.last_name} - {self.member_key}"
 
     def save(self, *args, **kwargs):
-        if not self.member_id:
-            self.member_id = generate()
+        if not self.member_key:
+            self.member_key = generate()
 
         # if self.pk is None:
         #     if Member.objects.filter(
@@ -267,7 +269,7 @@ class Member(models.Model):
         
                 
 class JuniorMember(models.Model):
-    member_id = models.UUIDField(
+    member_key = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True

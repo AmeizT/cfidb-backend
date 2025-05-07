@@ -113,7 +113,7 @@ class MemberView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = MemberFilter
-    lookup_field = "member_id"
+    lookup_field = "member_key"
 
     def get_queryset(self):
         return Member.objects.filter(assembly=self.request.user.church)
@@ -146,7 +146,7 @@ class CreateTallyView(viewsets.ModelViewSet):
 class JuniorMemberView(viewsets.ModelViewSet):
     queryset = JuniorMember.objects.all()
     permission_classes = [permissions.IsAuthenticated]
-    lookup_field = "member_id"
+    lookup_field = "member_key"
 
     def get_serializer_class(self):    
         if self.action == 'create' or self.action == 'partial_update':

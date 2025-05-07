@@ -29,7 +29,7 @@ class BelongMemberSerializer(serializers.ModelSerializer):
         model = Member
         fields = (
             'id', 
-            'member_id', 
+            'member_key', 
             'full_name', 
             'first_name', 
             'last_name', 

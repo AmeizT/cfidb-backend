@@ -6,11 +6,11 @@ class MemberFilter(django_filters.FilterSet):
     fullname = django_filters.CharFilter(method="filter_fullname")
     first_name = django_filters.CharFilter(lookup_expr="iexact")
     last_name = django_filters.CharFilter(lookup_expr="iexact")
-    member_id = django_filters.UUIDFilter()
+    member_key = django_filters.UUIDFilter()
 
     class Meta:
         model = Member
-        fields = ["first_name", "last_name", "member_id"]
+        fields = ["first_name", "last_name", "member_key"]
 
     def filter_fullname(self, queryset, name, value):
         """Filters members by full name or part of it (case insensitive)."""

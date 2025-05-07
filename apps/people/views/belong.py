@@ -66,7 +66,7 @@ def verify_member_pin(request):
         return Response("Verification failed. Please check your details and try again.", status=404)
 
     if member.verify_access_pin(pin):
-        member_data = { "member_id": member.member_id, "id": member.id }
+        member_data = { "member_id": member.member_key, "id": member.id }
         return Response({"success": True, "member": member_data})
     else:
         return Response({"error": "Invalid PIN."}, status=403)

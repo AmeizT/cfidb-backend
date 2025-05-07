@@ -25,7 +25,7 @@ class MemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Member
         fields = '__all__'
-        read_only_fields = ['member_id', 'full_name', 'age', 'spouse_full_name']
+        read_only_fields = ['member_key', 'full_name', 'age', 'spouse_full_name']
 
     def get_full_name(self, obj):
         return obj.full_name
@@ -53,7 +53,7 @@ class JuniorMemberSerializer(serializers.ModelSerializer):
         model = JuniorMember
         fields = (
             'id',
-            'member_id',
+            'member_key',
             'avatar_fallback',
             'church',
             'first_name',

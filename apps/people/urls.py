@@ -26,5 +26,5 @@ urlpatterns = [
     path('belong/check-in/', verify_member_pin, name='verify-member-pin'),
     path('belong/set-pin/', set_member_pin, name='set-member-pin'),
     path('belong/reset-pin/', reset_member_pin, name='reset-member-pin'),
-    path('belong/member/<str:member_id>/', get_member_data, name='get_member_data'),
+    path('belong/member/<str:member_key>/', get_member_data, name='get_member_data'),
 ]

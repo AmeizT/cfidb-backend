@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='member',
             name='member_key',
-            field=models.CharField(default=apps.people.models.generate_member_id, editable=False, max_length=21, unique=True),
+            field=models.CharField(default=apps.people.models.generate_member_key, editable=False, max_length=21, unique=True),
         ),
     ]
