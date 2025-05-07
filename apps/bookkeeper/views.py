@@ -25,19 +25,15 @@ from apps.bookkeeper.models import (
     ShortfallPayment,
     Tithe
 )
+from django.db.models import Sum
 from django.shortcuts import render
 from rest_framework.response import Response
+from rest_framework.permissions import BasePermission
 from rest_framework import viewsets, permissions, status
 from apps.bookkeeper.pagination import StandardPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
-from rest_framework.permissions import BasePermission
+from rest_framework.parsers import MultiPartParser, FormParser
 from apps.users.models import DelegatePermission, PermissionType
-
-
-
-
-from django.db.models import Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
 from apps.bookkeeper.serializers import MonthlyIncomeSummarySerializer
 
@@ -76,19 +72,10 @@ class ExpenditureView(viewsets.ModelViewSet):
     def get_queryset(self):
         return Expenditure.objects.filter(assembly=self.request.user.church)  # type: ignore
     
-    
-    # def get_queryset(self):
-    #     user = self.request.user
-
-    #     churches = user.churches.all() # type: ignore
-
-    #     return Expenditure.objects.filter(church__in=churches)
-    
-    
+       
 class RegularExpenditureView(viewsets.ModelViewSet):
     queryset = FixedExpenditure.objects.all()
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
     def get_serializer_class(self):
@@ -136,7 +123,7 @@ class RegularExpenditureView(viewsets.ModelViewSet):
 class DelegateFinancePermission(BasePermission):
     def has_permission(self, request, view):
         # Grant full access to non-Delegate roles
-        if request.user.role != 'Delegate':
+        if request.user.roles != 'Delegate':
             return view.action in ['list', 'retrieve', 'create', 'update', 'partial_update', 'destroy']
 
         # Apply permissions only for Delegate role
@@ -175,7 +162,6 @@ class IncomeView(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Income.objects.filter(church=self.request.user.church)  # type: ignore
-
 
 
 class PayrollView(viewsets.ModelViewSet):
@@ -250,9 +236,7 @@ class CreateTitheView(viewsets.ModelViewSet):
     
 class TitheView(viewsets.ModelViewSet):
     queryset = Tithe.objects.all()
-    # serializer_class = TitheSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # parser_classes = [MultiPartParser, FormParser]
     pagination_class = StandardPagination
 
     def get_serializer_class(self):
@@ -263,7 +247,6 @@ class TitheView(viewsets.ModelViewSet):
     def get_queryset(self):
         return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore
     
-
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)

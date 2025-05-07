@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib import admin
-from apps.users.models import User, Account, AuthHistory, DelegatePermission
+from apps.users.models import User, Profile, AuthHistory, DelegatePermission, Role
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
@@ -55,7 +55,6 @@ class UserAdmin(BaseUserAdmin):
         'last_name', 
         'username', 
         'email', 
-        'role',
         'last_login', 
         'created_at', 
         'updated_at',
@@ -63,7 +62,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = (
         'church', 
         'is_admin', 
-        'role',
+        'roles',
     )
     fieldsets = (
         ('Authentication', {
@@ -75,18 +74,31 @@ class UserAdmin(BaseUserAdmin):
                 'first_name', 
                 'last_name', 
                 'username', 
-                'church', 
-                'churches',
-                'role',
                 'avatar', 
                 'avatar_fallback',
+            ]
+        }),
+        ('Workspace', {
+            'fields': [
+                'church', 
+                'assemblies',
+                'roles',
+            ]
+        }),
+        ('Account Recovery', {
+            'fields': [
+                'recovery_email', 
             ]
         }),
         ('Permissions', {
             'fields': [
                 'is_active', 
                 'is_admin', 
+                'is_staff',
+                'is_db_staff',
+                'is_academy_staff',
                 'is_superuser', 
+                'is_onboarded', 
             ]
         }),
     )
@@ -100,8 +112,8 @@ class UserAdmin(BaseUserAdmin):
                 'username', 
                 'email', 
                 'church', 
-                'churches',
-                'role',
+                'assemblies',
+                'roles',
                 'password', 
                 're_password'
             ),
@@ -110,9 +122,15 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'username',)
     ordering = ()
     filter_horizontal = ()
+    readonly_fields = (
+        'is_db_staff',
+        'is_academy_staff',
+        'is_staff',
+    )
 
 admin.site.register(User, UserAdmin)
-admin.site.register(Account)
+admin.site.register(Profile)
 admin.site.register(AuthHistory)
 admin.site.register(DelegatePermission)
+admin.site.register(Role)
 

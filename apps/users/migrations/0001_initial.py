@@ -7,6 +7,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import uuid
 
+import apps.users.utils.base_urls
+
 
 class Migration(migrations.Migration):
 
@@ -29,7 +31,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(max_length=255, verbose_name='Last Name')),
                 ('username', models.CharField(max_length=36, unique=True, verbose_name='username')),
                 ('email', models.EmailField(max_length=255, unique=True, verbose_name='email')),
-                ('avatar', models.ImageField(blank=True, null=True, upload_to=apps.users.utils.avatarURL)),
+                ('avatar', models.ImageField(blank=True, null=True, upload_to=apps.users.utils.base_urls.avatarURL)),
                 ('avatar_fallback', models.CharField(blank=True, max_length=255)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),

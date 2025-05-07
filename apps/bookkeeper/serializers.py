@@ -10,7 +10,7 @@ from apps.bookkeeper.models import (
     Tithe
 )
 from rest_framework import serializers
-from apps.people.serializers import MemberSerializer
+from apps.people.serializers.database import MemberSerializer
 from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer, UserNamesSerializer
 from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer
 from apps.bookkeeper.models import AssetImage

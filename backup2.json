@@ -1,0 +1,8276 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2025-01-19T21:29:19.305Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "1",
+    "object_repr": "Ntabi Nyeku",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2025-01-19T21:35:24.396Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "3",
+    "object_repr": "Ntabi Nyeku",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2025-01-19T21:38:19.120Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "4",
+    "object_repr": "Ntabi Nyeku",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2025-01-19T22:53:07.418Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "6",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2025-01-19T22:53:07.421Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "5",
+    "object_repr": "Ntabi Nyeku",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2025-01-19T22:55:00.248Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "7",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2025-01-19T22:59:05.713Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "8",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2025-01-19T23:02:38.750Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "9",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2025-01-19T23:07:17.022Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "10",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2025-01-19T23:08:18.938Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "11",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2025-01-20T08:18:28.417Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "12",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2025-01-20T08:51:18.903Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "13",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2025-01-20T09:07:51.152Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "14",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2025-01-20T09:53:18.742Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "15",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2025-01-20T10:18:51.503Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "1",
+    "object_repr": "Admin",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2025-01-20T10:18:54.098Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "2",
+    "object_repr": "Delegate",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2025-01-20T10:18:56.234Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "3",
+    "object_repr": "Dean",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2025-01-20T10:18:58.197Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "4",
+    "object_repr": "Moderator",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2025-01-20T10:19:00.367Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "5",
+    "object_repr": "Overseer",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2025-01-20T10:19:02.797Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "6",
+    "object_repr": "Pastor",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2025-01-20T10:19:05.800Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "7",
+    "object_repr": "President",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2025-01-20T10:19:08.252Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "8",
+    "object_repr": "Secretary",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2025-01-20T10:19:10.902Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "9",
+    "object_repr": "Secretary General",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2025-01-20T10:19:13.367Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "10",
+    "object_repr": "Senior Pastor",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2025-01-20T10:19:15.835Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "11",
+    "object_repr": "Student",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2025-01-20T10:19:18.687Z",
+    "user": 2,
+    "content_type": 48,
+    "object_id": "12",
+    "object_repr": "Student Representative",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2025-01-20T10:20:28.661Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "2",
+    "object_repr": "Tawanda Zhuwao",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Roles\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2025-01-20T11:48:37.004Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "2",
+    "object_repr": "Tawanda Zhuwao",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Church\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2025-01-20T21:07:03.256Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "16",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2025-01-21T21:44:17.821Z",
+    "user": 2,
+    "content_type": 14,
+    "object_id": "1",
+    "object_repr": "Orwetoveni - 2025-01-21 23:44:01+02:00",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2025-01-25T16:38:55.422Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "1",
+    "object_repr": "Prayer for our assembly",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2025-01-25T16:55:52.944Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2025-01-25T16:56:27.930Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "2",
+    "object_repr": "Oikos",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2025-01-25T16:57:06.866Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2025-01-25T16:58:19.955Z",
+    "user": 2,
+    "content_type": 41,
+    "object_id": "1",
+    "object_repr": "Serve & Shine: Community Outreach Mission",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2025-01-25T16:58:35.318Z",
+    "user": 2,
+    "content_type": 41,
+    "object_id": "2",
+    "object_repr": "Pray Without Ceasing: 24-Hour Digital Prayer Chain",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2025-01-25T17:00:32.149Z",
+    "user": 2,
+    "content_type": 41,
+    "object_id": "3",
+    "object_repr": "Serve & Shine: Community Outreach Mission",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2025-01-25T17:00:47.411Z",
+    "user": 2,
+    "content_type": 41,
+    "object_id": "4",
+    "object_repr": "Prayer Warriors: Healing Through Faith",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2025-02-12T06:46:05.181Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Body\", \"Likes\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2025-02-12T06:46:49.146Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "2",
+    "object_repr": "Oikos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Body\", \"Likes\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2025-02-12T06:57:12.100Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2025-02-12T12:57:20.912Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2025-02-12T12:57:58.954Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2025-02-12T12:58:22.701Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 45,
+  "fields": {
+    "action_time": "2025-02-12T12:58:46.362Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 46,
+  "fields": {
+    "action_time": "2025-03-10T14:44:32.889Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.0",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 47,
+  "fields": {
+    "action_time": "2025-03-10T14:45:15.768Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.1",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 48,
+  "fields": {
+    "action_time": "2025-03-10T15:17:49.493Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 49,
+  "fields": {
+    "action_time": "2025-03-10T15:44:02.812Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.3",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 50,
+  "fields": {
+    "action_time": "2025-03-10T15:44:56.274Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.4",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 51,
+  "fields": {
+    "action_time": "2025-03-10T15:45:30.725Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.5",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 52,
+  "fields": {
+    "action_time": "2025-03-10T15:46:16.313Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.6",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 53,
+  "fields": {
+    "action_time": "2025-03-10T15:52:19.636Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.7",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 54,
+  "fields": {
+    "action_time": "2025-03-10T15:53:33.948Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.8",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 55,
+  "fields": {
+    "action_time": "2025-03-10T16:06:01.060Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.9",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 56,
+  "fields": {
+    "action_time": "2025-03-10T16:08:10.707Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.10",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 57,
+  "fields": {
+    "action_time": "2025-03-10T16:10:52.385Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.11",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 58,
+  "fields": {
+    "action_time": "2025-03-10T16:13:10.263Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.12",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 59,
+  "fields": {
+    "action_time": "2025-03-10T18:02:06.782Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.13",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 60,
+  "fields": {
+    "action_time": "2025-03-10T18:06:38.210Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.14",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 61,
+  "fields": {
+    "action_time": "2025-03-10T18:07:06.838Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.15",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 62,
+  "fields": {
+    "action_time": "2025-03-10T18:19:34.264Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.16",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 63,
+  "fields": {
+    "action_time": "2025-03-10T18:33:27.674Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.17",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 64,
+  "fields": {
+    "action_time": "2025-03-10T18:37:58.641Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.18",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 65,
+  "fields": {
+    "action_time": "2025-03-10T18:38:50.506Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.19",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 66,
+  "fields": {
+    "action_time": "2025-03-10T18:43:20.392Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.20",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 67,
+  "fields": {
+    "action_time": "2025-03-10T18:43:52.685Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.21",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 68,
+  "fields": {
+    "action_time": "2025-03-10T18:49:39.241Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.22",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 69,
+  "fields": {
+    "action_time": "2025-03-10T18:52:18.350Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.23",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 70,
+  "fields": {
+    "action_time": "2025-03-10T21:31:31.137Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.24",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 71,
+  "fields": {
+    "action_time": "2025-03-10T21:39:46.694Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.25",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 72,
+  "fields": {
+    "action_time": "2025-03-10T21:42:44.650Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.26",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 73,
+  "fields": {
+    "action_time": "2025-03-10T21:57:43.282Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.27",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 74,
+  "fields": {
+    "action_time": "2025-03-10T22:01:07.404Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.28",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 75,
+  "fields": {
+    "action_time": "2025-03-10T22:03:48.220Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.29",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 76,
+  "fields": {
+    "action_time": "2025-03-11T16:11:56.750Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.30",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 77,
+  "fields": {
+    "action_time": "2025-03-11T16:31:40.565Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.31",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 78,
+  "fields": {
+    "action_time": "2025-03-11T16:33:22.122Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.32",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 79,
+  "fields": {
+    "action_time": "2025-03-11T16:34:32.808Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.33",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 80,
+  "fields": {
+    "action_time": "2025-03-11T16:35:11.742Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.34",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 81,
+  "fields": {
+    "action_time": "2025-03-11T17:17:06.023Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.35",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 82,
+  "fields": {
+    "action_time": "2025-03-11T17:17:41.650Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.36",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 83,
+  "fields": {
+    "action_time": "2025-03-11T17:18:15.931Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.37",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 84,
+  "fields": {
+    "action_time": "2025-03-11T17:18:45.563Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.38",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 85,
+  "fields": {
+    "action_time": "2025-03-11T17:19:43.279Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.39",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 86,
+  "fields": {
+    "action_time": "2025-03-11T17:20:36.363Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.40",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 87,
+  "fields": {
+    "action_time": "2025-03-11T17:21:44.182Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.41",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 88,
+  "fields": {
+    "action_time": "2025-03-11T17:21:57.245Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.42",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 89,
+  "fields": {
+    "action_time": "2025-03-11T17:22:09.926Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.43",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 90,
+  "fields": {
+    "action_time": "2025-03-11T20:16:40.395Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.44",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 91,
+  "fields": {
+    "action_time": "2025-03-11T20:40:38.834Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.45",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 92,
+  "fields": {
+    "action_time": "2025-03-12T13:47:57.936Z",
+    "user": 2,
+    "content_type": 14,
+    "object_id": "2",
+    "object_repr": "Orwetoveni - 2025-02-28 15:47:27+02:00",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 93,
+  "fields": {
+    "action_time": "2025-03-12T13:49:24.152Z",
+    "user": 2,
+    "content_type": 14,
+    "object_id": "1",
+    "object_repr": "Orwetoveni - 2025-01-21 21:44:01+00:00",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 94,
+  "fields": {
+    "action_time": "2025-03-12T13:49:24.153Z",
+    "user": 2,
+    "content_type": 14,
+    "object_id": "2",
+    "object_repr": "Orwetoveni - 2025-02-28 13:47:27+00:00",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 95,
+  "fields": {
+    "action_time": "2025-03-12T13:49:45.495Z",
+    "user": 2,
+    "content_type": 14,
+    "object_id": "3",
+    "object_repr": "Orwetoveni - 2025-02-28 15:49:33+02:00",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 96,
+  "fields": {
+    "action_time": "2025-03-12T13:50:39.890Z",
+    "user": 2,
+    "content_type": 18,
+    "object_id": "1",
+    "object_repr": "None, 2025-02-28 - Orwetoveni",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 97,
+  "fields": {
+    "action_time": "2025-03-12T17:21:01.019Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 98,
+  "fields": {
+    "action_time": "2025-03-12T17:21:33.350Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 99,
+  "fields": {
+    "action_time": "2025-03-12T17:22:07.458Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 100,
+  "fields": {
+    "action_time": "2025-03-12T17:22:57.726Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 101,
+  "fields": {
+    "action_time": "2025-03-12T17:23:21.792Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 102,
+  "fields": {
+    "action_time": "2025-03-12T20:35:56.903Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 103,
+  "fields": {
+    "action_time": "2025-03-12T20:36:27.904Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 104,
+  "fields": {
+    "action_time": "2025-03-12T20:45:51.105Z",
+    "user": 2,
+    "content_type": 41,
+    "object_id": "5",
+    "object_repr": "Prayer Warriors - Healing Through Faith",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 105,
+  "fields": {
+    "action_time": "2025-03-12T20:47:55.313Z",
+    "user": 2,
+    "content_type": 40,
+    "object_id": "1",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 106,
+  "fields": {
+    "action_time": "2025-03-14T17:01:45.769Z",
+    "user": 2,
+    "content_type": 20,
+    "object_id": "3",
+    "object_repr": "Orwetoveni - 2025-02-28",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 107,
+  "fields": {
+    "action_time": "2025-03-14T17:03:49.685Z",
+    "user": 2,
+    "content_type": 20,
+    "object_id": "4",
+    "object_repr": "Orwetoveni - 2025-04-30",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 108,
+  "fields": {
+    "action_time": "2025-03-15T18:40:02.868Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 109,
+  "fields": {
+    "action_time": "2025-03-16T13:02:13.537Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Slug\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 110,
+  "fields": {
+    "action_time": "2025-03-16T13:02:28.290Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 111,
+  "fields": {
+    "action_time": "2025-03-16T14:04:32.844Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\", \"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 112,
+  "fields": {
+    "action_time": "2025-03-16T14:19:00.236Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Category\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 113,
+  "fields": {
+    "action_time": "2025-03-16T14:43:30.191Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 114,
+  "fields": {
+    "action_time": "2025-03-16T14:44:20.668Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 115,
+  "fields": {
+    "action_time": "2025-03-16T14:45:07.233Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 116,
+  "fields": {
+    "action_time": "2025-03-16T14:46:51.942Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 117,
+  "fields": {
+    "action_time": "2025-03-16T14:48:32.006Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 118,
+  "fields": {
+    "action_time": "2025-03-16T15:23:31.996Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 119,
+  "fields": {
+    "action_time": "2025-03-16T15:24:07.892Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Revolutionizing Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 120,
+  "fields": {
+    "action_time": "2025-03-16T15:45:17.456Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.46",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 121,
+  "fields": {
+    "action_time": "2025-03-16T15:46:21.194Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.47",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 122,
+  "fields": {
+    "action_time": "2025-03-16T15:48:11.885Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.48",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Content\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 123,
+  "fields": {
+    "action_time": "2025-03-16T17:37:57.456Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.49",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 124,
+  "fields": {
+    "action_time": "2025-03-16T18:14:52.618Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Slug\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 125,
+  "fields": {
+    "action_time": "2025-03-16T18:35:24.802Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 126,
+  "fields": {
+    "action_time": "2025-03-16T20:08:43.975Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "2",
+    "object_repr": "Increase our faith",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 127,
+  "fields": {
+    "action_time": "2025-03-16T20:10:20.207Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "2",
+    "object_repr": "Increase our faith",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Priority\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 128,
+  "fields": {
+    "action_time": "2025-03-16T20:12:03.239Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "3",
+    "object_repr": "Political crisis in South Sudan",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 129,
+  "fields": {
+    "action_time": "2025-03-16T20:12:09.469Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "2",
+    "object_repr": "Increase our faith",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Priority\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 130,
+  "fields": {
+    "action_time": "2025-03-20T20:02:12.645Z",
+    "user": 2,
+    "content_type": 52,
+    "object_id": "1",
+    "object_repr": "Introduction",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 131,
+  "fields": {
+    "action_time": "2025-03-20T21:39:46.784Z",
+    "user": 2,
+    "content_type": 52,
+    "object_id": "1",
+    "object_repr": "Introduction",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 132,
+  "fields": {
+    "action_time": "2025-03-20T21:40:28.390Z",
+    "user": 2,
+    "content_type": 52,
+    "object_id": "1",
+    "object_repr": "Introduction",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 133,
+  "fields": {
+    "action_time": "2025-03-20T21:40:39.118Z",
+    "user": 2,
+    "content_type": 52,
+    "object_id": "1",
+    "object_repr": "Introduction",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 134,
+  "fields": {
+    "action_time": "2025-03-20T22:23:43.447Z",
+    "user": 2,
+    "content_type": 52,
+    "object_id": "1",
+    "object_repr": "Introduction",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 135,
+  "fields": {
+    "action_time": "2025-03-22T09:11:51.576Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "1",
+    "object_repr": "Yemurai Masunzambwa",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 136,
+  "fields": {
+    "action_time": "2025-03-22T09:12:26.513Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "2",
+    "object_repr": "Douglas Mudimba",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 137,
+  "fields": {
+    "action_time": "2025-03-23T06:21:30.582Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "3",
+    "object_repr": "Tawanda Zhuwao",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 138,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.850Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "23",
+    "object_repr": "Test20 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 139,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.852Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "22",
+    "object_repr": "Test19 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 140,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.853Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "21",
+    "object_repr": "Test18 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 141,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.853Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "20",
+    "object_repr": "Test17 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 142,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.854Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "19",
+    "object_repr": "Test16 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 143,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.855Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "18",
+    "object_repr": "Test15 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 144,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.856Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "17",
+    "object_repr": "Test14 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 145,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.856Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "16",
+    "object_repr": "Test13 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 146,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.857Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "15",
+    "object_repr": "Test12 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 147,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.858Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "14",
+    "object_repr": "Test11 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 148,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.858Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "13",
+    "object_repr": "Test10 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 149,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.859Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "12",
+    "object_repr": "Test9 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 150,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.862Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "11",
+    "object_repr": "Test8 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 151,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.863Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "10",
+    "object_repr": "Test7 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 152,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.864Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "9",
+    "object_repr": "Test6 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 153,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.866Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "8",
+    "object_repr": "Test5 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 154,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.868Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "7",
+    "object_repr": "Test4 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 155,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.870Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "6",
+    "object_repr": "Test3 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 156,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.870Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "5",
+    "object_repr": "Test2 Member",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 157,
+  "fields": {
+    "action_time": "2025-03-23T07:43:24.871Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "4",
+    "object_repr": "John Doe",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 158,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.905Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "63",
+    "object_repr": "Emma Hall",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 159,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.910Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "62",
+    "object_repr": "Noah Walker",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 160,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.910Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "61",
+    "object_repr": "Mia Lewis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 161,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.911Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "60",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 162,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.912Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "59",
+    "object_repr": "Isabella Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 163,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.912Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "58",
+    "object_repr": "Liam White",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 164,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.913Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "57",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 165,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.914Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "56",
+    "object_repr": "Mason Moore",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 166,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.914Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "55",
+    "object_repr": "Amelia Thomas",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 167,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.915Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "54",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 168,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.916Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "53",
+    "object_repr": "Charlotte Wilson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 169,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.916Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "52",
+    "object_repr": "Benjamin Davis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 170,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.917Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "51",
+    "object_repr": "Olivia Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 171,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.918Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "50",
+    "object_repr": "James Lee",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 172,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.918Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "49",
+    "object_repr": "Sophia Anderson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 173,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.919Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "48",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 174,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.919Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "47",
+    "object_repr": "Emily Johnson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 175,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.920Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "46",
+    "object_repr": "David Brown",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 176,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.921Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "45",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 177,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.921Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "44",
+    "object_repr": "John Doe",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 178,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.922Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "43",
+    "object_repr": "Emma Hall",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 179,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.922Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "42",
+    "object_repr": "Noah Walker",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 180,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.923Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "41",
+    "object_repr": "Mia Lewis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 181,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.923Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "40",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 182,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.924Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "39",
+    "object_repr": "Isabella Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 183,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.925Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "38",
+    "object_repr": "Liam White",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 184,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.925Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "37",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 185,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.926Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "36",
+    "object_repr": "Mason Moore",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 186,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.926Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "35",
+    "object_repr": "Amelia Thomas",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 187,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.927Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "34",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 188,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.927Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "33",
+    "object_repr": "Charlotte Wilson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 189,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.928Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "32",
+    "object_repr": "Benjamin Davis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 190,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.928Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "31",
+    "object_repr": "Olivia Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 191,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.929Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "30",
+    "object_repr": "James Lee",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 192,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.929Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "29",
+    "object_repr": "Sophia Anderson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 193,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.930Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "28",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 194,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.931Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "27",
+    "object_repr": "Emily Johnson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 195,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.931Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "26",
+    "object_repr": "David Brown",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 196,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.932Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "25",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 197,
+  "fields": {
+    "action_time": "2025-03-23T07:45:18.932Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "24",
+    "object_repr": "John Doe",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 198,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.684Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "113",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 199,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.686Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "112",
+    "object_repr": "James Lee",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 200,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.686Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "111",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 201,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.687Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "110",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 202,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.688Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "109",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 203,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.688Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "108",
+    "object_repr": "Noah Walker",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 204,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.689Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "107",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 205,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.690Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "106",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 206,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.690Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "105",
+    "object_repr": "James Lee",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 207,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.691Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "104",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 208,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.692Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "103",
+    "object_repr": "Olivia Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 209,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.692Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "102",
+    "object_repr": "Sophia Anderson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 210,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.693Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "101",
+    "object_repr": "Charlotte Wilson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 211,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.694Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "100",
+    "object_repr": "David Brown",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 212,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.696Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "99",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 213,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.697Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "98",
+    "object_repr": "Amelia Thomas",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 214,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.698Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "97",
+    "object_repr": "Noah Walker",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 215,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.698Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "96",
+    "object_repr": "David Brown",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 216,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.699Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "95",
+    "object_repr": "David Brown",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 217,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.699Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "94",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 218,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.700Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "93",
+    "object_repr": "Sophia Anderson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 219,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.700Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "92",
+    "object_repr": "Mia Lewis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 220,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.701Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "91",
+    "object_repr": "James Lee",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 221,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.702Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "90",
+    "object_repr": "Noah Walker",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 222,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.702Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "89",
+    "object_repr": "Emma Hall",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 223,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.703Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "88",
+    "object_repr": "Mason Moore",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 224,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.703Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "87",
+    "object_repr": "Emma Hall",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 225,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.704Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "86",
+    "object_repr": "Sophia Anderson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 226,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.705Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "85",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 227,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.705Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "84",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 228,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.706Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "83",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 229,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.706Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "82",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 230,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.707Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "81",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 231,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.707Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "80",
+    "object_repr": "John Doe",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 232,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.708Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "79",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 233,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.709Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "78",
+    "object_repr": "Ethan Taylor",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 234,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.709Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "77",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 235,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.710Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "76",
+    "object_repr": "Emma Hall",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 236,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.711Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "75",
+    "object_repr": "Daniel Martins",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 237,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.711Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "74",
+    "object_repr": "Mason Moore",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 238,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.712Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "73",
+    "object_repr": "Isabella Harris",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 239,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.712Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "72",
+    "object_repr": "Emily Johnson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 240,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.713Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "71",
+    "object_repr": "Liam White",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 241,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.713Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "70",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 242,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.714Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "69",
+    "object_repr": "Charlotte Wilson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 243,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.714Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "68",
+    "object_repr": "Jane Smith",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 244,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.715Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "67",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 245,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.716Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "66",
+    "object_repr": "Lucas Clark",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 246,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.716Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "65",
+    "object_repr": "Ava Jackson",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 247,
+  "fields": {
+    "action_time": "2025-03-23T07:48:25.717Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "64",
+    "object_repr": "Benjamin Davis",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 248,
+  "fields": {
+    "action_time": "2025-03-23T16:51:55.925Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Ministry\", \"Position\", \"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 249,
+  "fields": {
+    "action_time": "2025-03-24T08:52:39.909Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Church\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 250,
+  "fields": {
+    "action_time": "2025-03-25T20:14:12.820Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 251,
+  "fields": {
+    "action_time": "2025-03-25T20:17:08.186Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 252,
+  "fields": {
+    "action_time": "2025-03-25T20:20:24.337Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 253,
+  "fields": {
+    "action_time": "2025-03-25T20:22:15.404Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 254,
+  "fields": {
+    "action_time": "2025-03-25T23:33:54.470Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 255,
+  "fields": {
+    "action_time": "2025-03-25T23:36:22.832Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 256,
+  "fields": {
+    "action_time": "2025-03-25T23:39:38.992Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "4",
+    "object_repr": "Please pray for my health",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 257,
+  "fields": {
+    "action_time": "2025-03-26T00:04:29.388Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "5",
+    "object_repr": "Urgent Financial Breakthrough",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 258,
+  "fields": {
+    "action_time": "2025-03-27T13:18:23.391Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "5",
+    "object_repr": "Urgent Financial Breakthrough",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 259,
+  "fields": {
+    "action_time": "2025-03-27T13:18:54.971Z",
+    "user": 2,
+    "content_type": 24,
+    "object_id": "6",
+    "object_repr": "Prayer for Peace and Calm in Our Daily Lives",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 260,
+  "fields": {
+    "action_time": "2025-03-27T14:10:27.244Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 261,
+  "fields": {
+    "action_time": "2025-03-27T14:18:13.477Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 262,
+  "fields": {
+    "action_time": "2025-03-27T14:18:32.986Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "6",
+    "object_repr": "Mutare",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 263,
+  "fields": {
+    "action_time": "2025-03-27T14:18:46.385Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 264,
+  "fields": {
+    "action_time": "2025-03-27T14:19:41.218Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 265,
+  "fields": {
+    "action_time": "2025-03-27T14:19:56.765Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 266,
+  "fields": {
+    "action_time": "2025-03-27T14:21:45.909Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 267,
+  "fields": {
+    "action_time": "2025-03-27T14:22:10.604Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "2",
+    "object_repr": "Orwetoveni",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 268,
+  "fields": {
+    "action_time": "2025-03-27T14:22:29.555Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "6",
+    "object_repr": "Mutare",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 269,
+  "fields": {
+    "action_time": "2025-03-27T14:22:46.633Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "6",
+    "object_repr": "Mutare",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 270,
+  "fields": {
+    "action_time": "2025-03-27T14:26:44.726Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "5",
+    "object_repr": "Opuwo",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 271,
+  "fields": {
+    "action_time": "2025-03-27T15:59:25.506Z",
+    "user": 2,
+    "content_type": 7,
+    "object_id": "2",
+    "object_repr": "Tawanda Zhuwao",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 272,
+  "fields": {
+    "action_time": "2025-03-27T16:05:52.379Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "3",
+    "object_repr": "Lagos",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 273,
+  "fields": {
+    "action_time": "2025-03-27T16:06:20.815Z",
+    "user": 2,
+    "content_type": 11,
+    "object_id": "6",
+    "object_repr": "Mutare",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Avatar fallback\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 274,
+  "fields": {
+    "action_time": "2025-03-29T08:24:23.669Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 275,
+  "fields": {
+    "action_time": "2025-03-29T08:24:52.135Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "Everything in One Place: Introducing CFI Workspace",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Image\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 276,
+  "fields": {
+    "action_time": "2025-03-29T08:32:27.453Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Subtitle\", \"Slug\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 277,
+  "fields": {
+    "action_time": "2025-03-29T09:38:33.822Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 278,
+  "fields": {
+    "action_time": "2025-03-29T09:39:24.411Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 279,
+  "fields": {
+    "action_time": "2025-03-29T09:40:31.311Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 280,
+  "fields": {
+    "action_time": "2025-03-29T09:41:42.925Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 281,
+  "fields": {
+    "action_time": "2025-03-29T09:43:26.255Z",
+    "user": 2,
+    "content_type": 51,
+    "object_id": "1",
+    "object_repr": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Body\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 282,
+  "fields": {
+    "action_time": "2025-03-31T15:26:58.596Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 283,
+  "fields": {
+    "action_time": "2025-03-31T15:28:14.362Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "132",
+    "object_repr": "Noah Walker - <function generate at 0x103238860>",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Ministry\", \"Position\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 284,
+  "fields": {
+    "action_time": "2025-03-31T15:28:36.910Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "131",
+    "object_repr": "Mia Lewis - XO7FOOfTcWVAFQTbbq51k",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Ministry\", \"Position\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 285,
+  "fields": {
+    "action_time": "2025-03-31T15:28:50.333Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "130",
+    "object_repr": "Lucas Clark - _uDFJZQ2zeZZ2M1GnCaso",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Ministry\", \"Position\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 286,
+  "fields": {
+    "action_time": "2025-03-31T15:34:59.239Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "132",
+    "object_repr": "Noah Walker - <function generate at 0x103238860>",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 287,
+  "fields": {
+    "action_time": "2025-03-31T15:35:06.780Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "129",
+    "object_repr": "Isabella Harris - IOi6Mot5M1JqFwLoC4-l_",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Ministry\", \"Position\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 288,
+  "fields": {
+    "action_time": "2025-03-31T15:58:35.277Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall - tUHRwuNqqqt2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Gender\", \"Spouse\", \"Phone number\", \"Membership status\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 289,
+  "fields": {
+    "action_time": "2025-03-31T15:59:28.386Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "127",
+    "object_repr": "Ava Jackson - hDHQu3bV_AcJ_cNgQsI2m",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Relationship\", \"Marriage date\", \"Phone number\", \"Membership status\", \"Ministry\", \"Position\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 290,
+  "fields": {
+    "action_time": "2025-03-31T16:03:51.615Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "134",
+    "object_repr": "Ava Jackson - tu9eyd2C-YD1_PByhWA01",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 291,
+  "fields": {
+    "action_time": "2025-03-31T16:04:25.683Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "134",
+    "object_repr": "Ava Jackson - tu9eyd2C-YD1_PByhWA01",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Assembly\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 292,
+  "fields": {
+    "action_time": "2025-03-31T19:59:02.194Z",
+    "user": 2,
+    "content_type": 54,
+    "object_id": "1",
+    "object_repr": "Deacon",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 293,
+  "fields": {
+    "action_time": "2025-03-31T19:59:19.921Z",
+    "user": 2,
+    "content_type": 53,
+    "object_id": "1",
+    "object_repr": "Praise and Worship",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 294,
+  "fields": {
+    "action_time": "2025-03-31T19:59:42.296Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "134",
+    "object_repr": "Ava Jackson - tu9eyd2C-YD1_PByhWA01",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 295,
+  "fields": {
+    "action_time": "2025-03-31T19:59:59.441Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall - tUHRwuNqqqt2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Ministries\", \"Positions\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 296,
+  "fields": {
+    "action_time": "2025-03-31T20:00:27.054Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall - tUHRwuNqqqt2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Assembly\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 297,
+  "fields": {
+    "action_time": "2025-03-31T20:06:18.192Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "128",
+    "object_repr": "Liam Hall - Ra5KtYfy-g7mvueMGtwWm",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Prefix\", \"Last name\", \"Phone number\", \"Membership status\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 298,
+  "fields": {
+    "action_time": "2025-03-31T20:41:18.464Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "133",
+    "object_repr": "Emma Hall - tUHRwuNqqqt2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Place of birth\", \"Relationship\", \"Marriage date\", \"Address\", \"Address line2\", \"Province\", \"Membership status\", \"Baptized where\", \"Confirmation date\", \"Education level\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 299,
+  "fields": {
+    "action_time": "2025-03-31T20:47:22.219Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "128",
+    "object_repr": "Liam Hall - Ra5KtYfy-g7mvueMGtwWm",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Spouse\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 300,
+  "fields": {
+    "action_time": "2025-03-31T22:05:27.038Z",
+    "user": 2,
+    "content_type": 33,
+    "object_id": "128",
+    "object_repr": "Liam Hall - Ra5KtYfy-g7mvueMGtwWm",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Employer\", \"Education level\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 301,
+  "fields": {
+    "action_time": "2025-04-02T16:23:18.559Z",
+    "user": 2,
+    "content_type": 49,
+    "object_id": "1",
+    "object_repr": "Terms v1.50",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\"]}}]"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 2,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 2,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 2,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 2,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 3,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 3,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 3,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 3,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 4,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 4,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 4,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 4,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 5,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 5,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 5,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 5,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add Login History",
+    "content_type": 6,
+    "codename": "add_loginhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change Login History",
+    "content_type": 6,
+    "codename": "change_loginhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete Login History",
+    "content_type": 6,
+    "codename": "delete_loginhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view Login History",
+    "content_type": 6,
+    "codename": "view_loginhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 7,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 7,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 7,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 7,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add account",
+    "content_type": 8,
+    "codename": "add_account"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change account",
+    "content_type": 8,
+    "codename": "change_account"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete account",
+    "content_type": 8,
+    "codename": "delete_account"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view account",
+    "content_type": 8,
+    "codename": "view_account"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add Auth History",
+    "content_type": 9,
+    "codename": "add_authhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change Auth History",
+    "content_type": 9,
+    "codename": "change_authhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete Auth History",
+    "content_type": 9,
+    "codename": "delete_authhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view Auth History",
+    "content_type": 9,
+    "codename": "view_authhistory"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add delegate permission",
+    "content_type": 10,
+    "codename": "add_delegatepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change delegate permission",
+    "content_type": 10,
+    "codename": "change_delegatepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete delegate permission",
+    "content_type": 10,
+    "codename": "delete_delegatepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view delegate permission",
+    "content_type": 10,
+    "codename": "view_delegatepermission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add church",
+    "content_type": 11,
+    "codename": "add_church"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change church",
+    "content_type": 11,
+    "codename": "change_church"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete church",
+    "content_type": 11,
+    "codename": "delete_church"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view church",
+    "content_type": 11,
+    "codename": "view_church"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can add image upload",
+    "content_type": 12,
+    "codename": "add_imageupload"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can change image upload",
+    "content_type": 12,
+    "codename": "change_imageupload"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can delete image upload",
+    "content_type": 12,
+    "codename": "delete_imageupload"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view image upload",
+    "content_type": 12,
+    "codename": "view_imageupload"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add payroll",
+    "content_type": 13,
+    "codename": "add_payroll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can change payroll",
+    "content_type": 13,
+    "codename": "change_payroll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can delete payroll",
+    "content_type": 13,
+    "codename": "delete_payroll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can view payroll",
+    "content_type": 13,
+    "codename": "view_payroll"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add income",
+    "content_type": 14,
+    "codename": "add_income"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change income",
+    "content_type": 14,
+    "codename": "change_income"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete income",
+    "content_type": 14,
+    "codename": "delete_income"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view income",
+    "content_type": 14,
+    "codename": "view_income"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add Expenditure",
+    "content_type": 15,
+    "codename": "add_expenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change Expenditure",
+    "content_type": 15,
+    "codename": "change_expenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete Expenditure",
+    "content_type": 15,
+    "codename": "delete_expenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view Expenditure",
+    "content_type": 15,
+    "codename": "view_expenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can add Asset",
+    "content_type": 16,
+    "codename": "add_asset"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can change Asset",
+    "content_type": 16,
+    "codename": "change_asset"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can delete Asset",
+    "content_type": 16,
+    "codename": "delete_asset"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can view Asset",
+    "content_type": 16,
+    "codename": "view_asset"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 65,
+  "fields": {
+    "name": "Can add Bank Statement",
+    "content_type": 17,
+    "codename": "add_bankstatement"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 66,
+  "fields": {
+    "name": "Can change Bank Statement",
+    "content_type": 17,
+    "codename": "change_bankstatement"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 67,
+  "fields": {
+    "name": "Can delete Bank Statement",
+    "content_type": 17,
+    "codename": "delete_bankstatement"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 68,
+  "fields": {
+    "name": "Can view Bank Statement",
+    "content_type": 17,
+    "codename": "view_bankstatement"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 69,
+  "fields": {
+    "name": "Can add tithe",
+    "content_type": 18,
+    "codename": "add_tithe"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 70,
+  "fields": {
+    "name": "Can change tithe",
+    "content_type": 18,
+    "codename": "change_tithe"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 71,
+  "fields": {
+    "name": "Can delete tithe",
+    "content_type": 18,
+    "codename": "delete_tithe"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 72,
+  "fields": {
+    "name": "Can view tithe",
+    "content_type": 18,
+    "codename": "view_tithe"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 73,
+  "fields": {
+    "name": "Can add pledge",
+    "content_type": 19,
+    "codename": "add_pledge"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 74,
+  "fields": {
+    "name": "Can change pledge",
+    "content_type": 19,
+    "codename": "change_pledge"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 75,
+  "fields": {
+    "name": "Can delete pledge",
+    "content_type": 19,
+    "codename": "delete_pledge"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 76,
+  "fields": {
+    "name": "Can view pledge",
+    "content_type": 19,
+    "codename": "view_pledge"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 77,
+  "fields": {
+    "name": "Can add Fixed Expenditure",
+    "content_type": 20,
+    "codename": "add_fixedexpenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 78,
+  "fields": {
+    "name": "Can change Fixed Expenditure",
+    "content_type": 20,
+    "codename": "change_fixedexpenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 79,
+  "fields": {
+    "name": "Can delete Fixed Expenditure",
+    "content_type": 20,
+    "codename": "delete_fixedexpenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 80,
+  "fields": {
+    "name": "Can view Fixed Expenditure",
+    "content_type": 20,
+    "codename": "view_fixedexpenditure"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 81,
+  "fields": {
+    "name": "Can add remittance",
+    "content_type": 21,
+    "codename": "add_remittance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 82,
+  "fields": {
+    "name": "Can change remittance",
+    "content_type": 21,
+    "codename": "change_remittance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 83,
+  "fields": {
+    "name": "Can delete remittance",
+    "content_type": 21,
+    "codename": "delete_remittance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 84,
+  "fields": {
+    "name": "Can view remittance",
+    "content_type": 21,
+    "codename": "view_remittance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 85,
+  "fields": {
+    "name": "Can add Shortfall Payment",
+    "content_type": 22,
+    "codename": "add_shortfallpayment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 86,
+  "fields": {
+    "name": "Can change Shortfall Payment",
+    "content_type": 22,
+    "codename": "change_shortfallpayment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 87,
+  "fields": {
+    "name": "Can delete Shortfall Payment",
+    "content_type": 22,
+    "codename": "delete_shortfallpayment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 88,
+  "fields": {
+    "name": "Can view Shortfall Payment",
+    "content_type": 22,
+    "codename": "view_shortfallpayment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 89,
+  "fields": {
+    "name": "Can add Asset Image",
+    "content_type": 23,
+    "codename": "add_assetimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 90,
+  "fields": {
+    "name": "Can change Asset Image",
+    "content_type": 23,
+    "codename": "change_assetimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 91,
+  "fields": {
+    "name": "Can delete Asset Image",
+    "content_type": 23,
+    "codename": "delete_assetimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 92,
+  "fields": {
+    "name": "Can view Asset Image",
+    "content_type": 23,
+    "codename": "view_assetimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 93,
+  "fields": {
+    "name": "Can add Message",
+    "content_type": 24,
+    "codename": "add_message"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 94,
+  "fields": {
+    "name": "Can change Message",
+    "content_type": 24,
+    "codename": "change_message"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 95,
+  "fields": {
+    "name": "Can delete Message",
+    "content_type": 24,
+    "codename": "delete_message"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 96,
+  "fields": {
+    "name": "Can view Message",
+    "content_type": 24,
+    "codename": "view_message"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 97,
+  "fields": {
+    "name": "Can add comment",
+    "content_type": 25,
+    "codename": "add_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 98,
+  "fields": {
+    "name": "Can change comment",
+    "content_type": 25,
+    "codename": "change_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 99,
+  "fields": {
+    "name": "Can delete comment",
+    "content_type": 25,
+    "codename": "delete_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 100,
+  "fields": {
+    "name": "Can view comment",
+    "content_type": 25,
+    "codename": "view_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 101,
+  "fields": {
+    "name": "Can add event",
+    "content_type": 26,
+    "codename": "add_event"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 102,
+  "fields": {
+    "name": "Can change event",
+    "content_type": 26,
+    "codename": "change_event"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 103,
+  "fields": {
+    "name": "Can delete event",
+    "content_type": 26,
+    "codename": "delete_event"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 104,
+  "fields": {
+    "name": "Can view event",
+    "content_type": 26,
+    "codename": "view_event"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 105,
+  "fields": {
+    "name": "Can add meeting",
+    "content_type": 27,
+    "codename": "add_meeting"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 106,
+  "fields": {
+    "name": "Can change meeting",
+    "content_type": 27,
+    "codename": "change_meeting"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 107,
+  "fields": {
+    "name": "Can delete meeting",
+    "content_type": 27,
+    "codename": "delete_meeting"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 108,
+  "fields": {
+    "name": "Can view meeting",
+    "content_type": 27,
+    "codename": "view_meeting"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 109,
+  "fields": {
+    "name": "Can add minute",
+    "content_type": 28,
+    "codename": "add_minutes"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 110,
+  "fields": {
+    "name": "Can change minute",
+    "content_type": 28,
+    "codename": "change_minutes"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 111,
+  "fields": {
+    "name": "Can delete minute",
+    "content_type": 28,
+    "codename": "delete_minutes"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 112,
+  "fields": {
+    "name": "Can view minute",
+    "content_type": 28,
+    "codename": "view_minutes"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 113,
+  "fields": {
+    "name": "Can add abstract base document",
+    "content_type": 29,
+    "codename": "add_abstractbasedocument"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 114,
+  "fields": {
+    "name": "Can change abstract base document",
+    "content_type": 29,
+    "codename": "change_abstractbasedocument"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 115,
+  "fields": {
+    "name": "Can delete abstract base document",
+    "content_type": 29,
+    "codename": "delete_abstractbasedocument"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 116,
+  "fields": {
+    "name": "Can view abstract base document",
+    "content_type": 29,
+    "codename": "view_abstractbasedocument"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 117,
+  "fields": {
+    "name": "Can add Circular",
+    "content_type": 30,
+    "codename": "add_circular"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 118,
+  "fields": {
+    "name": "Can change Circular",
+    "content_type": 30,
+    "codename": "change_circular"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 119,
+  "fields": {
+    "name": "Can delete Circular",
+    "content_type": 30,
+    "codename": "delete_circular"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 120,
+  "fields": {
+    "name": "Can view Circular",
+    "content_type": 30,
+    "codename": "view_circular"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 121,
+  "fields": {
+    "name": "Can add strategy",
+    "content_type": 31,
+    "codename": "add_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 122,
+  "fields": {
+    "name": "Can change strategy",
+    "content_type": 31,
+    "codename": "change_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 123,
+  "fields": {
+    "name": "Can delete strategy",
+    "content_type": 31,
+    "codename": "delete_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 124,
+  "fields": {
+    "name": "Can view strategy",
+    "content_type": 31,
+    "codename": "view_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 125,
+  "fields": {
+    "name": "Can add Homecell Attendance",
+    "content_type": 32,
+    "codename": "add_hcattendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 126,
+  "fields": {
+    "name": "Can change Homecell Attendance",
+    "content_type": 32,
+    "codename": "change_hcattendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 127,
+  "fields": {
+    "name": "Can delete Homecell Attendance",
+    "content_type": 32,
+    "codename": "delete_hcattendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 128,
+  "fields": {
+    "name": "Can view Homecell Attendance",
+    "content_type": 32,
+    "codename": "view_hcattendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 129,
+  "fields": {
+    "name": "Can add Member",
+    "content_type": 33,
+    "codename": "add_member"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 130,
+  "fields": {
+    "name": "Can change Member",
+    "content_type": 33,
+    "codename": "change_member"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 131,
+  "fields": {
+    "name": "Can delete Member",
+    "content_type": 33,
+    "codename": "delete_member"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 132,
+  "fields": {
+    "name": "Can view Member",
+    "content_type": 33,
+    "codename": "view_member"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 133,
+  "fields": {
+    "name": "Can add homecell",
+    "content_type": 34,
+    "codename": "add_homecell"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 134,
+  "fields": {
+    "name": "Can change homecell",
+    "content_type": 34,
+    "codename": "change_homecell"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 135,
+  "fields": {
+    "name": "Can delete homecell",
+    "content_type": 34,
+    "codename": "delete_homecell"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 136,
+  "fields": {
+    "name": "Can view homecell",
+    "content_type": 34,
+    "codename": "view_homecell"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 137,
+  "fields": {
+    "name": "Can add attendance",
+    "content_type": 35,
+    "codename": "add_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 138,
+  "fields": {
+    "name": "Can change attendance",
+    "content_type": 35,
+    "codename": "change_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 139,
+  "fields": {
+    "name": "Can delete attendance",
+    "content_type": 35,
+    "codename": "delete_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 140,
+  "fields": {
+    "name": "Can view attendance",
+    "content_type": 35,
+    "codename": "view_attendance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 141,
+  "fields": {
+    "name": "Can add tally",
+    "content_type": 36,
+    "codename": "add_tally"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 142,
+  "fields": {
+    "name": "Can change tally",
+    "content_type": 36,
+    "codename": "change_tally"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 143,
+  "fields": {
+    "name": "Can delete tally",
+    "content_type": 36,
+    "codename": "delete_tally"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 144,
+  "fields": {
+    "name": "Can view tally",
+    "content_type": 36,
+    "codename": "view_tally"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 145,
+  "fields": {
+    "name": "Can add Junior Member",
+    "content_type": 37,
+    "codename": "add_juniormember"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 146,
+  "fields": {
+    "name": "Can change Junior Member",
+    "content_type": 37,
+    "codename": "change_juniormember"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 147,
+  "fields": {
+    "name": "Can delete Junior Member",
+    "content_type": 37,
+    "codename": "delete_juniormember"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 148,
+  "fields": {
+    "name": "Can view Junior Member",
+    "content_type": 37,
+    "codename": "view_juniormember"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 149,
+  "fields": {
+    "name": "Can add project",
+    "content_type": 38,
+    "codename": "add_project"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 150,
+  "fields": {
+    "name": "Can change project",
+    "content_type": 38,
+    "codename": "change_project"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 151,
+  "fields": {
+    "name": "Can delete project",
+    "content_type": 38,
+    "codename": "delete_project"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 152,
+  "fields": {
+    "name": "Can view project",
+    "content_type": 38,
+    "codename": "view_project"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 153,
+  "fields": {
+    "name": "Can add Resource",
+    "content_type": 39,
+    "codename": "add_resource"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 154,
+  "fields": {
+    "name": "Can change Resource",
+    "content_type": 39,
+    "codename": "change_resource"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 155,
+  "fields": {
+    "name": "Can delete Resource",
+    "content_type": 39,
+    "codename": "delete_resource"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 156,
+  "fields": {
+    "name": "Can view Resource",
+    "content_type": 39,
+    "codename": "view_resource"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 157,
+  "fields": {
+    "name": "Can add post",
+    "content_type": 40,
+    "codename": "add_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 158,
+  "fields": {
+    "name": "Can change post",
+    "content_type": 40,
+    "codename": "change_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 159,
+  "fields": {
+    "name": "Can delete post",
+    "content_type": 40,
+    "codename": "delete_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 160,
+  "fields": {
+    "name": "Can view post",
+    "content_type": 40,
+    "codename": "view_post"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 161,
+  "fields": {
+    "name": "Can add Post Image",
+    "content_type": 41,
+    "codename": "add_postimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 162,
+  "fields": {
+    "name": "Can change Post Image",
+    "content_type": 41,
+    "codename": "change_postimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 163,
+  "fields": {
+    "name": "Can delete Post Image",
+    "content_type": 41,
+    "codename": "delete_postimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 164,
+  "fields": {
+    "name": "Can view Post Image",
+    "content_type": 41,
+    "codename": "view_postimage"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 165,
+  "fields": {
+    "name": "Can add comment",
+    "content_type": 42,
+    "codename": "add_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 166,
+  "fields": {
+    "name": "Can change comment",
+    "content_type": 42,
+    "codename": "change_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 167,
+  "fields": {
+    "name": "Can delete comment",
+    "content_type": 42,
+    "codename": "delete_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 168,
+  "fields": {
+    "name": "Can view comment",
+    "content_type": 42,
+    "codename": "view_comment"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 169,
+  "fields": {
+    "name": "Can add like",
+    "content_type": 43,
+    "codename": "add_like"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 170,
+  "fields": {
+    "name": "Can change like",
+    "content_type": 43,
+    "codename": "change_like"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 171,
+  "fields": {
+    "name": "Can delete like",
+    "content_type": 43,
+    "codename": "delete_like"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 172,
+  "fields": {
+    "name": "Can view like",
+    "content_type": 43,
+    "codename": "view_like"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 173,
+  "fields": {
+    "name": "Can add Strategy Legacy",
+    "content_type": 44,
+    "codename": "add_strategylegacy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 174,
+  "fields": {
+    "name": "Can change Strategy Legacy",
+    "content_type": 44,
+    "codename": "change_strategylegacy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 175,
+  "fields": {
+    "name": "Can delete Strategy Legacy",
+    "content_type": 44,
+    "codename": "delete_strategylegacy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 176,
+  "fields": {
+    "name": "Can view Strategy Legacy",
+    "content_type": 44,
+    "codename": "view_strategylegacy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 177,
+  "fields": {
+    "name": "Can add strategy",
+    "content_type": 45,
+    "codename": "add_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 178,
+  "fields": {
+    "name": "Can change strategy",
+    "content_type": 45,
+    "codename": "change_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 179,
+  "fields": {
+    "name": "Can delete strategy",
+    "content_type": 45,
+    "codename": "delete_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 180,
+  "fields": {
+    "name": "Can view strategy",
+    "content_type": 45,
+    "codename": "view_strategy"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 181,
+  "fields": {
+    "name": "Can add changelog",
+    "content_type": 46,
+    "codename": "add_changelog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 182,
+  "fields": {
+    "name": "Can change changelog",
+    "content_type": 46,
+    "codename": "change_changelog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 183,
+  "fields": {
+    "name": "Can delete changelog",
+    "content_type": 46,
+    "codename": "delete_changelog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 184,
+  "fields": {
+    "name": "Can view changelog",
+    "content_type": 46,
+    "codename": "view_changelog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 185,
+  "fields": {
+    "name": "Can add ouestion",
+    "content_type": 47,
+    "codename": "add_ouestion"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 186,
+  "fields": {
+    "name": "Can change ouestion",
+    "content_type": 47,
+    "codename": "change_ouestion"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 187,
+  "fields": {
+    "name": "Can delete ouestion",
+    "content_type": 47,
+    "codename": "delete_ouestion"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 188,
+  "fields": {
+    "name": "Can view ouestion",
+    "content_type": 47,
+    "codename": "view_ouestion"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 189,
+  "fields": {
+    "name": "Can add profile",
+    "content_type": 8,
+    "codename": "add_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 190,
+  "fields": {
+    "name": "Can change profile",
+    "content_type": 8,
+    "codename": "change_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 191,
+  "fields": {
+    "name": "Can delete profile",
+    "content_type": 8,
+    "codename": "delete_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 192,
+  "fields": {
+    "name": "Can view profile",
+    "content_type": 8,
+    "codename": "view_profile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 193,
+  "fields": {
+    "name": "Can add role",
+    "content_type": 48,
+    "codename": "add_role"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 194,
+  "fields": {
+    "name": "Can change role",
+    "content_type": 48,
+    "codename": "change_role"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 195,
+  "fields": {
+    "name": "Can delete role",
+    "content_type": 48,
+    "codename": "delete_role"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 196,
+  "fields": {
+    "name": "Can view role",
+    "content_type": 48,
+    "codename": "view_role"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 197,
+  "fields": {
+    "name": "Can add terms and conditions",
+    "content_type": 49,
+    "codename": "add_termsandconditions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 198,
+  "fields": {
+    "name": "Can change terms and conditions",
+    "content_type": 49,
+    "codename": "change_termsandconditions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 199,
+  "fields": {
+    "name": "Can delete terms and conditions",
+    "content_type": 49,
+    "codename": "delete_termsandconditions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 200,
+  "fields": {
+    "name": "Can view terms and conditions",
+    "content_type": 49,
+    "codename": "view_termsandconditions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 201,
+  "fields": {
+    "name": "Can add user terms acceptance",
+    "content_type": 50,
+    "codename": "add_usertermsacceptance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 202,
+  "fields": {
+    "name": "Can change user terms acceptance",
+    "content_type": 50,
+    "codename": "change_usertermsacceptance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 203,
+  "fields": {
+    "name": "Can delete user terms acceptance",
+    "content_type": 50,
+    "codename": "delete_usertermsacceptance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 204,
+  "fields": {
+    "name": "Can view user terms acceptance",
+    "content_type": 50,
+    "codename": "view_usertermsacceptance"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 205,
+  "fields": {
+    "name": "Can add blog",
+    "content_type": 51,
+    "codename": "add_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 206,
+  "fields": {
+    "name": "Can change blog",
+    "content_type": 51,
+    "codename": "change_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 207,
+  "fields": {
+    "name": "Can delete blog",
+    "content_type": 51,
+    "codename": "delete_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 208,
+  "fields": {
+    "name": "Can view blog",
+    "content_type": 51,
+    "codename": "view_blog"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 209,
+  "fields": {
+    "name": "Can add Documentation",
+    "content_type": 52,
+    "codename": "add_documentation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 210,
+  "fields": {
+    "name": "Can change Documentation",
+    "content_type": 52,
+    "codename": "change_documentation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 211,
+  "fields": {
+    "name": "Can delete Documentation",
+    "content_type": 52,
+    "codename": "delete_documentation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 212,
+  "fields": {
+    "name": "Can view Documentation",
+    "content_type": 52,
+    "codename": "view_documentation"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 213,
+  "fields": {
+    "name": "Can add ministry",
+    "content_type": 53,
+    "codename": "add_ministry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 214,
+  "fields": {
+    "name": "Can change ministry",
+    "content_type": 53,
+    "codename": "change_ministry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 215,
+  "fields": {
+    "name": "Can delete ministry",
+    "content_type": 53,
+    "codename": "delete_ministry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 216,
+  "fields": {
+    "name": "Can view ministry",
+    "content_type": 53,
+    "codename": "view_ministry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 217,
+  "fields": {
+    "name": "Can add position",
+    "content_type": 54,
+    "codename": "add_position"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 218,
+  "fields": {
+    "name": "Can change position",
+    "content_type": 54,
+    "codename": "change_position"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 219,
+  "fields": {
+    "name": "Can delete position",
+    "content_type": 54,
+    "codename": "delete_position"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 220,
+  "fields": {
+    "name": "Can view position",
+    "content_type": 54,
+    "codename": "view_position"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "login_history",
+    "model": "loginhistory"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "users",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "users",
+    "model": "profile"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "users",
+    "model": "authhistory"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "users",
+    "model": "delegatepermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "churches",
+    "model": "church"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "churches",
+    "model": "imageupload"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "payroll"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "income"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "expenditure"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 16,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "asset"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 17,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "bankstatement"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 18,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "tithe"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 19,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "pledge"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 20,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "fixedexpenditure"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 21,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "remittance"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 22,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "shortfallpayment"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 23,
+  "fields": {
+    "app_label": "bookkeeper",
+    "model": "assetimage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 24,
+  "fields": {
+    "app_label": "chat",
+    "model": "message"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 25,
+  "fields": {
+    "app_label": "chat",
+    "model": "comment"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 26,
+  "fields": {
+    "app_label": "events",
+    "model": "event"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 27,
+  "fields": {
+    "app_label": "office",
+    "model": "meeting"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 28,
+  "fields": {
+    "app_label": "office",
+    "model": "minutes"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 29,
+  "fields": {
+    "app_label": "office",
+    "model": "abstractbasedocument"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 30,
+  "fields": {
+    "app_label": "office",
+    "model": "circular"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 31,
+  "fields": {
+    "app_label": "office",
+    "model": "strategy"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 32,
+  "fields": {
+    "app_label": "people",
+    "model": "hcattendance"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 33,
+  "fields": {
+    "app_label": "people",
+    "model": "member"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 34,
+  "fields": {
+    "app_label": "people",
+    "model": "homecell"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 35,
+  "fields": {
+    "app_label": "people",
+    "model": "attendance"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 36,
+  "fields": {
+    "app_label": "people",
+    "model": "tally"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 37,
+  "fields": {
+    "app_label": "people",
+    "model": "juniormember"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 38,
+  "fields": {
+    "app_label": "projects",
+    "model": "project"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 39,
+  "fields": {
+    "app_label": "resources",
+    "model": "resource"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 40,
+  "fields": {
+    "app_label": "posts",
+    "model": "post"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 41,
+  "fields": {
+    "app_label": "posts",
+    "model": "postimage"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 42,
+  "fields": {
+    "app_label": "posts",
+    "model": "comment"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 43,
+  "fields": {
+    "app_label": "posts",
+    "model": "like"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 44,
+  "fields": {
+    "app_label": "strategic",
+    "model": "strategylegacy"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 45,
+  "fields": {
+    "app_label": "strategic",
+    "model": "strategy"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 46,
+  "fields": {
+    "app_label": "forum",
+    "model": "changelog"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 47,
+  "fields": {
+    "app_label": "survey",
+    "model": "ouestion"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 48,
+  "fields": {
+    "app_label": "users",
+    "model": "role"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 49,
+  "fields": {
+    "app_label": "core",
+    "model": "termsandconditions"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 50,
+  "fields": {
+    "app_label": "core",
+    "model": "usertermsacceptance"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 51,
+  "fields": {
+    "app_label": "core",
+    "model": "blog"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 52,
+  "fields": {
+    "app_label": "core",
+    "model": "documentation"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 53,
+  "fields": {
+    "app_label": "people",
+    "model": "ministry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 54,
+  "fields": {
+    "app_label": "people",
+    "model": "position"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "98sp7dbv9u4o5p6mymloi3vgz002ncm5",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8YVy69xvIMFCpGkhKuzL-uzbpQrf3nHNfLOK21riNssQ5szNT7PS7JaRHaTvId2y3zqm3dZkT3xV-0MGvPZfn5XD_DiqO-q0LSQkWfKLgJBpttQJUWRqhhPLaWS2nhMGTJZgg-GIQhQ-OEDRoS-z9AbsRNuw:1tZcr2:IMADcEvmXWwyD7n4Sszr1osUnokdU2MSkoxqcPM-A50",
+    "expire_date": "2025-02-02T21:29:12.035Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "9ddlia6ccxe9blzwncrdyrd3l9ismgt9",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8YVy69xvIMFCpGkhKuzL-uzbpQrf3nHNfLOK21riNssQ5szNT7PS7JaRHaTvId2y3zqm3dZkT3xV-0MGvPZfn5XD_DiqO-q0LSQkWfKLgJBpttQJUWRqhhPLaWS2nhMGTJZgg-GIQhQ-OEDRoS-z9AbsRNuw:1tvLlf:cAA669JsrxHNwZRUajkWl-QwIRTbSnDLdSpADP_pJeA",
+    "expire_date": "2025-04-03T19:41:27.525Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "petl1hv5ns0zv5q67v77rk260c6dc8qh",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8YVy69xvIMFCpGkhKuzL-uzbpQrf3nHNfLOK21riNssQ5szNT7PS7JaRHaTvId2y3zqm3dZkT3xV-0MGvPZfn5XD_DiqO-q0LSQkWfKLgJBpttQJUWRqhhPLaWS2nhMGTJZgg-GIQhQ-OEDRoS-z9AbsRNuw:1ti6Uk:mnKXrkKBwIDcc_WwqG375-zFVXk_iWfpwksPDShgPWM",
+    "expire_date": "2025-02-26T06:45:14.155Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ylsww6x8mz2hxszyyxq1jwsmkl0qzufk",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSG8YVy69xvIMFCpGkhKuzL-uzbpQrf3nHNfLOK21riNssQ5szNT7PS7JaRHaTvId2y3zqm3dZkT3xV-0MGvPZfn5XD_DiqO-q0LSQkWfKLgJBpttQJUWRqhhPLaWS2nhMGTJZgg-GIQhQ-OEDRoS-z9AbsRNuw:1trb2J:3uFidML_JX2KPS4tZofc5NifCr-2J66L3afb4yRHSdc",
+    "expire_date": "2025-03-24T11:11:07.400Z"
+  }
+},
+{
+  "model": "login_history.loginhistory",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    "date_time": "2025-01-19T21:29:12.032Z",
+    "is_login": true,
+    "is_logged_in": true
+  }
+},
+{
+  "model": "login_history.loginhistory",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36",
+    "date_time": "2025-02-12T06:45:14.151Z",
+    "is_login": true,
+    "is_logged_in": true
+  }
+},
+{
+  "model": "login_history.loginhistory",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+    "date_time": "2025-03-10T11:11:07.395Z",
+    "is_login": true,
+    "is_logged_in": true
+  }
+},
+{
+  "model": "login_history.loginhistory",
+  "pk": 4,
+  "fields": {
+    "user": 2,
+    "ip": "127.0.0.1",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    "date_time": "2025-03-20T19:41:27.522Z",
+    "is_login": true,
+    "is_logged_in": true
+  }
+},
+{
+  "model": "users.role",
+  "pk": 1,
+  "fields": {
+    "name": "Admin"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 2,
+  "fields": {
+    "name": "Delegate"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 3,
+  "fields": {
+    "name": "Dean"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 4,
+  "fields": {
+    "name": "Moderator"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 5,
+  "fields": {
+    "name": "Overseer"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 6,
+  "fields": {
+    "name": "Pastor"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 7,
+  "fields": {
+    "name": "President"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 8,
+  "fields": {
+    "name": "Secretary"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 9,
+  "fields": {
+    "name": "Secretary General"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 10,
+  "fields": {
+    "name": "Senior Pastor"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 11,
+  "fields": {
+    "name": "Student"
+  }
+},
+{
+  "model": "users.role",
+  "pk": 12,
+  "fields": {
+    "name": "Student Representative"
+  }
+},
+{
+  "model": "users.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$HRrZweoz6abQa5E8z4JPmE$OceXpqJgXiHx+21NOwcHzQ+HaHWFaBR5EIbTAJyoZ00=",
+    "last_login": "2025-03-20T19:41:27.523Z",
+    "is_superuser": true,
+    "user_id": "b8126c54-535f-47db-97b3-0835fdf576b8",
+    "first_name": "Tawanda",
+    "last_name": "Zhuwao",
+    "username": "f701025f-f9d5-4779-acb8-30a5a5749514",
+    "email": "tawanda@cfi.church",
+    "church": 2,
+    "avatar": "",
+    "avatar_fallback": "#373e39",
+    "is_active": true,
+    "is_admin": true,
+    "created_at": "2025-01-19T21:28:58.883Z",
+    "updated_at": "2025-03-27T15:59:25.503Z",
+    "groups": [],
+    "user_permissions": [],
+    "assemblies": [],
+    "roles": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "users.user",
+  "pk": 17,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Y2HlYB5AT9zHLtaGKPMgCX$LaaYbZ1UBBekI0AFZhAOQZOnOxnKgEjmN2DFp+bJYFY=",
+    "last_login": null,
+    "is_superuser": false,
+    "user_id": "11388312-5197-4476-98d7-4dbbaf2c9b30",
+    "first_name": "Yemurai",
+    "last_name": "Masunzambwa",
+    "username": "c55d7c3c-6e4b-43b8-8dce-e3712a079dfc",
+    "email": "yemumza@gmail.com",
+    "church": null,
+    "avatar": "",
+    "avatar_fallback": "#CB1307",
+    "is_active": true,
+    "is_admin": false,
+    "created_at": "2025-01-20T21:18:33.812Z",
+    "updated_at": "2025-01-20T21:18:33.817Z",
+    "groups": [],
+    "user_permissions": [],
+    "assemblies": [],
+    "roles": []
+  }
+},
+{
+  "model": "users.profile",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "avatar": "",
+    "avatar_fallback": "",
+    "iso_country_code": "",
+    "state_or_province": "",
+    "country": "",
+    "created_at": "2025-01-19T21:28:58.889Z",
+    "updated_at": "2025-01-19T21:28:58.889Z"
+  }
+},
+{
+  "model": "users.profile",
+  "pk": 11,
+  "fields": {
+    "user": 17,
+    "avatar": "",
+    "avatar_fallback": "",
+    "iso_country_code": "",
+    "state_or_province": "",
+    "country": "",
+    "created_at": "2025-01-20T21:18:33.817Z",
+    "updated_at": "2025-01-20T21:18:33.817Z"
+  }
+},
+{
+  "model": "core.termsandconditions",
+  "pk": 1,
+  "fields": {
+    "title": "Terms of Service",
+    "version": "1.50",
+    "content": "## Introduction\r\nThese Terms apply to all users who access or use CFI Workspace, including its applications, [CFI Database](https://cfidb.com), and [Cornerstone Bible Academy](https://cba.cfi.church). By using our services, you agree to comply with and be bound by the following terms and conditions.\r\n\r\n### a) Modifications to Terms \r\nWe reserve the right to amend these Terms at any time. The updated Terms will be posted, and it is your responsibility to check for updates. Your continued use of the service constitutes acceptance of the revised Terms.\r\n\r\n### b) Eligibility\r\nOnly users with a valid cfi.church domain email address are allowed to access any CFI Workspace applications.\r\n\r\n## License to Use the Service\r\nUnless otherwise stated, CFI Workspace and/or its licensors own the intellectual property rights for all material in our applications. All rights are reserved. You may access the service for your own personal and organizational use, subject to the restrictions set in these Terms.\r\n\r\n### a) Restrictions\r\nYou are specifically restricted from:\r\n- Republishing material from CFI Workspace without permission.\r\n- Selling, renting, or sub-licensing content from CFI Workspace.\r\n- Reproducing or duplicating material from CFI Workspace.\r\n- Redistributing content unless it is expressly permitted.\r\n\r\n## User Accounts\r\nIf you create an account with us, you must provide accurate and complete information. You are responsible for maintaining the confidentiality of your account information and password.\r\n\r\n### a) Account Termination\r\nWe may suspend or terminate your account without notice if you violate these Terms or engage in activities that are illegal, fraudulent, or harmful to others.\r\n\r\n### b) Data Retention\r\nWhen a user account is deleted, the data associated with that account remains in the system for reference purposes.\r\n\r\n## Privacy and Data Protection\r\n\r\n### a) Confidentiality of Assembly Data\r\nAssemblies should not disclose or share their private data with other assemblies or any third-party entities.\r\n\r\n### b) Personal Access Responsibility\r\nUsers must not allow family members, friends, or third parties to access CFI Workspace applications using their credentials.\r\n\r\n## Limitation of Liability\r\nCFI Workspace, its officers, directors, and employees shall not be liable for any indirect, consequential, or special liability arising from your use of the service.\r\n\r\n### a) No Warranties\r\nCFI Workspace is provided *\"as is,\"* with all faults, and makes no express or implied representations or warranties regarding its functionality or reliability.\r\n\r\n## Privacy Policy\r\nYour privacy is important to us. Please review our Privacy Policy for details on how we collect, use, and protect your personal data.\r\n\r\n## Governing Law\r\nThese Terms shall be governed by and interpreted in accordance with the laws of the applicable jurisdiction, and any disputes shall be resolved in the appropriate courts.",
+    "created_at": "2025-03-10T14:44:32.886Z",
+    "updated_at": "2025-04-02T16:23:18.558Z"
+  }
+},
+{
+  "model": "core.blog",
+  "pk": 1,
+  "fields": {
+    "author": 2,
+    "title": "CFI Workspace: Your All-in-One Hub for Seamless Church Management",
+    "subtitle": "Streamline church operations, manage activities effortlessly, and stay connected—all in one powerful platform.",
+    "body": "We are pleased to introduce the CFI Workspace, a centralized platform that integrates all CFI applications, including the CFI Database, CBA Online System, and any future applications. The CFI Workspace will introduce Single Sign-On (SSO), allowing users to access multiple applications using a single account.\r\n\r\nWith this change, users who already have a CFI Database account will not need to create a separate CBA account when enrolling in CBA, and vice versa. Additionally, to enhance security and protect user accounts from external threats, only users with a CFI Workspace ID will be able to access the CFI Workspace.\r\n\r\nBelow are some Frequently Asked Questions (FAQs) to help users understand this transition.  \r\n\r\n### Frequently Asked Questions (FAQs)\r\n\r\n#### 1.\tWhat is a CFI Workspace ID? \r\nA CFI Workspace ID is a professional email address under the cfi.church domain, assigned by the system administrator. It consists of a combination of your first name and surname or an initial and surname. Example:  \r\n\r\n-\tjdoe@cfi.church \r\n-\tjanedoe@cfi.church \r\n\r\n#### 2.\tWhat happens to my password when this change takes effect?  \r\nYour current password remains unchanged. If you do not remember your password, you can reset it by following the instructions on either the CFI Database or CBA websites.\r\n\r\n#### 3.\tWill CBA students have access to the CFI Database?  \r\nNo. Access will be based on authorization levels and the type of CFI Workspace ID assigned to the user.\r\n\r\n#### 4.\tWill this change affect or delete my existing user data?  \r\nNo. Your user data will remain intact and will not be affected by this transition.\r\n\r\n#### 5.\tWhen will this change take effect?  \r\nThe implementation is scheduled for Monday, March 3, 2025. Users will be notified once the change has been successfully implemented.\r\n\r\n### Additional System Updates\r\n\r\nAlong with this transition, we will also be implementing updates on the CFI Database, including:  \r\n-\tBug fixes on the Regular Expenditure form \r\n-\tUsers experience improvements\r\n\r\nTo ensure a smooth transition, a meeting will be scheduled to demonstrate and explain these changes in detail.\r\n\r\nFor any questions or concerns, please feel free to reach out.",
+    "category": "Updates",
+    "image": "blog/2025-03-15 18:40:02.864557+00:00/network-concept-with-colorful-dots.webp",
+    "views": 28,
+    "slug": "cfi-workspace-your-all-in-one-hub-for-seamless-church-management",
+    "status": "published",
+    "created_at": "2025-03-15T18:40:02.864Z",
+    "updated_at": "2025-03-29T09:43:26.252Z",
+    "read_by": []
+  }
+},
+{
+  "model": "core.documentation",
+  "pk": 1,
+  "fields": {
+    "author": 2,
+    "title": "Introduction",
+    "body": "# CFI Workspace Documentation\r\n\r\nWelcome to the official documentation for CFI Workspace, the all-in-one platform designed to seamlessly integrate **CFI Database** and **Cornerstone Bible Academy**. Whether you’re managing church operations, tracking attendance, handling finances, or engaging in Bible studies, **CFI Workspace** simplifies your workflow by unifying applications, automating processes, and keeping everything in sync.\r\n\r\n# What is CFI Workspace?\r\n\r\nCFI Workspace is a centralized ecosystem that connects and enhances CFI applications, enabling effortless management of church activities and Bible education. It provides a seamless experience across:\r\n- **CFI Database** – A robust church management system that streamlines administrative tasks, financial tracking, and attendance monitoring.\r\n- **Cornerstone Bible Academy** – An interactive learning platform offering structured courses to deepen faith and spiritual growth.\r\n\r\nDesigned for efficiency and ease of use, CFI Workspace ensures that all applications work together smoothly, eliminating redundancy and improving productivity for churches, leaders, and members alike.\r\n\r\nThis documentation will guide you through everything you need to know to get started, integrate applications, and make the most of CFI Workspace.",
+    "category": "User Guide",
+    "status": "published",
+    "created_at": "2025-03-20T20:02:12.642Z",
+    "updated_at": "2025-03-20T22:23:43.446Z"
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 1,
+  "fields": {
+    "uuid": "b2c06010-b8d3-4790-b986-54b2d22cc7e8",
+    "name": "Oikos",
+    "description": "",
+    "address": "",
+    "city": "",
+    "province": "",
+    "country": "Ethiopia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "ETB",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.279Z",
+    "updated_at": "2025-01-19T21:25:48.281Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 2,
+  "fields": {
+    "uuid": "9d25b7f4-2549-4689-bb7f-25824aa9a267",
+    "name": "Orwetoveni",
+    "description": "",
+    "address": "Erf 0000 Rogate Orwetoveni",
+    "city": "Otjiwarongo",
+    "province": "Otjozondjupa",
+    "country": "Namibia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "NAD",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "oklch(50.22% 0.0468 231.29)",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.283Z",
+    "updated_at": "2025-03-27T14:22:10.603Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 3,
+  "fields": {
+    "uuid": "93f3fb56-3f6f-48ca-9bec-e38b826651e5",
+    "name": "Lagos",
+    "description": "",
+    "address": "Lagos",
+    "city": "",
+    "province": "",
+    "country": "Nigeria",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "NGN",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "oklch(0.65 0.2 106.7978083349822)",
+    "status": "Closed",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.285Z",
+    "updated_at": "2025-03-27T16:05:52.377Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 4,
+  "fields": {
+    "uuid": "42c24fa6-fa15-498d-ae97-f234bf4d4346",
+    "name": "Lusaka",
+    "description": "",
+    "address": "",
+    "city": "",
+    "province": "",
+    "country": "Zambia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "ZMW",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.287Z",
+    "updated_at": "2025-01-19T21:25:48.288Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 5,
+  "fields": {
+    "uuid": "12e41c40-6722-4eaf-9c91-391765e07e0b",
+    "name": "Opuwo",
+    "description": "",
+    "address": "104, NO.5 BLDG 4TH LN. OF SHANGSHA",
+    "city": "Opuwo",
+    "province": "",
+    "country": "Namibia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "NAD",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "oklch(64.68% 0.0716 101.55)",
+    "status": "Closed",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.289Z",
+    "updated_at": "2025-03-27T14:26:44.724Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 6,
+  "fields": {
+    "uuid": "d5105492-6ba9-47dd-9b69-337089892d0b",
+    "name": "Mutare",
+    "description": "",
+    "address": "123 Herbert Chitepo",
+    "city": "Mutare",
+    "province": "Manicaland",
+    "country": "Zimbabwe",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "USD",
+    "phone_number": "",
+    "email": "cfimutare@gmail.com",
+    "avatar": "",
+    "avatar_fallback": "oklch(0.65 0.2 209.05413668585894)",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.293Z",
+    "updated_at": "2025-03-27T16:06:20.814Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 7,
+  "fields": {
+    "uuid": "8e37d6bc-0ea2-4722-85e7-80cd6cd6e2d9",
+    "name": "Katima Mulilo",
+    "description": "",
+    "address": "123 Opuwo St",
+    "city": "Katima Mulilo",
+    "province": "Otjozondjupa",
+    "country": "Namibia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "NAD",
+    "phone_number": "",
+    "email": "katima@cfi.church",
+    "avatar": "",
+    "avatar_fallback": "",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-19T21:25:48.295Z",
+    "updated_at": "2025-01-19T21:25:48.296Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "churches.church",
+  "pk": 8,
+  "fields": {
+    "uuid": "4187c926-7384-48b3-986b-fc976a5586df",
+    "name": "omaruru",
+    "description": "",
+    "address": "",
+    "city": "",
+    "province": "Erongo",
+    "country": "Namibia",
+    "iso_country_code": "",
+    "language": "",
+    "currency": "NAD",
+    "phone_number": "",
+    "email": "",
+    "avatar": "",
+    "avatar_fallback": "",
+    "status": "Open",
+    "cover_image": "",
+    "created_at": "2025-01-20T09:11:05.627Z",
+    "updated_at": "2025-01-20T09:11:05.633Z",
+    "assigned_pastors": []
+  }
+},
+{
+  "model": "bookkeeper.tithe",
+  "pk": 1,
+  "fields": {
+    "branch": 2,
+    "created_by": 17,
+    "member": null,
+    "amount": "5000.00",
+    "payment_method": "bank",
+    "receipt": "",
+    "timestamp": "2025-02-28",
+    "created_at": "2025-03-12T13:50:39.884Z",
+    "updated_at": "2025-03-12T13:50:39.884Z"
+  }
+},
+{
+  "model": "bookkeeper.fixedexpenditure",
+  "pk": 1,
+  "fields": {
+    "assembly": 2,
+    "created_by": null,
+    "rent": "0.00",
+    "water": "0.00",
+    "electricity": "0.00",
+    "telephone": "0.00",
+    "internet": "0.00",
+    "security": "0.00",
+    "fuel": "0.00",
+    "wages": "0.00",
+    "insurance": "0.00",
+    "humanitarian": "0.00",
+    "investment": "0.00",
+    "car_maintenance": "0.00",
+    "bank_charges": "0.00",
+    "remittance": "1250.00",
+    "remarks": "",
+    "remittance_receipt": "",
+    "remittance_moderator": null,
+    "is_remittance_verified": false,
+    "total": "0.00",
+    "timestamp": "2025-02-28",
+    "created_at": "2025-03-12T13:50:39.889Z",
+    "updated_at": "2025-03-12T13:50:39.889Z"
+  }
+},
+{
+  "model": "bookkeeper.fixedexpenditure",
+  "pk": 2,
+  "fields": {
+    "assembly": 2,
+    "created_by": 2,
+    "rent": "0.00",
+    "water": "0.00",
+    "electricity": "0.00",
+    "telephone": "0.00",
+    "internet": "0.00",
+    "security": "0.00",
+    "fuel": "0.00",
+    "wages": "0.00",
+    "insurance": "0.00",
+    "humanitarian": "0.00",
+    "investment": "0.00",
+    "car_maintenance": "0.00",
+    "bank_charges": "0.00",
+    "remittance": "0.00",
+    "remarks": "",
+    "remittance_receipt": "",
+    "remittance_moderator": null,
+    "is_remittance_verified": false,
+    "total": "0.00",
+    "timestamp": "2025-03-31",
+    "created_at": "2025-03-14T16:57:14.927Z",
+    "updated_at": "2025-03-14T16:57:14.927Z"
+  }
+},
+{
+  "model": "bookkeeper.income",
+  "pk": 3,
+  "fields": {
+    "church": 2,
+    "timestamp": "2025-02-28T13:49:33Z",
+    "offering": "400.00",
+    "fundraising": "300.00",
+    "thanksgiving": "200.00",
+    "donations": "100.00",
+    "sum": "1000.00",
+    "expenses": "0.00",
+    "balance": "0.00",
+    "statement": "",
+    "created_at": "2025-03-12T13:49:45.494Z",
+    "updated_at": "2025-03-12T13:49:45.494Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 1,
+  "fields": {
+    "message_id": "c0af0a49d2414685b5fa67ed",
+    "assembly": 7,
+    "author": "",
+    "created_by": 17,
+    "title": "Prayer for our assembly",
+    "description": "Please pray for our assembly",
+    "priority": "medium",
+    "category": "request",
+    "slug": "prayer-for-our-assembly",
+    "isMarkAsRead": false,
+    "created_at": "2025-01-25T16:38:55.421Z",
+    "updated_at": "2025-01-25T16:38:55.421Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 2,
+  "fields": {
+    "message_id": "5c4ae239484544789ade1028",
+    "assembly": 2,
+    "author": "John Doe",
+    "created_by": 17,
+    "title": "Increase our faith",
+    "description": "Increase our faith oh LORD",
+    "priority": "medium",
+    "category": "request",
+    "slug": "increase-our-faith",
+    "isMarkAsRead": false,
+    "created_at": "2025-03-16T20:08:43.973Z",
+    "updated_at": "2025-03-16T20:12:09.469Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 3,
+  "fields": {
+    "message_id": "035c4a34109440e0894b5d38",
+    "assembly": 6,
+    "author": "John Doe",
+    "created_by": 2,
+    "title": "Political crisis in South Sudan",
+    "description": "Pray for South Sudan",
+    "priority": "high",
+    "category": "request",
+    "slug": "political-crisis-in-south-sudan",
+    "isMarkAsRead": false,
+    "created_at": "2025-03-16T20:12:03.237Z",
+    "updated_at": "2025-03-16T20:12:03.237Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 4,
+  "fields": {
+    "message_id": "b51cbdbd2433472b80852604",
+    "assembly": 5,
+    "author": "John Doe",
+    "created_by": 17,
+    "title": "Please pray for my health",
+    "description": "Please pray for my health. I’ve been feeling very unwell and need urgent healing. The doctors are unsure of the cause, and I'm extremely worried. I need strength and peace during this time.",
+    "priority": "high",
+    "category": "request",
+    "slug": "please-pray-for-my-health",
+    "isMarkAsRead": false,
+    "created_at": "2025-03-25T23:39:38.989Z",
+    "updated_at": "2025-03-25T23:39:38.989Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 5,
+  "fields": {
+    "message_id": "3cee6b7ae57d4cba8869fb2c",
+    "assembly": 5,
+    "author": "",
+    "created_by": 17,
+    "title": "Urgent Financial Breakthrough",
+    "description": "Please pray for me as I am facing serious financial struggles. Unexpected expenses have left me overwhelmed, and I need God’s provision and wisdom to manage my situation. I trust that He will make a way where there seems to be none.",
+    "priority": "medium",
+    "category": "request",
+    "slug": "urgent-financial-breakthrough",
+    "isMarkAsRead": false,
+    "created_at": "2025-03-26T00:04:29.384Z",
+    "updated_at": "2025-03-27T13:18:23.390Z"
+  }
+},
+{
+  "model": "chat.message",
+  "pk": 6,
+  "fields": {
+    "message_id": "76edbca3275243aea5d68253",
+    "assembly": 6,
+    "author": "John Doe",
+    "created_by": null,
+    "title": "Prayer for Peace and Calm in Our Daily Lives",
+    "description": "Please pray for peace and calm in our daily routines, that we may find tranquility amidst the busyness and challenges of life. May we feel the presence of God’s peace in every moment, no matter how small or insignificant it may seem.",
+    "priority": "low",
+    "category": "request",
+    "slug": "prayer-for-peace-and-calm-in-our-daily-lives",
+    "isMarkAsRead": false,
+    "created_at": "2025-03-27T13:18:54.971Z",
+    "updated_at": "2025-03-27T13:18:54.971Z"
+  }
+},
+{
+  "model": "people.ministry",
+  "pk": 1,
+  "fields": {
+    "name": "Praise and Worship",
+    "description": ""
+  }
+},
+{
+  "model": "people.position",
+  "pk": 1,
+  "fields": {
+    "name": "Deacon",
+    "description": ""
+  }
+},
+{
+  "model": "people.member",
+  "pk": 1,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": 17,
+    "updated_by": null,
+    "prefix": "Dr",
+    "first_name": "Yemurai",
+    "middle_name": "Georgina",
+    "maiden_name": "",
+    "last_name": "Masunzambwa",
+    "date_of_birth": "2025-03-22",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Married",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "77868288",
+    "secondary_phone_number": "",
+    "email": "yemumza@gmail.com",
+    "address": "18859 Chibwe Close",
+    "address_line2": "",
+    "city": "Francistown",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2025-03-22",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "1900-01-01",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Physiotherapist",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "#0AF56C",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-22T09:11:51.573Z",
+    "updated_at": "2025-03-22T09:11:51.575Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 2,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": 2,
+    "updated_by": null,
+    "prefix": "Dr",
+    "first_name": "Douglas",
+    "middle_name": "",
+    "maiden_name": "",
+    "last_name": "Mudimba",
+    "date_of_birth": "2025-03-22",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Married",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "0813257420",
+    "secondary_phone_number": "",
+    "email": "",
+    "address": "No. 4 Markotter Street\r\nERF 1091 Extension 2",
+    "address_line2": "",
+    "city": "Otjiwarongo",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2025-03-22",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "1900-01-01",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Vet",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "#34107C",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-22T09:12:26.511Z",
+    "updated_at": "2025-03-22T09:12:26.512Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 3,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": 2,
+    "updated_by": null,
+    "prefix": "Mr",
+    "first_name": "Tawanda",
+    "middle_name": "",
+    "maiden_name": "",
+    "last_name": "Zhuwao",
+    "date_of_birth": "2025-03-23",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "75577933",
+    "secondary_phone_number": "",
+    "email": "",
+    "address": "Plot 21058 Phase 5, Monarch",
+    "address_line2": "",
+    "city": "Francistown",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2025-03-23",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "1900-01-01",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "#885D84",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T06:21:30.571Z",
+    "updated_at": "2025-03-23T06:21:30.574Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 114,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "John",
+    "middle_name": "Michael",
+    "maiden_name": "",
+    "last_name": "Doe",
+    "date_of_birth": "1991-02-02",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0001",
+    "secondary_phone_number": "",
+    "email": "user1@example.com",
+    "address": "Street 1, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 115,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Jane",
+    "middle_name": "Elizabeth",
+    "maiden_name": "",
+    "last_name": "Smith",
+    "date_of_birth": "1992-03-03",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0002",
+    "secondary_phone_number": "",
+    "email": "user2@example.com",
+    "address": "Street 2, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 116,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "David",
+    "middle_name": "Alexander",
+    "maiden_name": "",
+    "last_name": "Brown",
+    "date_of_birth": "1993-04-04",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0003",
+    "secondary_phone_number": "",
+    "email": "user3@example.com",
+    "address": "Street 3, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 117,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Emily",
+    "middle_name": "Sophia",
+    "maiden_name": "",
+    "last_name": "Johnson",
+    "date_of_birth": "1994-05-05",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0004",
+    "secondary_phone_number": "",
+    "email": "user4@example.com",
+    "address": "Street 4, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 118,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "Daniel",
+    "middle_name": "William",
+    "maiden_name": "",
+    "last_name": "Martins",
+    "date_of_birth": "1995-06-06",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0005",
+    "secondary_phone_number": "",
+    "email": "user5@example.com",
+    "address": "Street 5, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 119,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Sophia",
+    "middle_name": "Grace",
+    "maiden_name": "",
+    "last_name": "Anderson",
+    "date_of_birth": "1996-07-07",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0006",
+    "secondary_phone_number": "",
+    "email": "user6@example.com",
+    "address": "Street 6, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 120,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "James",
+    "middle_name": "Matthew",
+    "maiden_name": "",
+    "last_name": "Lee",
+    "date_of_birth": "1997-08-08",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0007",
+    "secondary_phone_number": "",
+    "email": "user7@example.com",
+    "address": "Street 7, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 121,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Olivia",
+    "middle_name": "Marie",
+    "maiden_name": "",
+    "last_name": "Harris",
+    "date_of_birth": "1998-09-09",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0008",
+    "secondary_phone_number": "",
+    "email": "user8@example.com",
+    "address": "Street 8, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 122,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "Benjamin",
+    "middle_name": "Samuel",
+    "maiden_name": "",
+    "last_name": "Davis",
+    "date_of_birth": "1999-10-10",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 0009",
+    "secondary_phone_number": "",
+    "email": "user9@example.com",
+    "address": "Street 9, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 123,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Charlotte",
+    "middle_name": "Rose",
+    "maiden_name": "",
+    "last_name": "Wilson",
+    "date_of_birth": "1990-11-11",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00010",
+    "secondary_phone_number": "",
+    "email": "user10@example.com",
+    "address": "Street 10, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 124,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "Ethan",
+    "middle_name": "Joseph",
+    "maiden_name": "",
+    "last_name": "Taylor",
+    "date_of_birth": "1991-12-12",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00011",
+    "secondary_phone_number": "",
+    "email": "user11@example.com",
+    "address": "Street 11, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 125,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Mr.",
+    "first_name": "Amelia",
+    "middle_name": "Faith",
+    "maiden_name": "",
+    "last_name": "Thomas",
+    "date_of_birth": "1992-01-13",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00012",
+    "secondary_phone_number": "",
+    "email": "user12@example.com",
+    "address": "Street 12, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 126,
+  "fields": {
+    "assembly": 2,
+    "member_key": null,
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "Ms.",
+    "first_name": "Mason",
+    "middle_name": "Andrew",
+    "maiden_name": "",
+    "last_name": "Moore",
+    "date_of_birth": "1993-02-14",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00013",
+    "secondary_phone_number": "",
+    "email": "user13@example.com",
+    "address": "Street 13, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-23T07:48:31.102Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 127,
+  "fields": {
+    "assembly": 2,
+    "member_key": "hDHQu3bV_AcJ_cNgQsI2m",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Ava",
+    "middle_name": "Louise",
+    "maiden_name": "",
+    "last_name": "Jackson",
+    "date_of_birth": "1994-03-15",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Married",
+    "marriage_date": "2025-03-31",
+    "spouse": null,
+    "phone_number": "+2648100000014",
+    "secondary_phone_number": "",
+    "email": "user14@example.com",
+    "address": "Street 14, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-31T15:59:28.384Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 128,
+  "fields": {
+    "assembly": 2,
+    "member_key": "Ra5KtYfy-g7mvueMGtwWm",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Liam",
+    "middle_name": "Christopher",
+    "maiden_name": "",
+    "last_name": "Hall",
+    "date_of_birth": "1995-04-16",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": 133,
+    "phone_number": "+2648100000015",
+    "secondary_phone_number": "",
+    "email": "user15@example.com",
+    "address": "Street 15, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "Tesla",
+    "education_level": "master",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-31T22:05:27.036Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 129,
+  "fields": {
+    "assembly": 2,
+    "member_key": "IOi6Mot5M1JqFwLoC4-l_",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Isabella",
+    "middle_name": "Ann",
+    "maiden_name": "",
+    "last_name": "Harris",
+    "date_of_birth": "1996-05-17",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00016",
+    "secondary_phone_number": "",
+    "email": "user16@example.com",
+    "address": "Street 16, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-31T15:35:06.779Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 130,
+  "fields": {
+    "assembly": 2,
+    "member_key": "_uDFJZQ2zeZZ2M1GnCaso",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Lucas",
+    "middle_name": "Daniel",
+    "maiden_name": "",
+    "last_name": "Clark",
+    "date_of_birth": "1997-06-18",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00017",
+    "secondary_phone_number": "",
+    "email": "user17@example.com",
+    "address": "Street 17, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-31T15:28:50.332Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 131,
+  "fields": {
+    "assembly": 2,
+    "member_key": "XO7FOOfTcWVAFQTbbq51k",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Mia",
+    "middle_name": "Isabelle",
+    "maiden_name": "",
+    "last_name": "Lewis",
+    "date_of_birth": "1998-07-19",
+    "place_of_birth": "",
+    "gender": "Male",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00018",
+    "secondary_phone_number": "",
+    "email": "user18@example.com",
+    "address": "Street 18, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Engineer",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.102Z",
+    "updated_at": "2025-03-31T15:28:36.909Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 132,
+  "fields": {
+    "assembly": 2,
+    "member_key": "<function generate at 0x103238860>",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Noah",
+    "middle_name": "Jonathan",
+    "maiden_name": "",
+    "last_name": "Walker",
+    "date_of_birth": "1999-08-20",
+    "place_of_birth": "",
+    "gender": "Female",
+    "relationship": "Single",
+    "marriage_date": null,
+    "spouse": null,
+    "phone_number": "+264 81 000 00019",
+    "secondary_phone_number": "",
+    "email": "user19@example.com",
+    "address": "Street 19, Windhoek",
+    "address_line2": "",
+    "city": "Windhoek",
+    "province": "",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "Established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "",
+    "confirmation_date": null,
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "default.png",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.103Z",
+    "updated_at": "2025-03-31T15:34:59.238Z",
+    "ministries": [],
+    "positions": []
+  }
+},
+{
+  "model": "people.member",
+  "pk": 133,
+  "fields": {
+    "assembly": 2,
+    "member_key": "tUHRwuNqqqt2",
+    "created_by": null,
+    "updated_by": null,
+    "prefix": "",
+    "first_name": "Emma",
+    "middle_name": "Nicole",
+    "maiden_name": "",
+    "last_name": "Hall",
+    "date_of_birth": "1990-09-21",
+    "place_of_birth": "Gobabis",
+    "gender": "Female",
+    "relationship": "Married",
+    "marriage_date": "2022-11-01",
+    "spouse": 128,
+    "phone_number": "+2648100000020",
+    "secondary_phone_number": "",
+    "email": "user20@example.com",
+    "address": "81 Pasteur Street",
+    "address_line2": "Apartment 06",
+    "city": "Windhoek",
+    "province": "Khomas",
+    "country": "Namibia",
+    "membersince": "2020-01-01",
+    "membership_status": "established",
+    "previous_church": "",
+    "baptized": false,
+    "baptized_at": "2005-06-15",
+    "baptized_where": "CFI Windhoek",
+    "confirmation_date": "2005-06-15",
+    "occupation": "Teacher",
+    "employer": "",
+    "education_level": "master",
+    "skills": "",
+    "emergency_contact_name": "",
+    "emergency_contact_relationship": "",
+    "emergency_contact_phone": "",
+    "avatar": "",
+    "avatar_fallback": "",
+    "notes": "",
+    "is_active": true,
+    "created_at": "2025-03-23T07:48:31.103Z",
+    "updated_at": "2025-03-31T20:41:18.460Z",
+    "ministries": [
+      1
+    ],
+    "positions": [
+      1
+    ]
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 1,
+  "fields": {
+    "author": 17,
+    "branch": 2,
+    "title": "Prayer Warriors - Healing Through Faith",
+    "body": "Weekly prayer circle focused on interceding for community healing, health challenges, and personal restoration. \r\n\r\nNo matter what you’re going through, God’s love for you never changes. He sees you, He knows you, and He cares for you deeply. I have loved you with an everlasting love. – Jeremiah 31:3.",
+    "image": "",
+    "views": 8,
+    "slug": "2025-01-25-none",
+    "is_private": false,
+    "is_draft": false,
+    "created_at": "2025-01-25T16:55:52.937Z",
+    "updated_at": "2025-03-12T20:47:55.310Z",
+    "likes": []
+  }
+},
+{
+  "model": "posts.post",
+  "pk": 3,
+  "fields": {
+    "author": 2,
+    "branch": 3,
+    "title": "Trust in God’s Timing",
+    "body": "Sometimes, waiting feels like the hardest part, but God’s timing is always perfect. Keep praying, keep trusting—He is never late! 🙏✨ The Lord is good to those who wait for Him. – Lamentations 3:25",
+    "image": "",
+    "views": 8,
+    "slug": "none-2",
+    "is_private": false,
+    "is_draft": false,
+    "created_at": "2025-01-25T16:57:06.863Z",
+    "updated_at": "2025-03-12T20:36:27.903Z",
+    "likes": [
+      17
+    ]
+  }
+},
+{
+  "model": "posts.postimage",
+  "pk": 2,
+  "fields": {
+    "post": 3,
+    "image": "cfidb/posts/Lagos/gift-habeshaw-ZPNj0vbn0FE-unsplash.webp",
+    "alt": "",
+    "caption": ""
+  }
+},
+{
+  "model": "posts.postimage",
+  "pk": 4,
+  "fields": {
+    "post": 1,
+    "image": "cfidb/posts/Orwetoveni/nathan-mullet-YIiRD_STy9E-unsplash.webp",
+    "alt": "",
+    "caption": ""
+  }
+},
+{
+  "model": "posts.postimage",
+  "pk": 5,
+  "fields": {
+    "post": 1,
+    "image": "cfidb/posts/Orwetoveni/BIRTHDAY_FLYER_DESIGN_1.webp",
+    "alt": "",
+    "caption": ""
+  }
+}
+]

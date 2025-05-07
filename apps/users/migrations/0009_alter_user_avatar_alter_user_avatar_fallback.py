@@ -4,6 +4,8 @@ import apps.users.utils
 from django.db import migrations, models
 import imagekit.models.fields
 
+import apps.users.utils.base_urls
+
 
 class Migration(migrations.Migration):
 
@@ -15,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='user',
             name='avatar',
-            field=imagekit.models.fields.ProcessedImageField(blank=True, null=True, upload_to=apps.users.utils.user_avatar_url),
+            field=imagekit.models.fields.ProcessedImageField(blank=True, null=True, upload_to=apps.users.utils.base_urls.user_avatar_url),
         ),
         migrations.AlterField(
             model_name='user',

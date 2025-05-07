@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             name='Message',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('umid', models.CharField(default=apps.chat.utils.generate_umid, editable=False, max_length=24, unique=True)),
+                ('umid', models.CharField(default=apps.chat.utils.generate_reference_id, editable=False, max_length=24, unique=True)),
                 ('author', models.CharField(blank=True, max_length=255)),
                 ('title', models.CharField(max_length=255)),
                 ('desc', models.TextField()),

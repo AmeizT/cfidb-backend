@@ -2,7 +2,7 @@ from django.db import models
 from apps.users.models import User
 from apps.churches.models import Church
 from django.utils.text import slugify
-from apps.chat.utils import generate_umid
+from apps.chat.utils import generate_reference_id
 
 class CategoryChoices(models.TextChoices):
     PRAISE = 'praise', 'Praise'
@@ -18,8 +18,8 @@ class PriorityChoices(models.TextChoices):
 
 
 class Message(models.Model):    
-    message_id = models.CharField(
-        default=generate_umid, 
+    reference_id = models.CharField(
+        default=generate_reference_id, 
         max_length=24,
         unique=True,
         editable=False
@@ -29,7 +29,6 @@ class Message(models.Model):
         related_name='message', 
         on_delete=models.CASCADE
     )
-    author = models.CharField(max_length=255, blank=True)
     created_by = models.ForeignKey(
         User, 
         on_delete=models.PROTECT, 
@@ -38,11 +37,11 @@ class Message(models.Model):
         null=True
     )
     title = models.CharField(max_length=255, blank=True)
-    description = models.TextField()
+    body = models.TextField()
     priority = models.CharField(
         max_length=24, 
-        blank=True,
         choices=PriorityChoices.choices, 
+        default=PriorityChoices.LOW
     )
     category = models.CharField(
         max_length=24, 
@@ -54,7 +53,6 @@ class Message(models.Model):
         unique=True, 
         blank=True
     )
-    isMarkAsRead = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -7,7 +7,8 @@ from apps.users.views import (
     UniqueUserCheckView, 
     UserView,
     ListUsersView,
-    AssemblyAdminView
+    AssemblyAdminView,
+    check_email
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -32,6 +33,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path("auth/check-email/", check_email, name="check_email"),
     # path('auth/', include('rest_framework.urls', namespace='restframework')),
     # path('auth/tokens/', CustomTokenObtainPairView.as_view(), name='session_token'),
     # path('auth/tokens/refresh/', TokenRefreshView.as_view(), name='session_refresh'), # type: ignore

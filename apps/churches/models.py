@@ -2,7 +2,7 @@ import uuid
 from PIL import Image
 from django.db import models
 from apps.users.models import User
-from apps.churches.utils import church_images_path
+from apps.churches.utils import church_images_path, generate_oklch_color
 from django.utils.translation import gettext_lazy as _
 
 class ChurchStatus(models.TextChoices):
@@ -10,17 +10,15 @@ class ChurchStatus(models.TextChoices):
     CLOSED = 'Closed', 'Closed'
 
 class Church(models.Model):
-    church_id = models.UUIDField(
+    uuid = models.UUIDField(
         default=uuid.uuid4, 
         editable=False, 
         unique=True
     )
-    pastor = models.ForeignKey(
+    assigned_pastors = models.ManyToManyField(
         User,
-        on_delete=models.SET_NULL, 
-        related_name='pastor',
+        related_name='pastor_of',
         blank=True, 
-        null=True
     )
     name = models.CharField(
         max_length=100, 
@@ -31,13 +29,17 @@ class Church(models.Model):
     city = models.CharField(max_length=100, blank=True)
     province = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    code = models.CharField(max_length=3, blank=True)
-    lang = models.CharField(max_length=12, blank=True)
+    iso_country_code = models.CharField(max_length=3, blank=True)
+    language = models.CharField(max_length=12, blank=True)
     currency = models.CharField(max_length=12, blank=True)
-    phone = models.CharField(max_length=20, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
     email = models.CharField(max_length=20, blank=True)
     avatar = models.ImageField(
         upload_to=church_images_path, 
+        blank=True
+    )
+    avatar_fallback = models.CharField(
+        max_length=36, 
         blank=True
     )
     status = models.CharField(
@@ -46,12 +48,8 @@ class Church(models.Model):
         choices=ChurchStatus.choices, 
         default=ChurchStatus.OPEN, 
     )
-    banner = models.ImageField(
+    cover_image = models.ImageField(
         upload_to=church_images_path,
-        blank=True
-    )
-    avatar_fallback = models.CharField(
-        max_length=12, 
         blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
@@ -76,6 +74,17 @@ class Church(models.Model):
         return members_count + minors_count
     
 
+    def save(self, *args, **kwargs):
+        """
+        Override save method to automatically generate 
+        an OKLCH color if avatar_fallback is blank
+        """
+        if not self.avatar_fallback:
+            self.avatar_fallback = generate_oklch_color()
+        
+        super().save(*args, **kwargs)
+
+    
 class ImageUpload(models.Model):
     name = models.CharField(max_length=255, blank=True)
     image = models.FileField(

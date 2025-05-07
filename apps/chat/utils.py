@@ -1,4 +1,4 @@
-import uuid
+from nanoid import generate # type: ignore
 
-def generate_umid():
-    return str(uuid.uuid4().hex)[:24]
+def generate_reference_id():
+    return generate() 

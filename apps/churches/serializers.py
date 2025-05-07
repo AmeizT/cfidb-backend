@@ -15,28 +15,27 @@ class CreateChurchSerializer(serializers.ModelSerializer):
 
 
 class ChurchSerializer(serializers.ModelSerializer):
-    pastor = UserNamesSerializer()
     total_members = serializers.SerializerMethodField()
 
     class Meta:
         model = Church
         fields = (
             'id',
-            'church_id', 
-            'pastor',
+            'uuid', 
+            'assigned_pastors',
             'name', 
             'description',
             'address',
             'city',
             'province',
             'country',
-            'code',
-            'lang',
+            'iso_country_code',
+            'language',
             'currency',
-            'phone',
+            'phone_number',
             'email',
             'avatar',
-            'banner',
+            'cover_image',
             'avatar_fallback',
             'status',
             'total_members',
@@ -48,45 +47,45 @@ class ChurchSerializer(serializers.ModelSerializer):
         return obj.total_members 
         
          
-class ChurchTrackerSerializer(serializers.ModelSerializer):
-    pastor = ListUserSerializer()
+# class ChurchTrackerSerializer(serializers.ModelSerializer):
+#     pastor = ListUserSerializer()
     
-    class Meta:
-        model = Church
-        fields = (
-            'id',
-            'church_id', 
-            'pastor',
-            'name', 
-            'description',
-            'address',
-            'city',
-            'province',
-            'country',
-            'code',
-            'lang',
-            'currency',
-            'phone',
-            'email',
-            'avatar',
-            'banner',
-            'avatar_fallback',
-            'status',
-            'created_at',
-            'updated_at',
-        ) 
+#     class Meta:
+#         model = Church
+#         fields = (
+#             'id',
+#             'uuid', 
+#             'pastor',
+#             'name', 
+#             'description',
+#             'address',
+#             'city',
+#             'province',
+#             'country',
+#             'code',
+#             'lang',
+#             'currency',
+#             'phone',
+#             'email',
+#             'avatar',
+#             'banner',
+#             'avatar_fallback',
+#             'status',
+#             'created_at',
+#             'updated_at',
+#         ) 
 
 
 class AssemblyISOSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "code", "lang", "currency"]
+        fields = ["id", "iso_country_code", "language", "currency"]
 
 
 class CountryInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "code", "lang", "currency"]
+        fields = ["id", "iso_country_code", "language", "currency"]
         
             
 

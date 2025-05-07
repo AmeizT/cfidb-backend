@@ -2,7 +2,7 @@ from rest_framework import serializers
 from apps.churches.models import Church
 from rest_framework.fields import CharField
 from rest_framework.validators import UniqueValidator
-from apps.users.models import User, Account, AuthHistory
+from apps.users.models import AuthHistory, Profile, Role, User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
       
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -13,7 +13,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['last_name'] = user.last_name
         token['username'] = user.username
         token['email'] = user.email
-        token['role'] = user.role
         token['church'] = user.church.id if user.church else None
         token['avatar'] = user.avatar.url if user.avatar else None
         token['avatar_fallback'] = user.avatar_fallback
@@ -85,9 +84,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'role',
+            'roles',
             'church',
-            'churches',
+            'assemblies',
             'password',
             're_password',
         )
@@ -110,11 +109,17 @@ class CreateUserSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             email=validated_data['email'],
-            role=validated_data['role'],
             password=password,  # Use the validated password here
         )
 
         return user
+    
+
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
 
 class AuthHistorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -131,9 +136,9 @@ class ChurchSerializer(serializers.ModelSerializer):
         model = Church
         fields = '__all__'
 
-class AccountSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Account
+        model = Profile
         fields = '__all__'
  
   
@@ -148,7 +153,8 @@ class PasswordChangeSerializer(serializers.Serializer):
         
     
 class ListUserSerializer(serializers.ModelSerializer):
-    churches = ChurchSerializer(many=True)
+    assemblies = ChurchSerializer(many=True)
+    roles = RoleSerializer(many=True)
     
     class Meta:
         model = User
@@ -156,19 +162,26 @@ class ListUserSerializer(serializers.ModelSerializer):
             'id',
             'user_id', 
             'church',
-            'churches',
+            'assemblies',
+            'full_name',
             'first_name', 
             'last_name', 
             'username', 
             'email',
-            'role', 
+            'roles', 
             'avatar', 
             'avatar_fallback',  
             'is_active',
             'is_admin',
+            'is_onboarded',
+            'is_student',
+            'is_db_staff',
+            'is_academy_staff',
+            'is_staff',
             'created_at', 
             'updated_at',
-        )  
+        ) 
+        read_only_fields = ['full_name'] 
 
 
 class MinifiedUserSerializer(serializers.ModelSerializer):    
@@ -181,6 +194,28 @@ class MinifiedUserSerializer(serializers.ModelSerializer):
             'username', 
         ) 
 
+
+class MinimalUserSerializer(serializers.ModelSerializer):
+    roles = RoleSerializer(many=True)
+    avatar = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            "full_name",
+            "first_name",
+            "last_name",
+            "email",
+            "roles",
+            "avatar",
+            "avatar_fallback",
+        )
+
+    def get_avatar(self, obj):
+        request = self.context.get("request")
+        if obj.avatar and hasattr(obj.avatar, "url"):
+            return request.build_absolute_uri(obj.avatar.url) if request else obj.avatar.url
+        return None
 
 class UserNamesSerializer(serializers.ModelSerializer):    
     class Meta:
@@ -202,7 +237,7 @@ class AuthorSerializer(serializers.ModelSerializer):
             'id',
             'first_name', 
             'last_name', 
-            'role', 
+            'roles', 
         )       
         
 class UniqueUserCheckSerializer(serializers.ModelSerializer):

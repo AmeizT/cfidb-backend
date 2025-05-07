@@ -7,3 +7,6 @@ db.sqlite3
 # LOCAL ENV
 .env
 /.env
+
+
+/media

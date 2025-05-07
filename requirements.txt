@@ -21,6 +21,7 @@ djangorestframework-simplejwt==5.2.2
 djoser==2.2.0
 gunicorn==20.1.0
 idna==3.4
+nanoid==2.0.0
 oauthlib==3.2.2
 pilkit==3.0
 Pillow==10.0.0

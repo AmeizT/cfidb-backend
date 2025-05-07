@@ -6,8 +6,23 @@ class Gender(models.TextChoices):
 
 
 class MembershipStatus(models.TextChoices):
-    ESTABLISHED = 'Established', 'Established'
-    NEWCOMER = 'Newcomer', 'Newcomer'
+    VISITOR = 'visitor', 'Visitor'
+    REGULAR = 'regular', 'Regular Attendee'
+    ESTABLISHED = 'established', 'Established Member'
+    INACTIVE = 'inactive', 'Inactive'
+    TRANSFERRED = 'transferred', 'Transferred'
+    DECEASED = 'deceased', 'Deceased'
+
+
+class EducationLevel(models.TextChoices):
+    PRIMARY = 'primary', 'Primary'
+    SECONDARY = 'secondary', 'Secondary'
+    DIPLOMA = 'diploma', 'Diploma'
+    BACHELOR = 'bachelor', 'Bachelor\'s Degree'
+    MASTER = 'master', 'Master\'s Degree'
+    DOCTORATE = 'doctorate', 'Doctorate'
+    OTHER = 'other', 'Other'
+    
 
 class AttendanceCategories(models.TextChoices):
     FRIDAY = 'friday', 'Friday'

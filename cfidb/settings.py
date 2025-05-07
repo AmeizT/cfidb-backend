@@ -23,14 +23,15 @@ if DEBUG:
     ] 
 else:
     ALLOWED_HOSTS = [
-        'cfidb.com', 
         'honeste-backend.vercel.app',
         'cfidb-backend.vercel.app',
+        'api.cfi.church',
     ]
     
 if DEBUG:
     CORS_ALLOWED_ORIGINS = [
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'http://localhost:3001'
     ]
 else:
     CORS_ALLOWED_ORIGINS = [
@@ -61,6 +62,7 @@ INSTALLED_APPS = [
     # 'easyaudit',
     'apps',
     'apps.users',
+    'apps.core',
     'apps.churches',
     'apps.bookkeeper',
     'apps.chat',
@@ -72,6 +74,9 @@ INSTALLED_APPS = [
     'apps.posts',
     'apps.strategic',
     'apps.forum',
+    'apps.survey',
+    'apps.integrations',
+    'apps.announcements'
 ]
 
 MIDDLEWARE = [
