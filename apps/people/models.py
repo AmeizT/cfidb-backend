@@ -58,8 +58,8 @@ class Member(models.Model):
         max_length=21,
         # unique=True,
         # editable=False,
-        null=True,
-        blank=True
+        # null=True,
+        # blank=True
     )
     created_by = models.ForeignKey(
         User, 
