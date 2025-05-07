@@ -54,10 +54,10 @@ class Member(models.Model):
         related_name="members"
     )
     member_key = models.CharField(
-        default=generate_member_key,
+        # default=generate_member_key,
         max_length=21,
-        unique=True,
-        editable=False,
+        # unique=True,
+        # editable=False,
         null=True,
         blank=True
     )
