@@ -33,7 +33,7 @@ def check_member_existence(request):
         return Response({ "Verification failed. Please try again." }, status=404)
 
     return Response({
-        "member_id": member.id,
+        "member_key": member.member_key,
         "pin_set": member.pin_set,
         "full_name": member.full_name,
         "date_of_birth": member.date_of_birth,
@@ -48,14 +48,12 @@ def verify_member_pin(request):
     pin = serializer.validated_data["access_pin"]
     date_of_birth = serializer.validated_data["date_of_birth"]
 
-    # Split full_name into first and last names
     parts = full_name.split()
     if len(parts) < 2:
         return Response({"error": "Please enter both first name and last name."}, status=400)
     
     first_name, last_name = parts[0], parts[-1]
 
-    # Find the member using first_name, last_name, and date_of_birth
     member = Member.objects.filter(
         first_name__iexact=first_name,
         last_name__iexact=last_name,
@@ -66,7 +64,7 @@ def verify_member_pin(request):
         return Response("Verification failed. Please check your details and try again.", status=404)
 
     if member.verify_access_pin(pin):
-        member_data = { "member_id": member.member_key, "id": member.id }
+        member_data = { "member_key": member.member_key, "id": member.id }
         return Response({"success": True, "member": member_data})
     else:
         return Response({"error": "Invalid PIN."}, status=403)
@@ -82,7 +80,6 @@ def set_member_pin(request):
     date_of_birth = serializer.validated_data["date_of_birth"]
     new_pin = serializer.validated_data["new_pin"]
 
-    # Split full_name into first and last names
     parts = full_name.split()
     if len(parts) < 2:
         return Response({
@@ -113,7 +110,6 @@ def set_member_pin(request):
             "status": 403
         }, status=403)
 
-    # Set the access pin for the member
     member.set_access_pin(new_pin)
 
     return Response({
@@ -128,11 +124,11 @@ def set_member_pin(request):
 def reset_member_pin(request):
     serializer = ResetPinSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    member_id = serializer.validated_data["member_id"]
+    member_key = serializer.validated_data["member_key"]
     new_pin = serializer.validated_data["new_pin"]
 
     try:
-        member = Member.objects.get(id=member_id)
+        member = Member.objects.get(id=member_key)
         member.set_access_pin(new_pin)
         return Response({"success": f"PIN reset for {member.full_name}."})
     except Member.DoesNotExist:
@@ -140,13 +136,10 @@ def reset_member_pin(request):
 
 
 @api_view(["GET"])
-@permission_classes([AllowAny])  # You can adjust the permissions as needed
-def get_member_data(request, member_id):
+@permission_classes([AllowAny]) 
+def get_member_data(request, member_key):
     try:
-        # Retrieve member using member_id
-        member = Member.objects.get(member_id=member_id)
-
-        # Serialize the member data
+        member = Member.objects.get(member_key=member_key)
         serializer = BelongMemberSerializer(member, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)

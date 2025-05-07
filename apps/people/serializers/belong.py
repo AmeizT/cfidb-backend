@@ -18,7 +18,7 @@ class SetPinSerializer(serializers.Serializer):
     new_pin = serializers.CharField()
 
 class ResetPinSerializer(serializers.Serializer):
-    member_id = serializers.IntegerField()
+    member_key = serializers.IntegerField()
     new_pin = serializers.CharField(min_length=4, max_length=8)
 
 
