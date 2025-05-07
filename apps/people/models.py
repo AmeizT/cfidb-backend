@@ -267,11 +267,11 @@ class Member(models.Model):
         
                 
 class JuniorMember(models.Model):
-    # member_key = models.UUIDField(
-    #     default=uuid.uuid4, 
-    #     editable=False, 
-    #     unique=True
-    # )
+    member_key = models.UUIDField(
+        default=uuid.uuid4, 
+        editable=False, 
+        unique=True
+    )
     church = models.ForeignKey(
         Church, 
         on_delete=models.CASCADE, 

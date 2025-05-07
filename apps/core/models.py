@@ -7,8 +7,6 @@ from imagekit.models import ProcessedImageField
 from apps.core.choices import BlogCategoryChoices, BlogStatusChoices
 from apps.core.utils import blog_image_url
 
-
-
 class TermsAndConditions(models.Model):
     title = models.CharField(max_length=255, blank=True)
     version = models.CharField(max_length=10, default="1.0")

@@ -5,6 +5,9 @@ from django.utils.text import slugify
 from nanoid import generate # type: ignore
 from apps.announcements.choices.platform import PlatformChoices
 
+def generate_reference():
+    return generate(size=12)
+
 class AnnouncementQuerySet(models.QuerySet):
     def active(self):
         now = timezone.now()
@@ -14,7 +17,7 @@ class AnnouncementQuerySet(models.QuerySet):
         )
 
 class Announcement(models.Model):
-    reference = models.CharField(max_length=50, unique=True, default=generate(size=12))
+    reference = models.CharField(max_length=50, unique=True, default=generate_reference)
     title = models.CharField(max_length=255)
     message = models.TextField()
     platform = models.CharField(

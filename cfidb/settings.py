@@ -37,11 +37,13 @@ else:
     CORS_ALLOWED_ORIGINS = [
         'https://cfidb.com',
         'https://www.cfidb.com',
+        'https://blog/cfi.church',
     ]
     
 CSRF_TRUSTED_ORIGINS = [
     'https://cfidb.com',
     'https://www.cfidb.com',
+    'https://blog/cfi.church',
 ]
 
 INSTALLED_APPS = [
