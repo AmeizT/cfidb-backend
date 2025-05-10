@@ -19,19 +19,21 @@ if DEBUG:
    ALLOWED_HOSTS = [
        '127.0.0.1', 
        'localhost', 
-       'honeste-backend.vercel.app'
+       'honeste-backend.vercel.app',
     ] 
 else:
     ALLOWED_HOSTS = [
         'honeste-backend.vercel.app',
         'cfidb-backend.vercel.app',
         'api.cfi.church',
+        '192.168.0.183',
     ]
     
 if DEBUG:
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:3000',
-        'http://localhost:3001'
+        'http://localhost:3001',
+        'http://192.168.0.183:3000',
     ]
 else:
     CORS_ALLOWED_ORIGINS = [

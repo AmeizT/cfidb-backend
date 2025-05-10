@@ -5,13 +5,13 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from apps.posts.serializers import CreatePostSerializer, PostSerializer, CreateCommentSerializer, UpdatePostSerializer
 
 class PostPagination(pagination.PageNumberPagination):
-    page_size = 5
-    page_size_query_param = "page_size"
-    max_page_size = 10000000
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser, FormParser]
     pagination_class = PostPagination
 

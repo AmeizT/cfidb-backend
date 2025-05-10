@@ -45,8 +45,22 @@ class ChurchSerializer(serializers.ModelSerializer):
 
     def get_total_members(self, obj):
         return obj.total_members 
-        
-         
+    
+
+class AssemblySummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Church
+        fields = [
+            'name', 
+            'avatar',
+            'cover_image',
+            'avatar_fallback',
+            'city',
+            'province',
+            'country',
+        ]
+    
+       
 # class ChurchTrackerSerializer(serializers.ModelSerializer):
 #     pastor = ListUserSerializer()
     

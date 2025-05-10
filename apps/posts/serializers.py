@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from apps.posts.models import Comment, Post, PostImage
-from apps.churches.serializers import ChurchSerializer
-from apps.users.serializers import ListUserSerializer
-from apps.churches.models import Church
 from apps.users.models import User
+from apps.churches.models import Church
+from apps.posts.models import Comment, Post, PostImage
+from apps.churches.serializers import AssemblySummarySerializer
 
 class AssemblySerializer(serializers.ModelSerializer):
     class Meta:
@@ -49,9 +48,9 @@ class CreatePostSerializer(serializers.ModelSerializer):
         model = Post
         fields = [
             'author',
-            'branch',
+            'assembly',
             'title',
-            'body',
+            'content',
             'slug',
             'views',
             'images',
@@ -64,11 +63,8 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         uploaded_images = validated_data.pop('uploaded_images')
-
-        # Create the Post object
         post = Post.objects.create(**validated_data)
 
-        # Create PostImage objects for uploaded images
         for image in uploaded_images:
             PostImage.objects.create(post=post, image=image)
 
@@ -76,7 +72,7 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    branch = ChurchSerializer()
+    assembly = AssemblySummarySerializer()
     author = AuthorSerializer()
     images = PostImageSerializer(many=True, read_only=True)
     comments = CommentSerializer(many=True)
@@ -87,16 +83,15 @@ class PostSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'author',
-            'branch',
+            'assembly',
             'title',
-            'body',
+            'content',
             'slug',
             'likes',
             'views',
             'images',
             'comments',
-            'is_private',
-            'is_draft',
+            'status',
             'created_at',
             'updated_at'
         ]
