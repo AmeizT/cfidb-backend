@@ -38,6 +38,16 @@ class MemberSerializer(serializers.ModelSerializer):
         if obj.spouse:
             return obj.spouse.full_name 
         return None
+    
+    def validate(self, attrs):
+        if Member.objects.filter(
+            first_name__iexact=attrs['first_name'].strip(),
+            last_name__iexact=attrs['last_name'].strip(),
+            date_of_birth=attrs['date_of_birth'],
+            phone_number=attrs['phone_number'].strip()
+        ).exists():
+            raise serializers.ValidationError("A member with the same name, birth date, and phone number already exists.")
+        return attrs
         
         
 class CreateJuniorMemberSerializer(serializers.ModelSerializer):

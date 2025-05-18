@@ -186,7 +186,7 @@ class Member(models.Model):
         null=True,
     )
     avatar_fallback = models.CharField(
-        max_length=24, 
+        max_length=64, 
         blank=True
     )
     access_pin = models.CharField(max_length=128, blank=True)
