@@ -13,7 +13,7 @@ from apps.core.serializers import (
 class DocumentationView(viewsets.ModelViewSet):
     queryset = Documentation.objects.all()
     serializer_class = DocumentationSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
         """Automatically set the author to the logged-in user."""
@@ -22,13 +22,13 @@ class DocumentationView(viewsets.ModelViewSet):
 class BlogView(viewsets.ModelViewSet):
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
 
 class TermsView(viewsets.ModelViewSet):
     queryset = TermsAndConditions.objects.all()
     serializer_class = TermsAndConditionsSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class TermsCheckView(APIView):
     """Check if the user has accepted the latest active terms."""
