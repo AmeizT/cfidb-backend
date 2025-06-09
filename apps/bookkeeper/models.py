@@ -73,6 +73,8 @@ class Tithe(models.Model):
         blank=True, 
     )
     timestamp = models.DateField()
+    reference_code = models.CharField(max_length=100, blank=True)
+    notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -83,7 +85,8 @@ class Tithe(models.Model):
         
         
     def __str__(self):
-        return f'{self.member}, {self.timestamp} - {self.branch.name}'
+        member_name = self.member.full_name if self.member else "Unknown"
+        return f'{member_name}, {self.timestamp} - {self.branch.name}'
     
 
 class Pledge(models.Model):    
@@ -350,8 +353,8 @@ class FixedExpenditure(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = 'Fixed Expenditure'
-        verbose_name_plural = 'Fixed Expenditures'
+        verbose_name = 'Fixed Expense'
+        verbose_name_plural = 'Fixed Expenses'
         ordering = ['timestamp']
         
     def save(self, *args, **kwargs):
@@ -402,7 +405,7 @@ class Income(models.Model):
         on_delete=models.CASCADE,
         related_name='income'
     )
-    timestamp = models.DateTimeField(
+    timestamp = models.DateField(
         blank=True,
         null=True
     )
@@ -426,21 +429,12 @@ class Income(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
-    sum = models.DecimalField(
+    total_income = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
     )
-    expenses = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    balance = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
+    notes = models.TextField(blank=True)
     statement = models.FileField(
         upload_to=bank_statement_path,
         blank=True,
@@ -456,7 +450,7 @@ class Income(models.Model):
         
         
     def save(self, *args, **kwargs):
-        self.sum = self.offering + self.thanksgiving + self.fundraising + self.donations
+        self.total_income = self.offering + self.thanksgiving + self.fundraising + self.donations
         # expenses = Expenditure.objects.all().aggregate(models.Sum('total')) # type: ignore
         # self.expenses = expenses['total__sum'] or Decimal('0.00')
         # self.balance = self.sum - self.expenses

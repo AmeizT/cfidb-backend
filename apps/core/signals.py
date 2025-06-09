@@ -1,8 +1,8 @@
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
-from apps.core.models import TermsAndConditions
+from apps.core.models import TOS
 
-@receiver(pre_save, sender=TermsAndConditions)
+@receiver(pre_save, sender=TOS)
 def update_version(sender, instance, **kwargs):
     if instance.pk:
         last_version = sender.objects.order_by('-created_at').first()

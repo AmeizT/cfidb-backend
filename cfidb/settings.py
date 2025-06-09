@@ -195,7 +195,7 @@ if not DEBUG:
    
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-DEFAULT_FROM_EMAIL = 'CFI Database <cfidb.dev@gmail.com>'
+DEFAULT_FROM_EMAIL = 'CFI Support <support@cfi.church>'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -226,24 +226,26 @@ SIMPLE_JWT = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
 EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
 
 if DEBUG:
+    print(EMAIL_HOST_USER)
     DOMAIN = 'localhost:3000'
 else:
     DOMAIN = 'cfidb.com'
     
-SITE_NAME = 'CFI Database'
+SITE_NAME = 'CFI Workspace'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'iforgot/password/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/{uid}/{token}',
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_PASSWORD_RETYPE': True,
     'USER_CREATE_PASSWORD_RETYPE': True,

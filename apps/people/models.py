@@ -189,19 +189,11 @@ class Member(models.Model):
         max_length=64, 
         blank=True
     )
-    access_pin = models.CharField(max_length=128, blank=True)
+    notes = models.TextField(blank=True) 
     pin_set = models.BooleanField(default=False)
-
-    def set_access_pin(self, raw_pin):
-        self.access_pin = make_password(raw_pin)
-        self.pin_set = True
-        self.save()
-
-    def verify_access_pin(self, raw_pin):
-        return check_password(raw_pin, self.access_pin)
-    
-    notes = models.TextField(blank=True)  
-    is_active = models.BooleanField(default=True)
+    access_pin = models.CharField(max_length=128, blank=True)
+    is_trash = models.BooleanField(default=False)
+    trash_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -236,20 +228,51 @@ class Member(models.Model):
             (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
         )
     
+    @property
+    def is_active(self):
+        return (
+            not self.is_trash and
+            self.membership_status not in ['Deceased', 'Inactive']
+        )
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.member_key}"
+    
+    def set_access_pin(self, raw_pin):
+        self.access_pin = make_password(raw_pin)
+        self.pin_set = True
+        self.save()
+
+    def verify_access_pin(self, raw_pin):
+        return check_password(raw_pin, self.access_pin)
+    
     def clean(self):
         """Validate the model before saving."""
-        # Ensure baptized_at is set only if baptized is True
-        # if not self.baptized and self.baptized_at:
-        #     raise ValidationError({"baptized_at": "Baptism date cannot be set if member is not baptized."})
-        
-        # Ensure marriage_date is set only for married members
+        if not self.pk:
+            if Member.objects.filter(
+                first_name=self.first_name,
+                last_name=self.last_name,
+                date_of_birth=self.date_of_birth,
+                phone_number=self.phone_number,
+                is_trash=False,
+            ).exists():
+                raise ValidationError("A non-trashed member with the same name, date of birth, and phone number already exists.")
+
         if self.relationship != Relationship.MARRIED and self.marriage_date:
             raise ValidationError({"marriage_date": "Marriage date cannot be set if member is not married."})
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.member_key}"
-
     def save(self, *args, **kwargs):
+        # Automatically update baptized field based on baptized_at
+        if self.baptized_at and self.baptized_at != date(1900, 1, 1):
+            self.baptized = True
+        else:
+            self.baptized = False
+
+        if self.is_trash and not self.trash_date:
+            self.trash_date = timezone.now()
+        elif not self.is_trash:
+            self.trash_date = None
+
         if not self.member_key:
             self.member_key = generate()
 

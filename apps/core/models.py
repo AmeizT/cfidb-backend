@@ -7,16 +7,21 @@ from imagekit.models import ProcessedImageField
 from apps.core.choices import BlogCategoryChoices, BlogStatusChoices
 from apps.core.utils import blog_image_url
 
-class TermsAndConditions(models.Model):
+class TOS(models.Model):
     title = models.CharField(max_length=255, blank=True)
     version = models.CharField(max_length=10, default="1.0")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = "Terms of Service"
+        verbose_name_plural = "Terms of Service"
+        db_table = "apps_core_termsandconditions"
+
     def save(self, *args, **kwargs):
         if self.pk:
-            last_version = TermsAndConditions.objects.order_by('-created_at').first()
+            last_version = TOS.objects.order_by('-created_at').first()
             if last_version:
                 major, minor = map(int, last_version.version.split('.'))
                 minor += 1
@@ -26,9 +31,9 @@ class TermsAndConditions(models.Model):
     def __str__(self):
         return f"Terms v{self.version}"
 
-class UserTermsAcceptance(models.Model):
+class TOSAcceptance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    terms = models.ForeignKey(TermsAndConditions, on_delete=models.CASCADE)
+    terms = models.ForeignKey(TOS, on_delete=models.CASCADE)
     accepted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

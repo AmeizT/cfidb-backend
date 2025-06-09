@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from apps.core.models import Blog, Documentation, TermsAndConditions, UserTermsAcceptance
-from apps.users.serializers import MinifiedUserSerializer, MinimalUserSerializer
+from apps.users.serializers import MinimalUserSerializer
+from apps.core.models import Blog, Documentation, TOS, TOSAcceptance
 
 class DocumentationSerializer(serializers.ModelSerializer):
     author_name = serializers.CharField(source="author.username", read_only=True)
@@ -18,13 +18,13 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Blog
         fields = ['id', 'author', 'title', 'subtitle', 'body', 'category', 'image', 'created_at', 'updated_at', 'status', 'slug']
 
-class TermsAndConditionsSerializer(serializers.ModelSerializer):
+class TOSSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TermsAndConditions
+        model = TOS
         fields = ['id', 'title', 'content', 'version', 'created_at', 'updated_at']
 
-class UserTermsAcceptanceSerializer(serializers.ModelSerializer):
+class TOSAcceptanceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserTermsAcceptance
+        model = TOSAcceptance
         fields = ['user', 'terms', 'accepted_at']
         read_only_fields = ['user', 'accepted_at']
