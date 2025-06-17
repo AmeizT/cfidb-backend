@@ -264,7 +264,7 @@ class FinanceSummarySerializer:
         return getattr(obj, attr, default) if obj else default
 
     @staticmethod
-    def get_data(church: Church, year: int, month: int):
+    def get_data(church: Church, year: int, month: int, *, skip_recursion=False):
         # Filter by month/year
         income = Income.objects.filter(
             church=church,
@@ -310,16 +310,19 @@ class FinanceSummarySerializer:
         total_income = gross_income + tithes_total
         balance = total_income - total_expenses
 
-        # Determine previous month and year
-        if month == 1:
-            prev_month = 12
-            prev_year = year - 1
-        else:
-            prev_month = month - 1
-            prev_year = year
+        previous_totals = {}
 
-        previous_data = FinanceSummarySerializer.get_data(church, prev_year, prev_month) if prev_year >= 2000 else None
-        previous_totals = previous_data.get("totals") if previous_data else {}
+        if not skip_recursion:
+            if month == 1:
+                prev_month = 12
+                prev_year = year - 1
+            else:
+                prev_month = month - 1
+                prev_year = year
+
+            if prev_year >= 2000:
+                previous_data = FinanceSummarySerializer.get_data(church, prev_year, prev_month, skip_recursion=True)
+                previous_totals = previous_data.get("totals", {})
 
         # Determine start year for valid book balance data
         start_year = 2025
@@ -374,7 +377,7 @@ class FinanceSummarySerializer:
     def get_yearly_data(church: Church, year: int):
         result = []
         for month in range(1, 13):
-            result.append(FinanceSummarySerializer.get_data(church, year, month))
+            result.append(FinanceSummarySerializer.get_data(church, year, month, skip_recursion=True))
         return {
             "year": year,
             "monthlySummaries": result,
