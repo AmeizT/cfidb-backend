@@ -13,6 +13,7 @@ from apps.bookkeeper.views import (
     RemittanceDataView,
     ShortfallPaymentView,
     TitheView,
+    FinanceSummaryView
 )
 
 router = DefaultRouter()
@@ -31,5 +32,6 @@ router.register(r'shortfall', ShortfallPaymentView, basename='shortfall')
 router.register(r'monthly', MonthlyIncomeSummaryView, basename="monthly")
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router.urls)), 
+    path("finance/monthly-summary/", FinanceSummaryView.as_view(), name="finance-yearly-summary"),
 ]

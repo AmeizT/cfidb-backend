@@ -4,6 +4,7 @@ from apps.bookkeeper.models import (
     Expenditure,
     FixedExpenditure,
     Income,
+    MonthlyFinanceSnapshot,
     Payroll,
     Pledge,
     Remittance,
@@ -17,6 +18,7 @@ admin.site.register(AssetImage)
 admin.site.register(Expenditure)
 admin.site.register(FixedExpenditure)
 admin.site.register(Income)
+admin.site.register(MonthlyFinanceSnapshot)
 # admin.site.register(Payroll)
 # admin.site.register(Pledge)
 # admin.site.register(Remittance)

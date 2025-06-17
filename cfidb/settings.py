@@ -234,7 +234,6 @@ EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
 
 if DEBUG:
-    print(EMAIL_HOST_USER)
     DOMAIN = 'localhost:3000'
 else:
     DOMAIN = 'cfidb.com'

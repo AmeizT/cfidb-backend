@@ -29,7 +29,7 @@ class ChurchSerializer(serializers.ModelSerializer):
             'city',
             'province',
             'country',
-            'iso_country_code',
+            'country_code',
             'language',
             'currency',
             'phone_number',
@@ -93,13 +93,19 @@ class AssemblySummarySerializer(serializers.ModelSerializer):
 class AssemblyISOSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "iso_country_code", "language", "currency"]
+        fields = ["id", "country_code", "language", "currency"]
+
+
+class LocaleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Church
+        fields = ["id", "country_code", "language", "currency"]
 
 
 class CountryInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "iso_country_code", "language", "currency"]
+        fields = ["id", "country_code", "language", "currency"]
         
             
 

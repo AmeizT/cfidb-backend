@@ -29,7 +29,7 @@ class Church(models.Model):
     city = models.CharField(max_length=100, blank=True)
     province = models.CharField(max_length=100, blank=True)
     country = models.CharField(max_length=100, blank=True)
-    iso_country_code = models.CharField(max_length=3, blank=True)
+    country_code = models.CharField(max_length=3, blank=True)
     language = models.CharField(max_length=12, blank=True)
     currency = models.CharField(max_length=12, blank=True)
     phone_number = models.CharField(max_length=20, blank=True)

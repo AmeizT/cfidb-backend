@@ -3,6 +3,7 @@ from apps.bookkeeper.serializers import (
     CreateTitheSerializer,
     CreateIncomeSerializer,
     ExpenditureSerializer,
+    FinanceSummarySerializer,
     FixedExpenditureSerializer,
     CreateFixedExpenditureSerializer,
     IncomeSerializer,
@@ -274,3 +275,21 @@ class MonthlyIncomeSummaryView(viewsets.ViewSet):
         # Serialize and return data
         serializer = MonthlyIncomeSummarySerializer(church_income, many=True)
         return Response(serializer.data)
+    
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from datetime import date
+
+class FinanceSummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        church = request.user.church
+        year = int(request.query_params.get("year", date.today().year))
+        month = int(request.query_params.get("month", date.today().month))
+
+        data = FinanceSummarySerializer.get_data(church, year, month)
+        return Response(data)
