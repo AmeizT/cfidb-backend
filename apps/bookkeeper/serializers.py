@@ -323,32 +323,11 @@ class FinanceSummarySerializer:
 
         # Determine start year for valid book balance data
         start_year = 2025
-        book_balance = Decimal("0")
 
-        if year >= start_year:
-            # Get all snapshots up to the current month/year
-            snapshots = MonthlyFinanceSnapshot.objects.filter(
-                Q(church=church),
-                Q(year__gt=start_year) |
-                Q(year=start_year, month__gte=1),
-                Q(year__lt=year) |
-                Q(year=year, month__lte=month)
-            )
-
-            snapshot_total = snapshots.aggregate(total=Sum("balance"))["total"]
-            book_balance = snapshot_total or Decimal("0")
-
-            # Cache current month balance if not yet stored
-            if not MonthlyFinanceSnapshot.objects.filter(church=church, year=year, month=month).exists():
-                MonthlyFinanceSnapshot.objects.create(
-                    church=church,
-                    year=year,
-                    month=month,
-                    balance=balance
-                )
-                book_balance += balance
-        else:
-            book_balance = balance
+        snapshot = MonthlyFinanceSnapshot.objects.filter(
+            church=church, year=year, month=month
+        ).first()
+        book_balance = snapshot.balance if snapshot else Decimal("0")
 
         return {
             "income": {
@@ -416,6 +395,3 @@ class FinanceSummarySerializer:
             "balance": balance,
             "expenseToIncomeRatio": float(total_expenses) / float(total_income) if total_income else 0,
         }
-
-
-
