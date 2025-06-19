@@ -324,13 +324,8 @@ class FinanceSummarySerializer:
                 previous_data = FinanceSummarySerializer.get_data(church, prev_year, prev_month, skip_recursion=True)
                 previous_totals = previous_data.get("totals", {})
 
-        # Determine start year for valid book balance data
         start_year = 2025
-
-        snapshot = MonthlyFinanceSnapshot.objects.filter(
-            church=church, year=year, month=month
-        ).first()
-        book_balance = snapshot.balance if snapshot else Decimal("0")
+        book_balance = FinanceSummarySerializer.get_book_balance(church, year, month)
 
         return {
             "income": {
@@ -398,3 +393,34 @@ class FinanceSummarySerializer:
             "balance": balance,
             "expenseToIncomeRatio": float(total_expenses) / float(total_income) if total_income else 0,
         }
+
+    @staticmethod
+    def get_book_balance(church, year, month):
+        book_balance = Decimal("0")
+
+        for m in range(1, month + 1):
+            income = Income.objects.filter(
+                church=church, timestamp__year=year, timestamp__month=m
+            ).first()
+
+            fixed = FixedExpenditure.objects.filter(
+                assembly=church, timestamp__year=year, timestamp__month=m
+            ).first()
+
+            flexible_total = Expenditure.objects.filter(
+                assembly=church, invoice_date__year=year, invoice_date__month=m
+            ).aggregate(total=models.Sum("price"))["total"] or Decimal("0")
+
+            tithes_total = Tithe.objects.filter(
+                branch=church, timestamp__year=year, timestamp__month=m
+            ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0")
+
+            month_income = (income.total_income if income else Decimal("0")) + tithes_total
+            remittance = tithes_total * Decimal("0.25")
+            month_expenses = (fixed.total if fixed else Decimal("0")) + flexible_total + remittance
+
+            # Add the month’s savings to running book balance
+            month_savings = month_income - month_expenses
+            book_balance += month_savings
+
+        return book_balance
