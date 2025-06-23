@@ -514,9 +514,6 @@ class Attendance(models.Model):
         super().save(*args, **kwargs)
 
 
-
-
-
 class HCAttendance(models.Model):
     church = models.ForeignKey(
         Church, on_delete=models.CASCADE, related_name="hc_church"

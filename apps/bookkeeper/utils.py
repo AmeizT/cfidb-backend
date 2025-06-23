@@ -31,7 +31,7 @@ def fixed_expenditure_receipt_path(instance, filename):
     
 def tithe_receipt_path(instance, filename):
     return 'cfidb/bookkeeper/{0}/tithes/{1}-{2}/{3}'.format(
-        instance.branch.name, 
+        instance.assembly.name, 
         instance.member.first_name, 
         instance.member.last_name, 
         filename

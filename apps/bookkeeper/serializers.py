@@ -217,13 +217,13 @@ class RemittanceDataSerializer(serializers.ModelSerializer):
 
 class TitheSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
-    branch = AssemblyISOSerializer()
+    assembly = AssemblyISOSerializer()
 
     class Meta:
         model = Tithe
         fields = [
             'id', 
-            'branch', 
+            'assembly', 
             'member', 
             'amount', 
             'payment_method', 
@@ -273,7 +273,7 @@ class FinanceSummarySerializer:
         ).first()
 
         tithes_total = Tithe.objects.filter(
-            branch=church,
+            assembly=church,
             timestamp__year=year,
             timestamp__month=month
         ).aggregate(total=Sum("amount"))['total'] or Decimal("0")
@@ -412,7 +412,7 @@ class FinanceSummarySerializer:
             ).aggregate(total=models.Sum("price"))["total"] or Decimal("0")
 
             tithes_total = Tithe.objects.filter(
-                branch=church, timestamp__year=year, timestamp__month=m
+                assembly=church, timestamp__year=year, timestamp__month=m
             ).aggregate(total=models.Sum("amount"))["total"] or Decimal("0")
 
             month_income = (income.total_income if income else Decimal("0")) + tithes_total

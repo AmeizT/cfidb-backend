@@ -29,16 +29,15 @@ from imagekit.processors import ResizeToFill, SmartResize
 
 
 class PaymentMethod(models.TextChoices):
-    BANK = 'bank', 'Bank'
-    CASH = 'cash', 'Cash'
-    CHEQUE = 'cheque', 'Cheque'
-    EFT = 'eft', 'EFT'
-    MOBILE = 'mobile', 'Mobile'
-    OTHER = 'other', 'Other'
+    BANK = 'Bank', 'Bank'
+    CASH = 'Cash', 'Cash'
+    CHEQUE = 'Cheque', 'Cheque'
+    PBP = 'Payment By Phone', 'Payment By Phone'
+    OTHER = 'Other', 'Other'
     
 
 class Tithe(models.Model):    
-    branch = models.ForeignKey(
+    assembly = models.ForeignKey(
         Church, 
         on_delete=models.PROTECT,
         related_name='assembly'
@@ -63,7 +62,7 @@ class Tithe(models.Model):
         default=Decimal(0.00)
     )
     payment_method = models.CharField(
-        max_length=10,
+        max_length=26,
         choices=PaymentMethod.choices, 
         default=PaymentMethod.BANK, 
     )
@@ -86,7 +85,7 @@ class Tithe(models.Model):
         
     def __str__(self):
         member_name = self.member.full_name if self.member else "Unknown"
-        return f'{member_name}, {self.timestamp} - {self.branch.name}'
+        return f'{member_name}, {self.timestamp} - {self.assembly.name}'
     
 
 class Pledge(models.Model):    
@@ -111,7 +110,7 @@ class Pledge(models.Model):
         default=Decimal(0.00)
     )
     payment_method = models.CharField(
-        max_length=10,
+        max_length=26,
         choices=PaymentMethod.choices, 
         default=PaymentMethod.BANK, 
     )
@@ -164,7 +163,7 @@ class Remittance(models.Model):
         default=Decimal(0.00)
     )
     payment_method = models.CharField(
-        max_length=10,
+        max_length=26,
         choices=PaymentMethod.choices, 
         default=PaymentMethod.BANK, 
     )
@@ -220,7 +219,7 @@ class ShortfallPayment(models.Model):
     )
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0.00))
     payment_method = models.CharField(
-        max_length=10,
+        max_length=26,
         choices=PaymentMethod.choices, 
         default=PaymentMethod.BANK, 
     )
@@ -370,11 +369,11 @@ class FixedExpenditure(models.Model):
         # Extract the month and year from the tithe's timestamp
         tithe_month = instance.timestamp.month
         tithe_year = instance.timestamp.year
-        branch = instance.branch
+        assembly = instance.assembly
 
         # Calculate the total tithes for that branch for the month and year
         total_tithes = Tithe.objects.filter(
-            branch=branch, 
+            assembly=assembly, 
             timestamp__year=tithe_year, 
             timestamp__month=tithe_month
         ).aggregate(Sum('amount'))['amount__sum'] or Decimal(0.00)
@@ -389,7 +388,7 @@ class FixedExpenditure(models.Model):
 
         # Find or create FixedExpenditure for that branch with the same timestamp
         fixed_expenditure, created = FixedExpenditure.objects.get_or_create(
-            assembly=branch,
+            assembly=assembly,
             timestamp=f"{tithe_year}-{tithe_month}-{last_day_of_month}",  # Ensure the same month and year
             defaults={'remittance': remittance_amount}
         )

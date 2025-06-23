@@ -246,7 +246,7 @@ class TitheView(viewsets.ModelViewSet):
         return TitheSerializer
 
     def get_queryset(self):
-        return Tithe.objects.filter(branch=self.request.user.church)  # type: ignore
+        return Tithe.objects.filter(assembly=self.request.user.church)  # type: ignore
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)
