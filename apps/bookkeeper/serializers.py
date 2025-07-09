@@ -217,22 +217,10 @@ class RemittanceDataSerializer(serializers.ModelSerializer):
 
 class TitheSerializer(serializers.ModelSerializer):
     member = MemberSerializer()
-    assembly = AssemblyISOSerializer()
 
     class Meta:
         model = Tithe
-        fields = [
-            'id', 
-            'assembly', 
-            'member', 
-            'amount', 
-            'payment_method', 
-            'reference_code',
-            'receipt', 
-            'timestamp',
-            'created_at', 
-            'updated_at'
-        ]
+        fields = "__all__"
         
         
 class CreateTitheSerializer(serializers.ModelSerializer):
