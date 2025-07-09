@@ -116,7 +116,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfidb.wsgi.application'
 
-if not DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
