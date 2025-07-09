@@ -227,6 +227,7 @@ class TitheSerializer(serializers.ModelSerializer):
             'member', 
             'amount', 
             'payment_method', 
+            'reference_code',
             'receipt', 
             'timestamp',
             'created_at', 
