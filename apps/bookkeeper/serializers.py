@@ -216,8 +216,6 @@ class RemittanceDataSerializer(serializers.ModelSerializer):
 
 
 class TitheSerializer(serializers.ModelSerializer):
-    member = MemberSerializer()
-
     class Meta:
         model = Tithe
         fields = "__all__"
