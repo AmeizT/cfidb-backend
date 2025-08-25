@@ -6,6 +6,8 @@ from apps.bookkeeper.models import FixedExpenditure, Tithe, Income, Expenditure 
 from apps.people.models import Attendance
 
 def analyze_assembly_data(assembly, year, upto_month=None):
+    if hasattr(assembly, 'is_active') and not assembly.is_active:
+        return None
     today = date.today()
     current_month = upto_month or (today.month if today.year == year else 12)
 
@@ -127,6 +129,8 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
     Efficiently analyze many assemblies for a given year and upto_month.
     Returns a list of dicts, each corresponding to the output of analyze_assembly_data.
     """
+    # Filter out inactive assemblies
+    assemblies = [a for a in assemblies if getattr(a, 'is_active', True)]
     today = date.today()
     current_month = upto_month or (today.month if today.year == year else 12)
     assemblies = list(assemblies)
