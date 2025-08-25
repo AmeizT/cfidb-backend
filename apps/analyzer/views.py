@@ -2,7 +2,7 @@ from datetime import date
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from apps.analyzer.utils.assembly_analyzer import analyze_assembly_data
+from apps.analyzer.utils.assembly_analyzer import analyze_assembly_data, analyze_multiple_assemblies
 from apps.churches.models import Church
 from apps.analyzer.serializers import AssemblyAnalysisSerializer
 
@@ -21,6 +21,6 @@ def analyze_data(request, assembly_id=None):
 
     # For admin view (all assemblies)
     assemblies = Church.objects.all()
-    results = [analyze_assembly_data(asm, year, upto_month) for asm in assemblies]
+    results = analyze_multiple_assemblies(assemblies, year, upto_month)
     serializer = AssemblyAnalysisSerializer(results, many=True)
     return Response(serializer.data)
