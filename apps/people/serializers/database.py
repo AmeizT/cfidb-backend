@@ -10,6 +10,11 @@ from apps.people.models import (
 )
 from apps.churches.serializers import ChurchSerializer
 from apps.users.serializers import AuthorSerializer
+
+class MemberMinifiedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ['id', 'full_name', 'first_name', 'middle_name', 'last_name', 'assembly']
                 
 class MemberSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()

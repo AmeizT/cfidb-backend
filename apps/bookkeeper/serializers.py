@@ -14,7 +14,7 @@ from apps.bookkeeper.models import (
 )
 from rest_framework import serializers
 from apps.churches.models import Church
-from apps.people.serializers.database import MemberSerializer
+from apps.people.serializers.database import MemberMinifiedSerializer, MemberSerializer
 from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer, UserNamesSerializer
 from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer, LocaleSerializer
 from apps.bookkeeper.models import AssetImage
@@ -216,9 +216,12 @@ class RemittanceDataSerializer(serializers.ModelSerializer):
 
 
 class TitheSerializer(serializers.ModelSerializer):
+    member = MemberMinifiedSerializer()
+    assembly = LocaleSerializer()
+    
     class Meta:
         model = Tithe
-        fields = "__all__"
+        fields = ["id", "assembly", "member", "payment_method", "timestamp", "amount", "created_at", "updated_at", "is_trash", "trash_date", "reference_code", "notes"]
         
         
 class CreateTitheSerializer(serializers.ModelSerializer):

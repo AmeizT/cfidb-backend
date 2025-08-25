@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'login_history',
     'imagekit',
     # 'easyaudit',
+    'django_extensions',
     'apps',
     'apps.users',
     'apps.core',
@@ -80,7 +81,8 @@ INSTALLED_APPS = [
     'apps.forum',
     'apps.survey',
     'apps.integrations',
-    'apps.announcements'
+    'apps.announcements',
+    'apps.analyzer',
 ]
 
 MIDDLEWARE = [
@@ -176,7 +178,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': str(os.environ.get('CLOUDINARY_API_SECRET')),
 }
 
-
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -204,7 +205,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,

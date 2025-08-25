@@ -3,6 +3,7 @@ import calendar
 from PIL import Image
 from decimal import Decimal
 from django.db import models
+from django.utils import timezone
 from django.dispatch import receiver
 from apps.users.models import User
 from apps.people.models import Member
@@ -35,6 +36,15 @@ class PaymentMethod(models.TextChoices):
     PBP = 'Payment By Phone', 'Payment By Phone'
     OTHER = 'Other', 'Other'
     
+
+
+# Soft delete manager for Tithe
+class TitheManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_trash=False)
+
+    def trashed(self):
+        return super().get_queryset().filter(is_trash=True)
 
 class Tithe(models.Model):    
     assembly = models.ForeignKey(
@@ -74,8 +84,12 @@ class Tithe(models.Model):
     timestamp = models.DateField()
     reference_code = models.CharField(max_length=100, blank=True)
     notes = models.TextField(blank=True)
+    is_trash = models.BooleanField(default=False) 
+    trash_date = models.DateTimeField(null=True, blank=True)  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects = TitheManager()
+    all_objects = models.Manager() 
     
     class Meta:
         verbose_name = 'tithe'
@@ -84,8 +98,18 @@ class Tithe(models.Model):
         
         
     def __str__(self):
-        member_name = self.member.full_name if self.member else "Unknown"
+        member_name = self.member.full_name if self.member else "Anonymous"
         return f'{member_name}, {self.timestamp} - {self.assembly.name}'
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_trash = True
+        self.trash_date = timezone.now()
+        self.save()
+
+    def restore(self):
+        self.is_trash = False
+        self.trash_date = None
+        self.save()
     
 
 class Pledge(models.Model):    

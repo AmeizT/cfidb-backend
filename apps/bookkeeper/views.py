@@ -1,3 +1,4 @@
+from django.http import Http404
 from apps.bookkeeper.serializers import (
     AssetSerializer,
     CreateTitheSerializer,
@@ -37,6 +38,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from apps.users.models import DelegatePermission, PermissionType
 from django.db.models.functions import ExtractMonth, ExtractYear
 from apps.bookkeeper.serializers import MonthlyIncomeSummarySerializer
+from rest_framework.decorators import action
 
 class AssetView(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
@@ -246,7 +248,31 @@ class TitheView(viewsets.ModelViewSet):
         return TitheSerializer
 
     def get_queryset(self):
-        return Tithe.objects.filter(assembly=self.request.user.church)  # type: ignore
+        return Tithe.objects.filter(assembly=self.request.user.church, is_trash=False)  # non-trashed only
+    
+    def get_object(self):
+        queryset = Tithe.all_objects.filter(assembly=self.request.user.church)
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        filter_kwargs = {self.lookup_field: self.kwargs[lookup_url_kwarg]}
+        obj = queryset.filter(**filter_kwargs).first()
+        if not obj:
+            raise Http404
+        self.check_object_permissions(self.request, obj)
+        return obj
+    
+    @action(detail=False, methods=['get'])
+    def trashed(self, request):
+        trashed_items = Tithe.all_objects.filter(assembly=self.request.user.church, is_trash=True)
+        serializer = self.get_serializer(trashed_items, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def restore(self, request, pk=None):
+        tithe = self.get_object()
+        tithe.is_trash = False
+        tithe.save()
+        serializer = self.get_serializer(tithe)
+        return Response(serializer.data)
     
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, many=True)

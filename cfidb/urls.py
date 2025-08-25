@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('portal-a26e12/', admin.site.urls),
     path('', include('apps.home.urls')),
+    path('api/v1/', include('apps.analyzer.urls')),
     path('api/v1/', include('apps.announcements.urls')),
     path('api/v1/', include('apps.bookkeeper.urls')),
     path('api/v1/', include('apps.chat.urls')),
