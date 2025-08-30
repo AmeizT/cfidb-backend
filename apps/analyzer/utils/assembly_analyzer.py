@@ -1,9 +1,17 @@
 import calendar
-from datetime import date
+from datetime import date, datetime
 from collections import defaultdict
-from django.db.models import Count
+from django.db.models import Count, Max
 from apps.bookkeeper.models import FixedExpenditure, Tithe, Income, Expenditure  # assuming these apps
 from apps.people.models import Attendance
+
+
+# Helper to ensure datetime type for aggregated values
+def ensure_datetime(value):
+    """Ensure aggregated values are datetime or None."""
+    if isinstance(value, date) and not isinstance(value, datetime):
+        return datetime.combine(value, datetime.min.time())
+    return value
 
 def analyze_assembly_data(assembly, year, upto_month=None):
     if hasattr(assembly, 'is_active') and not assembly.is_active:
@@ -26,52 +34,63 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         end_date = date(year, month, last_day)
 
         # Tithes (>= 2 per month)
-        tithes_count = Tithe.objects.filter(
+        tithes_qs = Tithe.objects.filter(
             assembly=assembly, timestamp__range=(start_date, end_date), is_trash=False
-        ).count()
+        )
+        tithes_count = tithes_qs.count()
         tithes_ok = tithes_count >= 2
         tithes_comment = "OK" if tithes_ok else f"Only {tithes_count} record(s) (need 2+)"
         if not tithes_ok:
             missing_tithes += 1
+        tithes_last = ensure_datetime(tithes_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Income (>= 1 per month)
-        income_ok = Income.objects.filter(
+        income_qs = Income.objects.filter(
             church=assembly, timestamp__range=(start_date, end_date)
-        ).exists()
+        )
+        income_ok = income_qs.exists()
         income_comment = "OK" if income_ok else "Missing"
         if not income_ok:
             missing_income += 1
+        income_last = ensure_datetime(income_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Expenditure (>= 1 per month)
-        expenditure_ok = FixedExpenditure.objects.filter(
+        expenditure_qs = FixedExpenditure.objects.filter(
             assembly=assembly, timestamp__range=(start_date, end_date)
-        ).exists()
+        )
+        expenditure_ok = expenditure_qs.exists()
         expenditure_comment = "OK" if expenditure_ok else "Missing"
         if not expenditure_ok:
             missing_expenditure += 1
+        expenditure_last = ensure_datetime(expenditure_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Attendance (weekly, compare weeks in month)
         weeks_in_month = len(calendar.Calendar().monthdatescalendar(year, month))
-        attendance_count = Attendance.objects.filter(
+        attendance_qs = Attendance.objects.filter(
             church=assembly, timestamp__range=(start_date, end_date)
-        ).count()
+        )
+        attendance_count = attendance_qs.count()
         attendance_ok = attendance_count >= weeks_in_month
         attendance_comment = (
             "OK" if attendance_ok else f"{attendance_count}/{weeks_in_month} weeks"
         )
         if not attendance_ok:
             missing_attendance += 1
+        attendance_last = ensure_datetime(attendance_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Completion percentage (4 categories)
         completed = sum([tithes_ok, income_ok, expenditure_ok, attendance_ok])
-        completion_percentage = round(100 * completed / 4)
-        total_completion += completion_percentage
+        completion = round(100 * completed / 4)
+        total_completion += completion
 
         # Star score (5 stars if all, else deduct 1 per missing)
         stars = 5 - (4 - completed)
         if stars < 1:
             stars = 1
         total_stars += stars
+
+        # last_created_at: max of all last timestamps
+        last_created_at = max(filter(None, [tithes_last, income_last, expenditure_last, attendance_last]), default=None)
 
         # Overdue: current date > 5th of next month and incomplete
         overdue = False
@@ -98,9 +117,10 @@ def analyze_assembly_data(assembly, year, upto_month=None):
             "income_comment": income_comment,
             "expenditure_comment": expenditure_comment,
             "attendance_comment": attendance_comment,
-            "completion_percentage": completion_percentage,
-            "stars": stars,
+            "completion": completion,
+            "rating": stars,
             "overdue": overdue,
+            "last_created_at": last_created_at,
         })
 
     # Summary
@@ -109,14 +129,14 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         "missing_income": missing_income,
         "missing_expenditure": missing_expenditure,
         "missing_attendance": missing_attendance,
-        "average_completion_percentage": round(total_completion / n_months, 2) if n_months else 0,
-        "average_stars": round(total_stars / n_months, 2) if n_months else 0,
+        "average_completion": round(total_completion / n_months, 2) if n_months else 0,
+        "average_rating": round(total_stars / n_months, 2) if n_months else 0,
     }
     return {
         "assembly": assembly.id,
         "assembly_name": assembly.name,
         "year": year,
-        "data": results,
+        "results": results,
         "summary": summary,
     }
 
@@ -155,11 +175,13 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             is_trash=False
         )
         .values("assembly_id", "timestamp__month")
-        .annotate(count=Count("id"))
+        .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     tithes_counts = defaultdict(lambda: defaultdict(int))
+    tithes_last_created = defaultdict(dict)
     for row in tithes_qs:
         tithes_counts[row["assembly_id"]][row["timestamp__month"]] = row["count"]
+        tithes_last_created[row["assembly_id"]][row["timestamp__month"]] = row["last_created"]
 
     # Bulk query Income (exists per assembly per month)
     income_qs = (
@@ -168,11 +190,13 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             timestamp__year=year
         )
         .values("church_id", "timestamp__month")
-        .annotate(count=Count("id"))
+        .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     income_exists = defaultdict(set)
+    income_last_created = defaultdict(dict)
     for row in income_qs:
         income_exists[row["church_id"]].add(row["timestamp__month"])
+        income_last_created[row["church_id"]][row["timestamp__month"]] = row["last_created"]
 
     # Bulk query Expenditure (exists per assembly per month)
     expenditure_qs = (
@@ -181,11 +205,13 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             timestamp__year=year
         )
         .values("assembly_id", "timestamp__month")
-        .annotate(count=Count("id"))
+        .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     expenditure_exists = defaultdict(set)
+    expenditure_last_created = defaultdict(dict)
     for row in expenditure_qs:
         expenditure_exists[row["assembly_id"]].add(row["timestamp__month"])
+        expenditure_last_created[row["assembly_id"]][row["timestamp__month"]] = row["last_created"]
 
     # Bulk query Attendance (count per assembly per month)
     attendance_qs = (
@@ -194,11 +220,13 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             timestamp__year=year
         )
         .values("church_id", "timestamp__month")
-        .annotate(count=Count("id"))
+        .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     attendance_counts = defaultdict(lambda: defaultdict(int))
+    attendance_last_created = defaultdict(dict)
     for row in attendance_qs:
         attendance_counts[row["church_id"]][row["timestamp__month"]] = row["count"]
+        attendance_last_created[row["church_id"]][row["timestamp__month"]] = row["last_created"]
 
     results = []
     for assembly in assemblies:
@@ -219,18 +247,21 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             tithes_comment = "OK" if tithes_ok else f"Only {tithes_count} record(s) (need 2+)"
             if not tithes_ok:
                 missing_tithes += 1
+            tithes_last = ensure_datetime(tithes_last_created[assembly.id].get(month))
 
             # Income (>=1 per month)
             income_ok = month in income_exists[assembly.id]
             income_comment = "OK" if income_ok else "Missing"
             if not income_ok:
                 missing_income += 1
+            income_last = ensure_datetime(income_last_created[assembly.id].get(month))
 
             # Expenditure (>=1 per month)
             expenditure_ok = month in expenditure_exists[assembly.id]
             expenditure_comment = "OK" if expenditure_ok else "Missing"
             if not expenditure_ok:
                 missing_expenditure += 1
+            expenditure_last = ensure_datetime(expenditure_last_created[assembly.id].get(month))
 
             # Attendance (weekly, compare to weeks in month)
             weeks_in_month = len(calendar.Calendar().monthdatescalendar(year, month))
@@ -241,15 +272,19 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             )
             if not attendance_ok:
                 missing_attendance += 1
+            attendance_last = ensure_datetime(attendance_last_created[assembly.id].get(month))
 
             completed = sum([tithes_ok, income_ok, expenditure_ok, attendance_ok])
-            completion_percentage = round(100 * completed / 4)
-            total_completion += completion_percentage
+            completion = round(100 * completed / 4)
+            total_completion += completion
 
             stars = 5 - (4 - completed)
             if stars < 1:
                 stars = 1
             total_stars += stars
+
+            # last_created_at: max of all last timestamps
+            last_created_at = max(filter(None, [tithes_last, income_last, expenditure_last, attendance_last]), default=None)
 
             # Overdue logic (same as single)
             overdue = False
@@ -275,9 +310,10 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
                 "income_comment": income_comment,
                 "expenditure_comment": expenditure_comment,
                 "attendance_comment": attendance_comment,
-                "completion_percentage": completion_percentage,
-                "stars": stars,
+                "completion": completion,
+                "rating": stars,
                 "overdue": overdue,
+                "last_created_at": last_created_at,
             })
 
         summary = {
@@ -285,14 +321,14 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             "missing_income": missing_income,
             "missing_expenditure": missing_expenditure,
             "missing_attendance": missing_attendance,
-            "average_completion_percentage": round(total_completion / n_months, 2) if n_months else 0,
-            "average_stars": round(total_stars / n_months, 2) if n_months else 0,
+            "average_completion": round(total_completion / n_months, 2) if n_months else 0,
+            "average_rating": round(total_stars / n_months, 2) if n_months else 0,
         }
         results.append({
             "assembly": assembly.id,
             "assembly_name": getattr(assembly, "name", str(assembly)),
             "year": year,
-            "data": per_month_results,
+            "results": per_month_results,
             "summary": summary,
         })
     return results
