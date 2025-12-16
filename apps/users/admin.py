@@ -96,6 +96,7 @@ class UserAdmin(BaseUserAdmin):
                 'is_admin', 
                 'is_staff',
                 'is_db_staff',
+                'is_db_zone_staff',
                 'is_academy_staff',
                 'is_superuser', 
                 'is_onboarded', 
@@ -124,6 +125,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
     readonly_fields = (
         'is_db_staff',
+        'is_db_zone_staff',
         'is_academy_staff',
         'is_staff',
     )

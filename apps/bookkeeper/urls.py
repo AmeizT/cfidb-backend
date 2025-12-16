@@ -4,6 +4,7 @@ from apps.bookkeeper.views import (
     AssetView,
     CreateTitheView,
     ExpenditureView,
+    FinanceYearlySummaryView,
     MonthlyIncomeSummaryView,
     RegularExpenditureView,
     IncomeView,
@@ -33,5 +34,6 @@ router.register(r'monthly', MonthlyIncomeSummaryView, basename="monthly")
 
 urlpatterns = [
     path('', include(router.urls)), 
-    path("finance/monthly-summary/", FinanceSummaryView.as_view(), name="finance-yearly-summary"),
+    path("finance/monthly-summary/", FinanceSummaryView.as_view(), name="finance-monthly-summary"),
+    path("finance/yearly/", FinanceYearlySummaryView.as_view(), name="finance-yearly"),
 ]

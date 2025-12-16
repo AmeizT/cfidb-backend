@@ -5,6 +5,24 @@ from apps.users.models import User
 from apps.churches.utils import church_images_path, generate_oklch_color
 from django.utils.translation import gettext_lazy as _
 
+class ZoneName(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class Zone(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    admins = models.ManyToManyField(User, related_name="zones_as_admin")
+    overseers = models.ManyToManyField(User, related_name="zones_as_overseer")
+    contact_info = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
 class ChurchStatus(models.TextChoices):
     OPEN = 'Open', 'Open'
     CLOSED = 'Closed', 'Closed'
@@ -23,6 +41,12 @@ class Church(models.Model):
     name = models.CharField(
         max_length=100, 
         unique=True
+    )
+    zone = models.ForeignKey(
+        Zone,
+        related_name='assembly_zone',
+        on_delete=models.PROTECT,
+        null=True
     )
     description = models.TextField(blank=True)
     address = models.CharField(max_length=255, blank=True)
@@ -84,6 +108,9 @@ class Church(models.Model):
             self.avatar_fallback = generate_oklch_color()
         
         super().save(*args, **kwargs)
+
+
+
 
     
 class ImageUpload(models.Model):

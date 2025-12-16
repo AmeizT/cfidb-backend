@@ -442,6 +442,13 @@ class Attendance(models.Model):
         on_delete=models.CASCADE, 
         related_name="attendance"
     )
+    report = models.ForeignKey(
+        "reports.UnifiedReport",
+        on_delete=models.PROTECT,  
+        null=True,                  
+        blank=True,
+        related_name="%(class)s_set", 
+    )
     created_by = models.ForeignKey(
         User, 
         on_delete=models.SET_NULL, 

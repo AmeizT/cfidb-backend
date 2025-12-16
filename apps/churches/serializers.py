@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.churches.models import Church, ImageUpload
+from apps.churches.models import Church, ImageUpload, Zone, ZoneName
 from apps.users.serializers import ListUserSerializer, UserNamesSerializer
 
 class ImageUploadSerializer(serializers.ModelSerializer):
@@ -14,7 +14,30 @@ class CreateChurchSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ZoneNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ZoneName
+        fields = ['name']       
+
+class ZoneSerializer(serializers.ModelSerializer):
+    admins = UserNamesSerializer(many=True)
+    overseers = UserNamesSerializer(many=True)
+
+    class Meta:
+        model = Zone
+        fields = [
+            'name', 
+            'description', 
+            'contact_info', 
+            'created_at', 
+            'updated_at', 
+            'admins',
+            'overseers'
+        ]
+
+
 class ChurchSerializer(serializers.ModelSerializer):
+    zone = ZoneSerializer()
     total_members = serializers.SerializerMethodField()
 
     class Meta:
@@ -22,9 +45,10 @@ class ChurchSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'uuid', 
-            'assigned_pastors',
             'name', 
+            'zone',
             'description',
+            'assigned_pastors',
             'address',
             'city',
             'province',
@@ -93,19 +117,19 @@ class AssemblySummarySerializer(serializers.ModelSerializer):
 class AssemblyISOSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "country_code", "language", "currency"]
+        fields = ['id', 'country_code', 'language', 'currency']
 
 
 class LocaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "country_code", "language", "currency"]
+        fields = ['id', 'country_code', 'language', 'currency']
 
 
 class CountryInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Church
-        fields = ["id", "country_code", "language", "currency"]
+        fields = ['id', 'country_code', 'language', 'currency']
         
             
 

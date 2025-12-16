@@ -18,6 +18,7 @@ urlpatterns = [
     path('api/v1/', include('apps.office.urls')),
     path('api/v1/', include('apps.people.urls')),
     path('api/v1/', include('apps.posts.urls')),
+    path('api/v1/', include('apps.reports.urls')),
     path('api/v1/', include('apps.resources.urls')),
     path('api/v1/', include('apps.strategic.urls')),
     path('api/v1/', include('apps.users.urls')),

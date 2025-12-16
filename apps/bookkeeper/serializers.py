@@ -12,14 +12,17 @@ from apps.bookkeeper.models import (
     ShortfallPayment,
     Tithe
 )
+from datetime import date
+from decimal import Decimal
+from django.db.models import Sum
+from django.utils import timezone
 from rest_framework import serializers
 from apps.churches.models import Church
-from apps.people.serializers.database import MemberMinifiedSerializer, MemberSerializer
-from apps.users.serializers import ListUserSerializer, MinifiedUserSerializer, UserNamesSerializer
-from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer, LocaleSerializer
 from apps.bookkeeper.models import AssetImage
-from datetime import date
-from django.utils import timezone
+from apps.bookkeeper.models import Income, FixedExpenditure, Expenditure, Tithe
+from apps.people.serializers.database import MemberMinifiedSerializer
+from apps.users.serializers import MinifiedUserSerializer, UserNamesSerializer
+from apps.churches.serializers import AssemblyISOSerializer, CountryInfoSerializer, LocaleSerializer
 
 
 class AssetImageSerializer(serializers.ModelSerializer):
@@ -230,9 +233,6 @@ class CreateTitheSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
-from rest_framework import serializers
-
 class MonthlyIncomeSummarySerializer(serializers.Serializer):
     month = serializers.IntegerField()
     year = serializers.IntegerField()
@@ -242,11 +242,6 @@ class MonthlyIncomeSummarySerializer(serializers.Serializer):
     total_donations = serializers.DecimalField(max_digits=10, decimal_places=2)
     total_income = serializers.DecimalField(max_digits=10, decimal_places=2)
 
-
-from rest_framework import serializers
-from decimal import Decimal
-from apps.bookkeeper.models import Income, FixedExpenditure, Expenditure, Tithe
-from django.db.models import Sum
 
 class FinanceSummarySerializer:
     @staticmethod
@@ -317,6 +312,101 @@ class FinanceSummarySerializer:
         start_year = 2025
         book_balance = FinanceSummarySerializer.get_book_balance(church, year, month)
 
+        # Prepare fixedExpensesList
+        fixedExpensesList = []
+        # Get previous month fixed expenses
+        if month == 1:
+            prev_month = 12
+            prev_year = year - 1
+        else:
+            prev_month = month - 1
+            prev_year = year
+
+        prev_fixed_expenses = FixedExpenditure.objects.filter(
+            assembly=church,
+            timestamp__year=prev_year,
+            timestamp__month=prev_month
+        ).first()
+
+        # Sum of fixed expenses with remittance for current month
+        total_fixed_with_remittance = total_fixed + remittance if total_fixed else remittance
+
+        # List of decimal fields to consider excluding id and total
+        decimal_fields = [field for field in FixedExpenditure._meta.fields if isinstance(field, models.DecimalField) and field.name not in ["id", "total"]]
+
+        for field in decimal_fields:
+            amount = FinanceSummarySerializer.safe_value(fixed_expenses, field.name)
+            prev_amount = FinanceSummarySerializer.safe_value(prev_fixed_expenses, field.name)
+            trend = None
+            if prev_amount != 0:
+                trend = ((amount - prev_amount) / prev_amount) * 100
+
+            percentage = None
+            if total_fixed_with_remittance != 0:
+                percentage = (amount / total_fixed_with_remittance) * 100
+
+            fixedExpensesList.append({
+                "name": field.name,
+                "amount": amount,
+                "previous": prev_amount,
+                "trend": float(trend) if trend is not None else None,
+                "percentage": float(percentage) if percentage is not None else None,
+            })
+
+        # Prepare incomeList
+        incomeList = []
+        prev_income = Income.objects.filter(
+            church=church,
+            timestamp__year=prev_year,
+            timestamp__month=prev_month
+        ).first()
+
+        income_fields = [
+            field for field in Income._meta.fields
+            if isinstance(field, models.DecimalField) and field.name not in ["id", "total_income"]
+        ]
+
+        total_income_with_tithes = gross_income + tithes_total
+
+        for field in income_fields:
+            amount = FinanceSummarySerializer.safe_value(income, field.name)
+            prev_amount = FinanceSummarySerializer.safe_value(prev_income, field.name)
+            trend = None
+            if prev_amount != 0:
+                trend = ((amount - prev_amount) / prev_amount) * 100
+
+            percentage = None
+            if total_income_with_tithes != 0:
+                percentage = (amount / total_income_with_tithes) * 100
+
+            incomeList.append({
+                "name": field.name,
+                "amount": amount,
+                "previous": prev_amount,
+                "trend": float(trend) if trend is not None else None,
+                "percentage": float(percentage) if percentage is not None else None,
+            })
+
+        # Add tithesTotal to incomeList
+        prev_tithes_total = Tithe.objects.filter(
+            assembly=church,
+            timestamp__year=prev_year,
+            timestamp__month=prev_month
+        ).aggregate(total=Sum("amount"))["total"] or Decimal("0")
+        trend = None
+        if prev_tithes_total != 0:
+            trend = ((tithes_total - prev_tithes_total) / prev_tithes_total) * 100
+        percentage = None
+        if total_income_with_tithes != 0:
+            percentage = (tithes_total / total_income_with_tithes) * 100
+        incomeList.append({
+            "name": "tithes",
+            "amount": tithes_total,
+            "previous": prev_tithes_total,
+            "trend": float(trend) if trend is not None else None,
+            "percentage": float(percentage) if percentage is not None else None,
+        })
+
         return {
             "income": {
                 "gross_income": gross_income,
@@ -336,6 +426,8 @@ class FinanceSummarySerializer:
                 },
                 "remittance": remittance,
             },
+            "fixedExpensesList": fixedExpensesList,
+            "incomeList": incomeList,
             "flexibleExpenses": flexible_expense_list,
             "totals": {
                 "totalTithes": tithes_total,
@@ -366,7 +458,9 @@ class FinanceSummarySerializer:
         return {
             "year": year,
             "monthlySummaries": result,
-            "totals": FinanceSummarySerializer.aggregate_yearly_totals(result)
+            "totals": FinanceSummarySerializer.aggregate_yearly_totals(result),
+            "expenditureSeries": FinanceSummarySerializer.get_expenditure_series(result),
+            "incomeSeries": FinanceSummarySerializer.get_income_series(result),
         }
 
     @staticmethod
@@ -414,3 +508,11 @@ class FinanceSummarySerializer:
             book_balance += month_savings
 
         return book_balance
+
+    @staticmethod
+    def get_expenditure_series(monthly_data):
+        return [{"month": m["timestamp"]["month_name"], "total": m["totals"]["totalExpenses"]} for m in monthly_data]
+
+    @staticmethod
+    def get_income_series(monthly_data):
+        return [{"month": m["timestamp"]["month_name"], "total": m["totals"]["totalIncome"]} for m in monthly_data]

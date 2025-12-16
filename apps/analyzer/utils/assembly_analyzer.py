@@ -38,8 +38,8 @@ def analyze_assembly_data(assembly, year, upto_month=None):
             assembly=assembly, timestamp__range=(start_date, end_date), is_trash=False
         )
         tithes_count = tithes_qs.count()
-        tithes_ok = tithes_count >= 2
-        tithes_comment = "OK" if tithes_ok else f"Only {tithes_count} record(s) (need 2+)"
+        tithes_ok = tithes_count >= 1
+        tithes_comment = "OK" if tithes_ok else f"Only {tithes_count} record(s) (need 1+)"
         if not tithes_ok:
             missing_tithes += 1
         tithes_last = ensure_datetime(tithes_qs.aggregate(last=Max('timestamp'))['last'])

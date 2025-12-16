@@ -319,3 +319,14 @@ class FinanceSummaryView(APIView):
 
         data = FinanceSummarySerializer.get_data(church, year, month)
         return Response(data)
+    
+
+class FinanceYearlySummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        church = request.user.church
+        year = int(request.query_params.get("year", date.today().year))
+
+        data = FinanceSummarySerializer.get_yearly_data(church, year)
+        return Response(data)

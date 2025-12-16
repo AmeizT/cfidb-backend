@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'apps.integrations',
     'apps.announcements',
     'apps.analyzer',
+    'apps.reports'
 ]
 
 MIDDLEWARE = [

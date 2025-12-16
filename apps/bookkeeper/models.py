@@ -59,6 +59,13 @@ class Tithe(models.Model):
         blank=True, 
         null=True
     )
+    report = models.ForeignKey(
+        "reports.UnifiedReport",
+        on_delete=models.PROTECT,  
+        null=True,                  
+        blank=True,
+        related_name="%(class)s_set", 
+    )
     member = models.ForeignKey(
         Member, 
         on_delete=models.PROTECT, 
@@ -278,57 +285,14 @@ class FixedExpenditure(models.Model):
         blank=True, 
         null=True
     )
-    rent = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
+    report = models.ForeignKey(
+        "reports.UnifiedReport",
+        on_delete=models.PROTECT,  
+        null=True,                  
+        blank=True,
+        related_name="expenditure_set", 
     )
-    water = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    electricity = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    telephone = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    internet = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    security = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    fuel = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    wages = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    insurance = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    humanitarian = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        default=Decimal(0.00)
-    )
-    investment = models.DecimalField(
+    bank_charges = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
@@ -338,12 +302,62 @@ class FixedExpenditure(models.Model):
         decimal_places=2, 
         default=Decimal(0.00)
     )
-    bank_charges = models.DecimalField(
+    electricity = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    fuel = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    humanitarian = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    insurance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    internet = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    investment = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    rent = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
     )
     remittance = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    security = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    telephone = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    wages = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=Decimal(0.00)
+    )
+    water = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         default=Decimal(0.00)
@@ -431,6 +445,13 @@ class Income(models.Model):
     timestamp = models.DateField(
         blank=True,
         null=True
+    )
+    report = models.ForeignKey(
+        "reports.UnifiedReport",
+        on_delete=models.PROTECT,  
+        null=True,                  
+        blank=True,
+        related_name="%(class)s_set", 
     )
     offering = models.DecimalField(
         max_digits=10, 

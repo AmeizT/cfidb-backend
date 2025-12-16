@@ -131,6 +131,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         'Moderator',
     }
 
+    DB_ZONE_STAFF_ROLES = {
+        'Zone Admin'
+    }
+
     ACADEMY_STAFF_ROLES = {
         'Dean',
         'Teacher',
@@ -147,6 +151,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_db_staff(self):
         return self.roles.filter(name__in=self.DB_STAFF_ROLES).exists()
+    
+    @property
+    def is_db_zone_staff(self):
+        return self.roles.filter(name__in=self.DB_ZONE_STAFF_ROLES).exists()
 
     @property
     def is_academy_staff(self):

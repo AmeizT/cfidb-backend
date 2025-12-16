@@ -130,7 +130,6 @@ class Event(models.Model):
 scheduler = BackgroundScheduler()
 scheduler.start()
 
-
 def update_expired_events():
     now = datetime.now()
     now = timezone.localtime(timezone.now(), timezone=pytz.timezone('Africa/Harare'))
