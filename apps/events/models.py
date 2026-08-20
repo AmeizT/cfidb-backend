@@ -127,38 +127,38 @@ class Event(models.Model):
         return self.title
     
        
-scheduler = BackgroundScheduler()
-scheduler.start()
+# scheduler = BackgroundScheduler()
+# scheduler.start()
 
-def update_expired_events():
-    now = datetime.now()
-    now = timezone.localtime(timezone.now(), timezone=pytz.timezone('Africa/Harare'))
-    events = Event.objects.filter(has_ended=False)
+# def update_expired_events():
+#     now = datetime.now()
+#     now = timezone.localtime(timezone.now(), timezone=pytz.timezone('Africa/Harare'))
+#     events = Event.objects.filter(has_ended=False)
 
-    for event in events:
-        start_aware = make_aware(datetime.combine(event.date_start, event.time_start))
-        end_aware = make_aware(datetime.combine(event.date_end, event.time_end))
+#     for event in events:
+#         start_aware = make_aware(datetime.combine(event.date_start, event.time_start))
+#         end_aware = make_aware(datetime.combine(event.date_end, event.time_end))
 
-        if end_aware <= now:
-            event.has_ended = True
-            event.has_started = False
-            print("has ended")
-        elif start_aware <= now and now < end_aware:
-            event.has_ended = False
-            event.has_started = True
-            print("has started")
-        else:
-            event.has_started = False
-            event.has_ended = False
+#         if end_aware <= now:
+#             event.has_ended = True
+#             event.has_started = False
+#             print("has ended")
+#         elif start_aware <= now and now < end_aware:
+#             event.has_ended = False
+#             event.has_started = True
+#             print("has started")
+#         else:
+#             event.has_started = False
+#             event.has_ended = False
         
-        event.save()
+#         event.save()
             
 
-scheduler.add_job(
-    update_expired_events,
-    'interval',
-    id="update_expired_events",
-    jobstore="default",
-    minutes=1,
-    replace_existing=True
-)
+# scheduler.add_job(
+#     update_expired_events,
+#     'interval',
+#     id="update_expired_events",
+#     jobstore="default",
+#     minutes=1,
+#     replace_existing=True
+# )

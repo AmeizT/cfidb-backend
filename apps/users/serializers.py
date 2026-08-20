@@ -1,13 +1,16 @@
+from datetime import timedelta
+from django.utils.timezone import now
 from rest_framework import serializers
 from apps.churches.models import Church
-from rest_framework.fields import CharField
-from rest_framework.validators import UniqueValidator
 from apps.users.models import AuthHistory, Profile, Role, User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from apps.churches.models.region import Region, RegionLeadership
+from apps.churches.models.zone import Zone
       
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
-    def get_token(cls, user: User):
+    def get_token(cls, user: User): # type: ignore
         token = super().get_token(user)
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
@@ -21,7 +24,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_admin'] = user.is_admin
 
         return token
-    
+
 
 # class CreateUserSerializer(serializers.ModelSerializer):
 #     password = CharField(style={
@@ -105,11 +108,11 @@ class CreateUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Password must contain at least 8 characters')
 
-        user = User.objects.create_user(
+        user = User.objects.create_user( # type: ignore
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             email=validated_data['email'],
-            password=password,  # Use the validated password here
+            password=password, 
         )
 
         return user
@@ -118,6 +121,18 @@ class CreateUserSerializer(serializers.ModelSerializer):
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
+        fields = '__all__'
+
+
+class RegionLeadershipSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RegionLeadership
+        fields = '__all__'
+
+
+class RegionSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model: Region
         fields = '__all__'
 
 
@@ -131,16 +146,23 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
-class ChurchSerializer(serializers.ModelSerializer):
+class AssemblySummarySerializer(serializers.ModelSerializer):
+    primary_currency = serializers.SerializerMethodField()
+
     class Meta:
         model = Church
-        fields = '__all__'
+        fields = ['id', 'public_id', 'name', 'zone', 'country_code', 'locale', 'currency', 'primary_currency', 'avatar', 'avatar_fallback'] 
+
+    def get_primary_currency(self, obj):
+        currency = obj.primary_currency
+        if currency:
+            return currency.currency  # 👈 ONLY the name/code field
+        return None
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
- 
   
 class PasswordChangeSerializer(serializers.Serializer):
     current_password = serializers.CharField(style={"input_type": "password"}, required=True)
@@ -153,8 +175,15 @@ class PasswordChangeSerializer(serializers.Serializer):
         
     
 class ListUserSerializer(serializers.ModelSerializer):
-    assemblies = ChurchSerializer(many=True)
+    assemblies = AssemblySummarySerializer(many=True, read_only=True)
     roles = RoleSerializer(many=True)
+    assembly = AssemblySummarySerializer(source='church', read_only=True)
+    is_online = serializers.SerializerMethodField()
+
+    def get_is_online(self, obj):
+        if obj.last_active:
+            return now() - obj.last_active < timedelta(minutes=5)
+        return False
     
     class Meta:
         model = User
@@ -162,6 +191,7 @@ class ListUserSerializer(serializers.ModelSerializer):
             'id',
             'user_id', 
             'church',
+            'assembly',
             'assemblies',
             'full_name',
             'first_name', 
@@ -170,19 +200,145 @@ class ListUserSerializer(serializers.ModelSerializer):
             'email',
             'roles', 
             'avatar', 
-            'avatar_fallback',  
+            'avatar_fallback',
+            'last_active',  
             'is_active',
+            'is_online',
             'is_admin',
             'is_onboarded',
             'is_student',
             'is_db_staff',
             'is_academy_staff',
             'is_staff',
+            'region_role',
             'created_at', 
             'updated_at',
         ) 
         read_only_fields = ['full_name'] 
 
+class AssignedRegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = (
+            "id",
+            "name",
+            "code",
+        )
+
+
+class AssignedZoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Zone
+        fields = (
+            "id",
+            "name",
+            "code",
+        )
+
+class CurrentUserSerializer(serializers.ModelSerializer):
+    assemblies = AssemblySummarySerializer(many=True, read_only=True)
+    roles = RoleSerializer(many=True, read_only=True)
+    assembly = AssemblySummarySerializer(source="church", read_only=True)
+
+    region_roles = RegionLeadershipSerializer(many=True, read_only=True)
+    is_region_staff = serializers.ReadOnlyField()
+
+    church = serializers.PrimaryKeyRelatedField(
+        queryset=Church.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+
+    is_db_staff = serializers.ReadOnlyField()
+    is_db_zone_staff = serializers.ReadOnlyField()
+    is_academy_staff = serializers.ReadOnlyField()
+    is_student = serializers.ReadOnlyField()
+    is_staff = serializers.ReadOnlyField()
+    full_name = serializers.ReadOnlyField()
+
+    assigned_regions = AssignedRegionSerializer(
+        many=True,
+        read_only=True,
+    )
+
+    assigned_zones = AssignedZoneSerializer(
+        many=True,
+        read_only=True,
+    )
+
+    active_region = serializers.SerializerMethodField()
+    can_manage_church_appearance = serializers.SerializerMethodField()
+
+    def get_can_manage_church_appearance(self, obj):
+        return bool(
+            getattr(obj, "is_overseer", False)
+            or getattr(obj, "is_admin", False)
+        )
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "user_id",
+            "full_name",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "recovery_email",
+            "church",
+            "assembly",
+            "assemblies",
+            "roles",
+            "is_region_staff",
+            "active_region",
+            "region_roles",
+            "assigned_regions",
+            "assigned_zones",
+            "avatar",
+            "avatar_fallback",
+            "is_active",
+            "is_admin",
+            "can_manage_church_appearance",
+            "is_onboarded",
+            "is_db_staff",
+            "is_db_zone_staff",
+            "is_academy_staff",
+            "is_student",
+            "is_staff",
+            "created_at",
+            "updated_at",
+        )
+
+        read_only_fields = [
+            "full_name",
+            "assemblies",
+            "roles",
+            "is_db_staff",
+            "is_db_zone_staff",
+            "is_academy_staff",
+            "is_student",
+            "is_staff",
+        ]
+    
+    def validate_church(self, value):
+        user = self.context["request"].user
+        if value and not user.assemblies.filter(id=value.id).exists():
+            raise serializers.ValidationError("You do not belong to this teamspace.")
+        return value
+    
+
+    def get_active_region(self, obj):
+        region = obj.active_region
+
+        if not region:
+            return None
+
+        return AssignedRegionSerializer(
+            region,
+            context=self.context,
+        ).data
+    
 
 class MinifiedUserSerializer(serializers.ModelSerializer):    
     class Meta:
@@ -249,4 +405,3 @@ class UniqueUserCheckSerializer(serializers.ModelSerializer):
             'email', 
         )  
   
-

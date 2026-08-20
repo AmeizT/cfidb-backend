@@ -1,52 +1,125 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from corsheaders.defaults import default_headers
 
-BASE_DIR = Path(__file__).resolve().parent.parent # type: ignore
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-if str(os.environ.get('DJANGO_ENV')) == 'LOCAL':
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG = os.environ.get('DJANGO_ENV') == 'LOCAL'
 
 if DEBUG:
-    SECRET_KEY = str(os.environ.get('LOCAL_SECRET_KEY'))
+    SECRET_KEY = os.environ.get('LOCAL_SECRET_KEY')
 else:
-    SECRET_KEY = str(os.environ.get('PRODUCTION_SECRET_KEY'))
+    SECRET_KEY = os.environ.get('PRODUCTION_SECRET_KEY')
 
 
 if DEBUG:
-   ALLOWED_HOSTS = [
-       '127.0.0.1', 
-       'localhost', 
-       'honeste-backend.vercel.app',
-    ] 
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+    ]
+
+    CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+    ]
+
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_DOMAIN = None
+
+    CSRF_COOKIE_SAMESITE = "Lax"
+    CSRF_COOKIE_SECURE = False
+
 else:
     ALLOWED_HOSTS = [
         'honeste-backend.vercel.app',
         'cfidb-backend.vercel.app',
         'api.cfi.church',
-        '192.168.0.183',
     ]
-    
-if DEBUG:
-    CORS_ALLOWED_ORIGINS = [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://192.168.0.183:3000',
-    ]
-else:
+
     CORS_ALLOWED_ORIGINS = [
         'https://cfidb.com',
         'https://www.cfidb.com',
         'https://blog.cfi.church',
+        'https://api.cfi.church',
     ]
-    
-CSRF_TRUSTED_ORIGINS = [
-    'https://cfidb.com',
-    'https://www.cfidb.com',
-    'https://blog.cfi.church',
+
+    CSRF_TRUSTED_ORIGINS = [
+        'https://cfidb.com',
+        'https://www.cfidb.com',
+        'https://blog.cfi.church',
+        'https://api.cfi.church',
+    ]
+
+    SESSION_COOKIE_SAMESITE = "None"
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_DOMAIN = ".cfi.church"
+
+    CSRF_COOKIE_SAMESITE = "None"
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_DOMAIN = ".cfi.church"
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "x-csrftoken",
 ]
+
+# if DEBUG:
+#    ALLOWED_HOSTS = [
+#        '127.0.0.1', 
+#        'localhost', 
+#        'honeste-backend.vercel.app',
+#     ] 
+# else:
+#     ALLOWED_HOSTS = [
+#         'honeste-backend.vercel.app',
+#         'cfidb-backend.vercel.app',
+#         'api.cfi.church',
+#     ]
+
+    
+# if DEBUG:
+#     CORS_ALLOWED_ORIGINS = [
+#         'http://localhost:3000',
+#         'http://localhost:3001',
+#         "http://127.0.0.1:3000",
+#     ]
+# else:
+#     CORS_ALLOWED_ORIGINS = [
+#         'https://cfidb.com',
+#         'https://www.cfidb.com',
+#         'https://blog.cfi.church',
+#         'https://api.cfi.church',
+#     ]
+    
+# CSRF_TRUSTED_ORIGINS = [
+#     'https://cfidb.com',
+#     'https://www.cfidb.com',
+#     'https://blog.cfi.church',
+#     'https://api.cfi.church',
+# ]
+
+# if DEBUG:
+#     SESSION_COOKIE_SAMESITE = "None"
+#     SESSION_COOKIE_SECURE = False
+#     SESSION_COOKIE_DOMAIN = None
+
+#     CSRF_COOKIE_SAMESITE = "Lax"
+#     CSRF_COOKIE_SECURE = False
+# else:
+#     SESSION_COOKIE_SAMESITE = "None"
+#     SESSION_COOKIE_SECURE = True
+
+#     CSRF_COOKIE_SAMESITE = "None"
+#     CSRF_COOKIE_SECURE = True
+    
 
 INSTALLED_APPS = [
     'cloudinary_storage',
@@ -58,9 +131,11 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'cloudinary',
     'djoser',
+    'drf_spectacular',
     'login_history',
     'imagekit',
     # 'easyaudit',
@@ -70,32 +145,48 @@ INSTALLED_APPS = [
     'apps.core',
     'apps.churches',
     'apps.bookkeeper',
-    'apps.chat',
-    'apps.events',
-    'apps.office',
     'apps.people',
     'apps.projects',
-    'apps.resources',
     'apps.posts',
     'apps.strategic',
-    'apps.forum',
-    'apps.survey',
-    'apps.integrations',
-    'apps.announcements',
     'apps.analyzer',
-    'apps.reports'
+    'apps.reports',
+    'apps.uploads',
+    'apps.shared',
+    'apps.examinations',
+    'apps.jethro',
+    'apps.scripture',
 ]
+
+JETHRO_ENABLED = os.environ.get("JETHRO_ENABLED", "true").lower() == "true"
+JETHRO_MODEL = os.environ.get("JETHRO_MODEL", "")
+JETHRO_MOCK_MODE = os.environ.get("JETHRO_MOCK_MODE", "").lower() == "true"
+if "JETHRO_MOCK_MODE" not in os.environ:
+    JETHRO_MOCK_MODE = DEBUG and not bool(os.environ.get("OPENAI_API_KEY"))
+JETHRO_MAX_OUTPUT_TOKENS = int(os.environ.get("JETHRO_MAX_OUTPUT_TOKENS", "1000"))
+JETHRO_MAX_TOOL_ITERATIONS = int(os.environ.get("JETHRO_MAX_TOOL_ITERATIONS", "4"))
+JETHRO_DAILY_USER_LIMIT = int(os.environ.get("JETHRO_DAILY_USER_LIMIT", "100"))
+JETHRO_MAX_MESSAGE_LENGTH = int(os.environ.get("JETHRO_MAX_MESSAGE_LENGTH", "2000"))
+JETHRO_CONTEXT_MESSAGE_LIMIT = int(os.environ.get("JETHRO_CONTEXT_MESSAGE_LIMIT", "12"))
+JETHRO_MAX_TOOL_RESULT_CHARS = int(os.environ.get("JETHRO_MAX_TOOL_RESULT_CHARS", "12000"))
+JETHRO_TITHE_DRAFT_TTL_MINUTES = int(
+    os.environ.get("JETHRO_TITHE_DRAFT_TTL_MINUTES", "15")
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'apps.core.middleware.cookies.PrintCookiesMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'apps.core.middleware.jwt_refresh.JWTRefreshMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.users.middleware.last_active.LastActiveMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.core.middleware.current_user.CurrentUserMiddleware',
     # 'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
 ]
 
@@ -120,6 +211,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cfidb.wsgi.application'
 
 if DEBUG:
+    print("LOCAL DB")
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -136,6 +229,7 @@ else:
             'PORT': str(os.environ.get('DB_PORT')),
             'USER': str(os.environ.get('DB_USER')),
             'PASSWORD': str(os.environ.get('DB_PASSWORD')),
+            'CONN_MAX_AGE': 60,
         },
     }
 
@@ -201,46 +295,12 @@ DEFAULT_FROM_EMAIL = 'CFI Support <support@cfi.church>'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        "apps.users.authentication.DynamicAuthentication",
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
-    
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": str(os.environ.get('JWT_SECRET_KEY')),
-    "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "JSON_ENCODER": None,
-    "JWK_URL": None,
-    "LEEWAY": 0,
-    
-    "AUTH_HEADER_TYPES": ("JWT",),
-    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-}
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_USE_TLS = False
-EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
-EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
-
-if DEBUG:
-    DOMAIN = 'localhost:3000'
-else:
-    DOMAIN = 'cfidb.com'
-    
-SITE_NAME = 'CFI Workspace'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -256,8 +316,96 @@ DJOSER = {
         'password_changed_confirmation': 'apps.users.mail.PasswordChangedConfirmationEmail',
         'password_changed_reset': 'djoser.email.PasswordChangedResetEmail',
     },
-    'SERIALIZERS': {
-        'user': 'apps.users.serializers.ListUserSerializer',
-        'current_user': 'apps.users.serializers.ListUserSerializer',
+    # 'SERIALIZERS': {
+    #     'user': 'apps.users.serializers.ListUserSerializer',
+    #     'current_user': 'apps.users.serializers.ListUserSerializer',
+    # }
+    "SERIALIZERS": {
+        "user": "apps.users.serializers.CurrentUserSerializer",
+        "current_user": "apps.users.serializers.CurrentUserSerializer",
     }
 }
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": False,
+
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": str(os.environ.get('JWT_SECRET_KEY')),
+    "VERIFYING_KEY": "",
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JSON_ENCODER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+    
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "AUTH_COOKIE": "accessToken",
+    "AUTH_COOKIE_REFRESH": "refreshToken",
+    "AUTH_COOKIE_SECURE": not DEBUG,
+    "AUTH_COOKIE_SAMESITE": "Lax",
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = str(os.environ.get('EMAIL_HOST'))
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
+
+if DEBUG:
+    DOMAIN = 'localhost'
+else:
+    DOMAIN = 'cfiws.com'
+    
+SITE_NAME = 'CFI Workspace'
+
+
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "CFI Workspace API",
+    "DESCRIPTION": "Backend API for managing church assemblies, members, attendance, finances, and reports for the CFI Workspace platform.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "CONTACT": {
+        "name": "CFI Workspace",
+        "email": "support@cfiworkspace.com",
+    },
+}
+
+
+# CBA
+
+# Replace this with your actual student profile model.
+EXAMINATIONS_STUDENT_MODEL = "examinations.CBAStudentReference"
+
+# The unique field on the student profile used for PDF matching.
+EXAMINATIONS_STUDENT_NUMBER_FIELD = "student_number"
+
+# The field on the student profile that points to AUTH_USER_MODEL.
+EXAMINATIONS_STUDENT_USER_FIELD = ""
+
+EXAMINATIONS_PROCESS_IMPORTS_ASYNC = False
+EXAMINATIONS_MAX_PDF_SIZE = 10 * 1024 * 1024
+
+EXAMINATIONS_STUDENT_NUMBER_REGEX = (
+    r"\b[A-Za-z]{1,4}(?:[\s-]*\d){5,}\b"
+)
+
+
+# Legacy CBA API
+CBA_API_USERS_URL = os.getenv(
+    "CBA_API_USERS_URL",
+    "https://cba-backend.vercel.app/api/auth/users/",
+)
+CBA_API_TOKEN = os.getenv("CBA_API_TOKEN", "")
+CBA_API_AUTH_SCHEME = os.getenv("CBA_API_AUTH_SCHEME", "Bearer")
+CBA_API_TIMEOUT = 30
+CBA_API_VERIFY_SSL = True

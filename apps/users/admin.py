@@ -55,7 +55,7 @@ class UserAdmin(BaseUserAdmin):
         'last_name', 
         'username', 
         'email', 
-        'last_login', 
+        'last_active', 
         'created_at', 
         'updated_at',
     ]

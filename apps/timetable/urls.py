@@ -1,8 +1,8 @@
 from django.urls import path, include, re_path
 from apps.timetable.views import TimetableView
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
-router = DefaultRouter()
+router = SimpleRouter()
 
 router.register(r'church/timetable', TimetableView, basename='timetable')
 

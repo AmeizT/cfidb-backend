@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from apps.people.models import Member
 from apps.people.serializers.belong import CheckMemberSerializer, SetPinSerializer, ResetPinSerializer
-from apps.people.serializers.database import MemberSerializer
+from apps.people.serializers import MemberSerializer
 from apps.people.serializers.belong import BelongMemberSerializer
 
 @api_view(["POST"])

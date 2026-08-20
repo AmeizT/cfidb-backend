@@ -54,3 +54,7 @@ class BelongMemberSerializer(serializers.ModelSerializer):
         if obj.avatar and hasattr(obj.avatar, "url"):
             return request.build_absolute_uri(obj.avatar.url) if request else obj.avatar.url
         return None
+    
+
+
+

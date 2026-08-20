@@ -3,12 +3,12 @@ from rest_framework import serializers
 class MonthAnalysisSerializer(serializers.Serializer):
     month = serializers.CharField()
     tithes = serializers.BooleanField()
-    income = serializers.BooleanField()
-    expenditure = serializers.BooleanField()
+    revenue = serializers.BooleanField()
+    overhead = serializers.BooleanField()
     attendance = serializers.BooleanField()
     tithes_comment = serializers.CharField()
-    income_comment = serializers.CharField()
-    expenditure_comment = serializers.CharField()
+    revenue_comment = serializers.CharField()
+    overhead_comment = serializers.CharField()
     attendance_comment = serializers.CharField()
     completion = serializers.IntegerField()
     rating = serializers.IntegerField()
@@ -20,4 +20,13 @@ class AssemblyAnalysisSerializer(serializers.Serializer):
     assembly_name = serializers.CharField()
     year = serializers.IntegerField()
     results = MonthAnalysisSerializer(many=True)
-    summary = serializers.DictField(child=serializers.FloatField(), default={'average_completion': 0.0, 'average_rating': 0.0})
+    summary = serializers.DictField(child=serializers.FloatField(), default={
+        'average_completion': 0.0,
+        'average_rating': 0.0,
+        'total_fields': 0,
+        'submitted': 0,
+        'missing': 0,
+        'overall': 0.0,
+        'compliant_months': 0,
+        'avg_rating': 0.0,
+    })

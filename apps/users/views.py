@@ -1,4 +1,5 @@
-from django.http import Http404
+from datetime import timedelta
+from django.utils.timezone import now
 from rest_framework.response import Response
 from apps.users.models import User, AuthHistory
 from rest_framework import views, viewsets, permissions, status
@@ -14,6 +15,48 @@ from apps.users.serializers import (
     MinimalUserSerializer
 )
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.conf import settings
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+IS_DEBUG = settings.DEBUG
+
+class CustomLoginView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        
+        response = super().post(request, *args, **kwargs)
+
+        access = response.data.get("access") # type: ignore
+        refresh = response.data.get("refresh") # type: ignore
+
+        print("DEBUG", IS_DEBUG)
+        print("ACCESS", access)
+        print("REFRESH", refresh)
+
+        response.data = {"success": True}
+
+        response.set_cookie(
+            "accessToken",
+            access,
+            httponly=True,
+            secure=not IS_DEBUG,
+            samesite="Lax" if IS_DEBUG else "None",
+            domain=None if IS_DEBUG else ".cfi.church",
+            path="/",
+        )
+
+        response.set_cookie(
+            "refreshToken",
+            refresh,
+            httponly=True,
+            secure=not IS_DEBUG,
+            samesite="Lax" if IS_DEBUG else "None",
+            domain=None if IS_DEBUG else ".cfi.church",
+            path="/",
+        )
+
+        return response
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
@@ -42,7 +85,7 @@ class RetrieveUserView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['head', 'get', 'put', 'patch']
     
-    def get_object(self):
+    def get_object(self): # type: ignore
         return self.request.user
 
     def list(self, request, *args, **kwargs):
@@ -80,7 +123,7 @@ class AssemblyAdminView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
+    def get_queryset(self): # type: ignore
         return User.objects.filter(church=self.request.user.church)  # type: ignore
     
     
@@ -133,10 +176,36 @@ def check_email(request):
     return get_user_by_email(email, request)
 
     
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    return Response({
+        "id": request.user.id,
+        "email": request.user.email,
+    })
 
 
+@api_view(["POST"])
+def logout_view(request):
+    response = Response({"success": True})
+
+    response.delete_cookie("accessToken")
+    response.delete_cookie("refreshToken")
+
+    return response
 
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(["GET"])
+def active_users(request, church_id):
+    users = User.objects.filter(
+        church_id=church_id,
+        last_active__gte=now() - timedelta(minutes=5)
+    ).values("id", "first_name", "last_name")
+
+    return Response(users)
     
     
     

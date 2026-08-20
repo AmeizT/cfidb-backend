@@ -1,0 +1,700 @@
+{
+  "data": {
+    "region": {
+      "id": 3,
+      "name": "South-Central Africa"
+    },
+    "summary": {
+      "zones": 2,
+      "countries": 2,
+      "assemblies": 5,
+      "reports_submitted": 19,
+      "compliance_rate": 40.0,
+      "growth_rate": 0.0,
+      "total_members": 0,
+      "total_new_members": 0,
+      "fastest_growing_assembly": null,
+      "total_active_homecells": 1,
+      "total_actual_outreaches": 0
+    },
+    "zones": [
+      {
+        "id": 3,
+        "name": "Zone 2",
+        "countries": [
+          {
+            "name": "Ethiopia",
+            "currency": "ETB",
+            "assemblies": [
+              {
+                "id": 1,
+                "name": "Oikos",
+                "compliance": {
+                  "total_sections": 0,
+                  "submitted": 0,
+                  "skipped": 0,
+                  "pending": 0,
+                  "progress": 0,
+                  "coverage": 0,
+                  "status": "NOT_SUBMITTED",
+                  "sections": []
+                },
+                "risk": {
+                  "score": 40,
+                  "level": "MEDIUM"
+                },
+                "metrics": {
+                  "finance": {
+                    "tithes": 0.0,
+                    "income": 0.0,
+                    "expenditure": 0.0,
+                    "balance": 0.0,
+                    "status": "NO_DATA"
+                  },
+                  "growth": {
+                    "status": "NO_DATA"
+                  },
+                  "ministry": {
+                    "outreaches": 0,
+                    "actual_outreaches": 0,
+                    "homecells_planted": 0,
+                    "homecell_attendance": 0,
+                    "status": "NO_DATA"
+                  },
+                  "leadership": {
+                    "status": "NO_DATA"
+                  }
+                },
+                "reports": 0
+              }
+            ],
+            "region_metrics": {
+              "finance": {
+                "tithes": 0.0,
+                "income": 0.0,
+                "total_revenue": 0.0,
+                "expenditure": 0.0,
+                "remittance": 0.0,
+                "balance": 0.0,
+                "status": "BREAK_EVEN"
+              },
+              "growth": {
+                "total_members": 0,
+                "new_members": 0,
+                "growth_rate": 0.0,
+                "status": "STABLE"
+              },
+              "ministry": {
+                "outreaches": 0,
+                "actual_outreaches": 0,
+                "homecells_planted": 0,
+                "homecell_attendance": 0,
+                "status": "NO_DATA"
+              },
+              "leadership": {}
+            }
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "name": "Zone 1",
+        "countries": [
+          {
+            "name": "Namibia",
+            "currency": "NAD",
+            "assemblies": [
+              {
+                "id": 8,
+                "name": "Omaruru",
+                "compliance": {
+                  "total_sections": 0,
+                  "submitted": 0,
+                  "skipped": 0,
+                  "pending": 0,
+                  "progress": 0,
+                  "coverage": 0,
+                  "status": "NOT_SUBMITTED",
+                  "sections": []
+                },
+                "risk": {
+                  "score": 40,
+                  "level": "MEDIUM"
+                },
+                "metrics": {
+                  "finance": {
+                    "tithes": 0.0,
+                    "income": 0.0,
+                    "expenditure": 0.0,
+                    "balance": 0.0,
+                    "status": "NO_DATA"
+                  },
+                  "growth": {
+                    "status": "NO_DATA"
+                  },
+                  "ministry": {
+                    "outreaches": 0,
+                    "actual_outreaches": 0,
+                    "homecells_planted": 0,
+                    "homecell_attendance": 0,
+                    "status": "NO_DATA"
+                  },
+                  "leadership": {
+                    "status": "NO_DATA"
+                  }
+                },
+                "reports": 0
+              },
+              {
+                "id": 2,
+                "name": "Orwetoveni",
+                "compliance": {
+                  "total_sections": 0,
+                  "submitted": 0,
+                  "skipped": 0,
+                  "pending": 0,
+                  "progress": 0,
+                  "coverage": 0,
+                  "status": "NO_DATA",
+                  "sections": []
+                },
+                "risk": {
+                  "score": 70,
+                  "level": "HIGH"
+                },
+                "metrics": {
+                  "finance": {
+                    "tithes": 15500.0,
+                    "income": 47500.0,
+                    "expenditure": 0.0,
+                    "balance": 47500.0,
+                    "status": "SURPLUS"
+                  },
+                  "growth": {
+                    "total_members": 0,
+                    "new_members": 0,
+                    "growth_rate": 0,
+                    "status": "STAGNANT"
+                  },
+                  "ministry": {
+                    "outreaches": 0,
+                    "actual_outreaches": 0,
+                    "homecells_planted": 0,
+                    "homecell_attendance": 0,
+                    "status": "LOW"
+                  },
+                  "leadership": {
+                    "leaders_count": 0,
+                    "assets_valuation": 0,
+                    "meetings_conducted": 0
+                  }
+                },
+                "reports": 12
+              },
+              {
+                "id": 5,
+                "name": "Opuwo",
+                "compliance": {
+                  "total_sections": 0,
+                  "submitted": 0,
+                  "skipped": 0,
+                  "pending": 0,
+                  "progress": 0,
+                  "coverage": 0,
+                  "status": "NO_DATA",
+                  "sections": []
+                },
+                "risk": {
+                  "score": 70,
+                  "level": "HIGH"
+                },
+                "metrics": {
+                  "finance": {
+                    "tithes": 12000.0,
+                    "income": 99000.0,
+                    "expenditure": 0.0,
+                    "balance": 99000.0,
+                    "status": "SURPLUS"
+                  },
+                  "growth": {
+                    "total_members": 0,
+                    "new_members": 0,
+                    "growth_rate": 0,
+                    "status": "STAGNANT"
+                  },
+                  "ministry": {
+                    "outreaches": 0,
+                    "actual_outreaches": 0,
+                    "homecells_planted": 0,
+                    "homecell_attendance": 0,
+                    "status": "LOW"
+                  },
+                  "leadership": {
+                    "leaders_count": 0,
+                    "assets_valuation": 0,
+                    "meetings_conducted": 0
+                  }
+                },
+                "reports": 7
+              },
+              {
+                "id": 7,
+                "name": "Katima Mulilo",
+                "compliance": {
+                  "total_sections": 0,
+                  "submitted": 0,
+                  "skipped": 0,
+                  "pending": 0,
+                  "progress": 0,
+                  "coverage": 0,
+                  "status": "NOT_SUBMITTED",
+                  "sections": []
+                },
+                "risk": {
+                  "score": 40,
+                  "level": "MEDIUM"
+                },
+                "metrics": {
+                  "finance": {
+                    "tithes": 0.0,
+                    "income": 0.0,
+                    "expenditure": 0.0,
+                    "balance": 0.0,
+                    "status": "NO_DATA"
+                  },
+                  "growth": {
+                    "status": "NO_DATA"
+                  },
+                  "ministry": {
+                    "outreaches": 0,
+                    "actual_outreaches": 0,
+                    "homecells_planted": 0,
+                    "homecell_attendance": 0,
+                    "status": "NO_DATA"
+                  },
+                  "leadership": {
+                    "status": "NO_DATA"
+                  }
+                },
+                "reports": 0
+              }
+            ],
+            "region_metrics": {
+              "finance": {
+                "tithes": 27500.0,
+                "income": 146500.0,
+                "total_revenue": 174000.0,
+                "expenditure": 0.0,
+                "remittance": 0.0,
+                "balance": 174000.0,
+                "status": "SURPLUS"
+              },
+              "growth": {
+                "total_members": 0,
+                "new_members": 0,
+                "growth_rate": 0.0,
+                "status": "STABLE"
+              },
+              "ministry": {
+                "outreaches": 0,
+                "actual_outreaches": 0,
+                "homecells_planted": 0,
+                "homecell_attendance": 0,
+                "status": "LOW"
+              },
+              "leadership": {}
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "table_schema": {
+    "risk": {
+      "intent": "risk",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "score",
+          "label": "Risk Score",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "level",
+          "label": "Risk Level"
+        },
+        {
+          "id": "reports",
+          "label": "Reports",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    },
+    "finance": {
+      "intent": "finance",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "tithes",
+          "label": "Tithes",
+          "formatter": "currency",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "income",
+          "label": "Income",
+          "formatter": "currency",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "expenditure",
+          "label": "Expenditure",
+          "formatter": "currency",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "balance",
+          "label": "Balance",
+          "formatter": "currency",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    },
+    "growth": {
+      "intent": "growth",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "total_members",
+          "label": "Members",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "new_members",
+          "label": "New Members",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "growth_rate",
+          "label": "Growth %",
+          "formatter": "percentage",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    },
+    "ministry": {
+      "intent": "ministry",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "outreaches",
+          "label": "Planned",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "actual_outreaches",
+          "label": "Actual",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "homecells_planted",
+          "label": "Homecells",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "homecell_attendance",
+          "label": "Attendance",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    },
+    "leadership": {
+      "intent": "leadership",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "leaders_count",
+          "label": "Leaders",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "meetings_conducted",
+          "label": "Meetings",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "assets_valuation",
+          "label": "Assets",
+          "formatter": "currency",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    },
+    "compliance": {
+      "intent": "compliance",
+      "columns": [
+        {
+          "id": "country",
+          "label": "Country"
+        },
+        {
+          "id": "assembly",
+          "label": "Assembly"
+        },
+        {
+          "id": "total_sections",
+          "label": "Sections",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "submitted",
+          "label": "Submitted",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "skipped",
+          "label": "Skipped",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "pending",
+          "label": "Pending",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "progress",
+          "label": "Progress",
+          "formatter": "percentage",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "coverage",
+          "label": "Coverage",
+          "formatter": "percentage",
+          "isNumeric": true,
+          "meta": {
+            "align": "right"
+          }
+        },
+        {
+          "id": "status",
+          "label": "Status"
+        }
+      ],
+      "variant": {
+        "mode": "list",
+        "border": "y",
+        "theme": "neutral",
+        "interaction": {
+          "editable": false,
+          "selectable": true,
+          "density": "comfortable"
+        }
+      }
+    }
+  }
+}
+
+
+{
+    "assembly": 7,
+    "assembly_name": "Katima Mulilo",
+    "year": 2026,
+    "tracked_sections": [
+      {
+        "month": "January",
+        "tithes": {
+            "status": "SUBMITTED"
+        },
+        "revenue": {
+            "status": "SKIPPED",
+            "skipping_reason": "Technical Issue",
+        },
+        "overheads": {
+            "status": "PENDING",
+        },
+        "attendance": {
+            "status": "SUBMITTED",
+        },
+        "completion": 0,
+        "is_leader_verified": false,
+        "is_late_submission": true,
+        "last_created_at": null,
+      },
+      {
+      }
+    ],
+    "summary": {
+      "missing_tithes": 6.0,
+      "missing_revenue": 6.0,
+      "missing_overhead": 6.0,
+      "missing_attendance": 6.0,
+      "average_completion": 0.0,
+      "average_rating": 1.0,
+      "total_fields": 24.0,
+      "submitted": 0.0,
+      "missing": 24.0,
+      "overall": 0.0,
+      "compliant_months": 0.0,
+    }
+  },

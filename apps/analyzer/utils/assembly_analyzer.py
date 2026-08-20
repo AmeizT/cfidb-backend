@@ -2,9 +2,14 @@ import calendar
 from datetime import date, datetime
 from collections import defaultdict
 from django.db.models import Count, Max
-from apps.bookkeeper.models import FixedExpenditure, Tithe, Income, Expenditure  # assuming these apps
+from apps.bookkeeper.models import Tithe, Overhead, Revenue
 from apps.people.models import Attendance
 
+# Field mapping for summary keys
+FIELDS = {
+    "revenue": "income",
+    "overhead": "expenditure",
+}
 
 # Helper to ensure datetime type for aggregated values
 def ensure_datetime(value):
@@ -39,14 +44,14 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         )
         tithes_count = tithes_qs.count()
         tithes_ok = tithes_count >= 1
-        tithes_comment = "OK" if tithes_ok else f"Only {tithes_count} record(s) (need 1+)"
+        tithes_comment = "OK" if tithes_ok else f"Need at least 1 tithe record"
         if not tithes_ok:
             missing_tithes += 1
         tithes_last = ensure_datetime(tithes_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Income (>= 1 per month)
-        income_qs = Income.objects.filter(
-            church=assembly, timestamp__range=(start_date, end_date)
+        income_qs = Revenue.objects.filter(
+            assembly=assembly, timestamp__range=(start_date, end_date)
         )
         income_ok = income_qs.exists()
         income_comment = "OK" if income_ok else "Missing"
@@ -55,7 +60,7 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         income_last = ensure_datetime(income_qs.aggregate(last=Max('timestamp'))['last'])
 
         # Expenditure (>= 1 per month)
-        expenditure_qs = FixedExpenditure.objects.filter(
+        expenditure_qs = Overhead.objects.filter(
             assembly=assembly, timestamp__range=(start_date, end_date)
         )
         expenditure_ok = expenditure_qs.exists()
@@ -67,7 +72,7 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         # Attendance (weekly, compare weeks in month)
         weeks_in_month = len(calendar.Calendar().monthdatescalendar(year, month))
         attendance_qs = Attendance.objects.filter(
-            church=assembly, timestamp__range=(start_date, end_date)
+            assembly=assembly, timestamp__range=(start_date, end_date)
         )
         attendance_count = attendance_qs.count()
         attendance_ok = attendance_count >= weeks_in_month
@@ -110,12 +115,12 @@ def analyze_assembly_data(assembly, year, upto_month=None):
         results.append({
             "month": calendar.month_name[month],
             "tithes": tithes_ok,
-            "income": income_ok,
-            "expenditure": expenditure_ok,
+            "revenue": income_ok,
+            "overhead": expenditure_ok,
             "attendance": attendance_ok,
             "tithes_comment": tithes_comment,
-            "income_comment": income_comment,
-            "expenditure_comment": expenditure_comment,
+            "revenue_comment": income_comment,
+            "overhead_comment": expenditure_comment,
             "attendance_comment": attendance_comment,
             "completion": completion,
             "rating": stars,
@@ -123,14 +128,34 @@ def analyze_assembly_data(assembly, year, upto_month=None):
             "last_created_at": last_created_at,
         })
 
-    # Summary
+    # Compliance calculations (moved from frontend)
+    total_fields = n_months * 4
+    submitted = sum(
+        1
+        for r in results
+        for v in [r["tithes"], r["revenue"], r["overhead"], r["attendance"]]
+        if v
+    )
+    missing = total_fields - submitted
+    overall = round((submitted / total_fields) * 100, 2) if total_fields else 0
+    compliant_months = sum(1 for r in results if r["completion"] == 100)
+    avg_rating = round(total_stars / n_months, 1) if n_months else 0
+
     summary = {
         "missing_tithes": missing_tithes,
-        "missing_income": missing_income,
-        "missing_expenditure": missing_expenditure,
+        "missing_revenue": missing_income,
+        "missing_overhead": missing_expenditure,
         "missing_attendance": missing_attendance,
         "average_completion": round(total_completion / n_months, 2) if n_months else 0,
         "average_rating": round(total_stars / n_months, 2) if n_months else 0,
+
+        # New compliance fields
+        "total_fields": total_fields,
+        "submitted": submitted,
+        "missing": missing,
+        "overall": overall,
+        "compliant_months": compliant_months,
+        "avg_rating": avg_rating,
     }
     return {
         "assembly": assembly.id,
@@ -185,22 +210,22 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
 
     # Bulk query Income (exists per assembly per month)
     income_qs = (
-        Income.objects.filter(
-            church_id__in=assembly_ids,
+        Revenue.objects.filter(
+            assembly_id__in=assembly_ids,
             timestamp__year=year
         )
-        .values("church_id", "timestamp__month")
+        .values("assembly_id", "timestamp__month")
         .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     income_exists = defaultdict(set)
     income_last_created = defaultdict(dict)
     for row in income_qs:
-        income_exists[row["church_id"]].add(row["timestamp__month"])
-        income_last_created[row["church_id"]][row["timestamp__month"]] = row["last_created"]
+        income_exists[row["assembly_id"]].add(row["timestamp__month"])
+        income_last_created[row["assembly_id"]][row["timestamp__month"]] = row["last_created"]
 
     # Bulk query Expenditure (exists per assembly per month)
     expenditure_qs = (
-        FixedExpenditure.objects.filter(
+        Overhead.objects.filter(
             assembly_id__in=assembly_ids,
             timestamp__year=year
         )
@@ -216,17 +241,17 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
     # Bulk query Attendance (count per assembly per month)
     attendance_qs = (
         Attendance.objects.filter(
-            church_id__in=assembly_ids,
+            assembly_id__in=assembly_ids,
             timestamp__year=year
         )
-        .values("church_id", "timestamp__month")
+        .values("assembly_id", "timestamp__month")
         .annotate(count=Count("id"), last_created=Max('timestamp'))
     )
     attendance_counts = defaultdict(lambda: defaultdict(int))
     attendance_last_created = defaultdict(dict)
     for row in attendance_qs:
-        attendance_counts[row["church_id"]][row["timestamp__month"]] = row["count"]
-        attendance_last_created[row["church_id"]][row["timestamp__month"]] = row["last_created"]
+        attendance_counts[row["assembly_id"]][row["timestamp__month"]] = row["count"]
+        attendance_last_created[row["assembly_id"]][row["timestamp__month"]] = row["last_created"]
 
     results = []
     for assembly in assemblies:
@@ -303,12 +328,12 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
             per_month_results.append({
                 "month": calendar.month_name[month],
                 "tithes": tithes_ok,
-                "income": income_ok,
-                "expenditure": expenditure_ok,
+                "revenue": income_ok,
+                "overhead": expenditure_ok,
                 "attendance": attendance_ok,
                 "tithes_comment": tithes_comment,
-                "income_comment": income_comment,
-                "expenditure_comment": expenditure_comment,
+                "revenue_comment": income_comment,
+                "overhead_comment": expenditure_comment,
                 "attendance_comment": attendance_comment,
                 "completion": completion,
                 "rating": stars,
@@ -316,13 +341,34 @@ def analyze_multiple_assemblies(assemblies, year, upto_month=None):
                 "last_created_at": last_created_at,
             })
 
+        # Compliance calculations (moved from frontend)
+        total_fields = n_months * 4
+        submitted = sum(
+            1
+            for r in per_month_results
+            for v in [r["tithes"], r["revenue"], r["overhead"], r["attendance"]]
+            if v
+        )
+        missing = total_fields - submitted
+        overall = round((submitted / total_fields) * 100, 2) if total_fields else 0
+        compliant_months = sum(1 for r in per_month_results if r["completion"] == 100)
+        avg_rating = round(total_stars / n_months, 1) if n_months else 0
+
         summary = {
             "missing_tithes": missing_tithes,
-            "missing_income": missing_income,
-            "missing_expenditure": missing_expenditure,
+            "missing_revenue": missing_income,
+            "missing_overhead": missing_expenditure,
             "missing_attendance": missing_attendance,
             "average_completion": round(total_completion / n_months, 2) if n_months else 0,
             "average_rating": round(total_stars / n_months, 2) if n_months else 0,
+
+            # New compliance fields
+            "total_fields": total_fields,
+            "submitted": submitted,
+            "missing": missing,
+            "overall": overall,
+            "compliant_months": compliant_months,
+            "avg_rating": avg_rating,
         }
         results.append({
             "assembly": assembly.id,

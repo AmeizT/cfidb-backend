@@ -18,7 +18,7 @@ class GetMinutesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Minutes
-        fields = ['id', 'meeting', 'assembly', 'attachment', 'created_at', 'updated_at']
+        fields = ['id', 'meeting', 'assembly', 'created_at', 'updated_at']
         
 
 class MinutesSerializer(serializers.ModelSerializer):

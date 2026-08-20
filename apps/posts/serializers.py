@@ -55,8 +55,6 @@ class CreatePostSerializer(serializers.ModelSerializer):
             'views',
             'images',
             'uploaded_images',
-            'is_private',
-            'is_draft',
             'created_at',
             'updated_at'
         ]

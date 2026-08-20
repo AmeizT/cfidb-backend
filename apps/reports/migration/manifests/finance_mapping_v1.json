@@ -1,0 +1,32 @@
+{
+  "version": "cfi-historical-finance-v1",
+  "legacy_finance_end": "2026-07-31",
+  "new_finance_start": "2026-08-01",
+  "income_to_revenue": [
+    {"source_component": "offering", "target_category": "Offering", "reporting_group": "Giving"},
+    {"source_component": "fundraising", "target_category": "Fundraising", "reporting_group": "Giving"},
+    {"source_component": "thanksgiving", "target_category": "Thanksgiving", "reporting_group": "Giving"},
+    {"source_component": "donations", "target_category": "Donations", "reporting_group": "Giving"}
+  ],
+  "fixed_expenditure_to_overhead": [
+    {"source_component": "rent", "target_type": "Rent", "reporting_group": "Facilities & Utilities"},
+    {"source_component": "water", "target_type": "Water", "reporting_group": "Facilities & Utilities"},
+    {"source_component": "electricity", "target_type": "Electricity", "reporting_group": "Facilities & Utilities"},
+    {"source_component": "wages", "target_type": "Wages", "reporting_group": "Staffing & Payroll"},
+    {"source_component": "bank_charges", "target_type": "Bank Charges", "reporting_group": "Bank & Professional Fees"},
+    {"source_component": "car_maintenance", "target_type": "Car Maintenance", "reporting_group": "Maintenance & Repairs"},
+    {"source_component": "fuel", "target_type": "Fuel", "reporting_group": "Transport & Travel"},
+    {"source_component": "insurance", "target_type": "Insurance", "reporting_group": "Insurance & Compliance"},
+    {"source_component": "telephone", "target_type": "Telephone", "reporting_group": "Communications & Technology"},
+    {"source_component": "internet", "target_type": "Internet", "reporting_group": "Communications & Technology"},
+    {"source_component": "humanitarian", "target_type": "Humanitarian", "reporting_group": "Ministry Operations"},
+    {"source_component": "security", "target_type": "Security", "reporting_group": "Facilities & Utilities"},
+    {"source_component": "investment", "target_type": "Investment", "reporting_group": "Operating Expenses"}
+  ],
+  "remittance": {
+    "source_component": "remittance",
+    "target": "RemittanceObligation/RemittancePayment",
+    "rate": "0.10",
+    "migrate_to_overhead": false
+  }
+}

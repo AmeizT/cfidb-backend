@@ -1,8 +1,8 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 from apps.posts.views import CreatePostView, PostView, CreatePostCommentView, UpdatePostView
 
-router = DefaultRouter()
+router = SimpleRouter()
 
 router.register(r'posts', PostView, basename='posts')
 router.register(r'post/comment', CreatePostCommentView, basename='post_comment')

@@ -6,33 +6,45 @@ class Command(BaseCommand):
     help = "Assign churches to their respective zones based on country"
 
     def handle(self, *args, **options):
-        # Ensure zones exist
-        zone1_name, _ = ZoneName.objects.get_or_create(name="Zone 1")
-        zone2_name, _ = ZoneName.objects.get_or_create(name="Zone 2")
-        zone3_name, _ = ZoneName.objects.get_or_create(name="Zone 3")
-        zone4_name, _ = ZoneName.objects.get_or_create(name="Zone 4")
+        # Define zone codes and their corresponding names
+        zones_info = {
+            "ZNA001": "Nambia",
+            "ZSA001": "Southern Africa",
+            "ZEA001": "East Africa",
+            "ZIS001": "Islands",
+            "ZHOA001": "Horn of Africa",
+        }
 
-        zone1, _ = Zone.objects.get_or_create(name=zone1_name)
-        zone2, _ = Zone.objects.get_or_create(name=zone2_name)
-        zone3, _ = Zone.objects.get_or_create(name=zone3_name)
-        zone4, _ = Zone.objects.get_or_create(name=zone4_name)
+        # Create or get ZoneName and Zone instances
+        zones = {}
+        for code, name in zones_info.items():
+            zone_name_obj, _ = ZoneName.objects.get_or_create(name=name)
+            zone_obj, _ = Zone.objects.get_or_create(code=code, defaults={'name': zone_name_obj})
+            zones[code] = zone_obj
 
-        # Define mappings
-        zone1_countries = ["Zimbabwe", "South Africa", "Botswana"]
-        zone2_countries = ["England", "Germany", "France", "Spain", "Italy", "Europe"]  # expand as needed
-        zone3_countries = ["Namibia"]
+        # Mapping countries to zone codes
+        country_zone_map = {
+            "Australia": "ZIS001",
+            "Botswana": "ZSA001",
+            "Comoros": "ZIS001",
+            "Ethiopia": "ZHOA001",
+            "Lesotho": "ZSA001",
+            "Kenya": "ZEA001",
+            "Namibia": "ZNA001",
+            "Nigeria": "ZIS001",
+            "Rwanda": "ZEA001",
+            "South Sudan": "ZHOA001",
+            "Sudan": "ZHOA001",
+            "Tanzania": "ZEA001",
+            "Zambia": "ZSA001",
+            "Zimbabwe": "ZSA001",
+        }
 
-        # Assign zone per country
+        # Assign zones to churches based on country
+        default_zone = zones["ZSA001"]
         for church in Church.objects.all():
-            if church.country in zone1_countries:
-                church.zone = zone1
-            elif church.country in zone2_countries:
-                church.zone = zone2
-            elif church.country in zone3_countries:
-                church.zone = zone3
-            else:
-                church.zone = zone4
-
+            zone_code = country_zone_map.get(church.country)
+            church.zone = zones[zone_code] if zone_code else default_zone
             church.save(update_fields=["zone"])
             self.stdout.write(self.style.SUCCESS(f"Assigned {church.name} to {church.zone.name}"))
 

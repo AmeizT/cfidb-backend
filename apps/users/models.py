@@ -1,14 +1,8 @@
-import uuid
-import random
-from PIL import Image
-from decimal import Decimal
 from django.db import models
-from datetime import date, datetime
+from django.apps import apps
 from apps.users.choices import UserRoles
 from imagekit.processors import SmartResize
-from django.db.models.expressions import Value
 from imagekit.models import ProcessedImageField
-from django.core.validators import RegexValidator
 from apps.users.managers import UserManager
 from apps.users.utils.nanoid import generate_nanoid
 from apps.users.utils.base_urls import user_avatar_url
@@ -73,17 +67,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     avatar = ProcessedImageField(
         upload_to=user_avatar_url,
-        processors=[SmartResize(width=800, height=800)],
-        format='WEBP', 
-        options={'quality': 80},
+        processors=[SmartResize(width=800, height=800)], # type: ignore
+        format='WEBP',  # type: ignore
+        options={'quality': 80}, # type: ignore
         blank=True,
         null=True,
     )
     avatar_fallback = models.CharField(
-        max_length=26,
+        max_length=64,
         blank=True,
     )
     roles = models.ManyToManyField(Role, related_name='users', blank=True)
+    last_active = models.DateTimeField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_onboarded = models.BooleanField(default=False)
@@ -132,7 +127,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     }
 
     DB_ZONE_STAFF_ROLES = {
-        'Zone Admin'
+        'Zone Admin',
+        'Zone Overseer',
     }
 
     ACADEMY_STAFF_ROLES = {
@@ -147,14 +143,53 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_student(self):
         return self.roles.filter(name__in=self.ACADEMY_STUDENT_ROLES).exists()
+    
 
     @property
     def is_db_staff(self):
-        return self.roles.filter(name__in=self.DB_STAFF_ROLES).exists()
+        if not hasattr(self, "_is_db_staff_cache"):
+            self._is_db_staff_cache = self.roles.filter(
+                name__in=self.DB_STAFF_ROLES
+            ).exists()
+        return self._is_db_staff_cache
     
+    DB_ZONE_STAFF_ROLES = {"admin", "overseer"}  # matches ZoneLeadership.Role values
+
     @property
     def is_db_zone_staff(self):
-        return self.roles.filter(name__in=self.DB_ZONE_STAFF_ROLES).exists()
+        qs = self.zone_roles.filter(role__in=self.DB_ZONE_STAFF_ROLES, is_active=True) # type: ignore
+        return qs.exists() and qs.first().zone is not None
+
+    @property
+    def assigned_zones(self):
+        """
+        Return all zones the user actively manages.
+        Uses lazy model loading to avoid circular imports.
+        """
+        Zone = apps.get_model("churches", "Zone")
+        return Zone.objects.filter(
+            leadership__user=self,
+            leadership__is_active=True
+        )
+    
+    
+    @property
+    def is_region_staff(self):
+        return self.region_roles.filter(is_active=True).exists() # type: ignore
+
+
+    @property
+    def assigned_regions(self):
+        Region = apps.get_model("churches", "Region")
+        return Region.objects.filter(
+            leadership__user=self,
+            leadership__is_active=True,
+        ).distinct()
+    
+
+    @property
+    def active_region(self):
+        return self.assigned_regions.first()
 
     @property
     def is_academy_staff(self):
@@ -178,9 +213,9 @@ class Profile(models.Model):
     )
     avatar = ProcessedImageField(
         upload_to=user_avatar_url,
-        processors=[SmartResize(width=800, height=800)],
-        format='WEBP', 
-        options={'quality': 80},
+        processors=[SmartResize(width=800, height=800)], # type: ignore
+        format='WEBP',  # type: ignore
+        options={'quality': 80}, # type: ignore
         blank=True,
         null=True,
     )

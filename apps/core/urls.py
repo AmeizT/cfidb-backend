@@ -1,8 +1,8 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 from apps.core.views import BlogView, DocumentationView, TermsCheckView, AcceptTermsView, TermsView
 
-router = DefaultRouter()
+router = SimpleRouter()
 
 router.register(r"documentation", DocumentationView, basename="documentation")
 router.register(r"terms", TermsView, basename="terms")

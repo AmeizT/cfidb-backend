@@ -1,24 +1,35 @@
 from django.contrib import admin
 from apps.bookkeeper.models import (
     Asset,
+    AssetImage,
     Expenditure,
+    FinancialAuditLog,
     FixedExpenditure,
+    OverheadType,
+    Overhead,
     Income,
     MonthlyFinanceSnapshot,
-    Payroll,
-    Pledge,
-    Remittance,
-    ShortfallPayment,
+    Revenue,
+    RevenueCategory,
+    RemittanceObligation,
+    RemittancePayment,
     Tithe,
-    AssetImage
 )
 
 admin.site.register(Asset)
 admin.site.register(AssetImage)
 admin.site.register(Expenditure)
+admin.site.register(FinancialAuditLog)
 admin.site.register(FixedExpenditure)
 admin.site.register(Income)
 admin.site.register(MonthlyFinanceSnapshot)
+admin.site.register(OverheadType)
+admin.site.register(Overhead)
+admin.site.register(Revenue)
+admin.site.register(RevenueCategory)
+admin.site.register(RemittanceObligation)
+admin.site.register(RemittancePayment)
+
 
 @admin.register(Tithe)
 class TitheAdmin(admin.ModelAdmin):
