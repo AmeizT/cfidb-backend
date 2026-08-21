@@ -4,7 +4,93 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def normalize_and_deduplicate_attendance(apps, schema_editor):
+    Attendance = apps.get_model("people", "Attendance")
+
+    # Legacy Main Service is the modern Sunday service.
+    Attendance.objects.filter(
+        service_type="main"
+    ).update(
+        service_type="sunday"
+    )
+
+    duplicate_keys = (
+        Attendance.objects
+        .values(
+            "church_id",
+            "timestamp",
+            "service_type",
+            "homecell_id",
+        )
+        .annotate(row_count=models.Count("id"))
+        .filter(row_count__gt=1)
+    )
+
+    for key in duplicate_keys.iterator():
+        rows = list(
+            Attendance.objects.filter(
+                church_id=key["church_id"],
+                timestamp=key["timestamp"],
+                service_type=key["service_type"],
+                homecell_id=key["homecell_id"],
+            ).order_by(
+                "-updated_at",
+                "-created_at",
+                "-id",
+            )
+        )
+
+        def is_substantive(row):
+            return any([
+                row.adults,
+                row.children,
+                row.guest_attendance,
+                row.new_converts,
+                row.altar_call,
+                row.baptisms,
+                row.online_viewers,
+                row.followups_scheduled,
+                row.total_leaders_present,
+                row.volunteers_on_duty,
+                row.is_special_event,
+                (row.special_event_name or "").strip(),
+                (row.notes or "").strip(),
+            ])
+
+        substantive_rows = [
+            row for row in rows
+            if is_substantive(row)
+        ]
+
+        # Prefer a populated submission over an empty placeholder.
+        # If multiple populated submissions exist, latest-wins.
+        winner = (
+            substantive_rows[0]
+            if substantive_rows
+            else rows[0]
+        )
+
+        Attendance.objects.filter(
+            church_id=key["church_id"],
+            timestamp=key["timestamp"],
+            service_type=key["service_type"],
+            homecell_id=key["homecell_id"],
+        ).exclude(
+            pk=winner.pk
+        ).delete()
+
+
+def noop_reverse(apps, schema_editor):
+    # Removed duplicate historical submissions cannot be reconstructed
+    # automatically. Original rows are retained in the migration evidence
+    # export and production backup.
+    pass
+
+
 class Migration(migrations.Migration):
+    # This migration modifies Attendance data and then creates a database
+    # constraint on the same PostgreSQL table.
+    atomic = False
 
     dependencies = [
         ('churches', '0033_alter_zone_code'),
@@ -13,56 +99,106 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='hcattendance',
-            name='church',
+        # IMPORTANT:
+        # Normalize legacy service types and resolve historical duplicate
+        # submissions before the unique constraint is created.
+        migrations.RunPython(
+            normalize_and_deduplicate_attendance,
+            noop_reverse,
         ),
-        migrations.RemoveField(
-            model_name='hcattendance',
-            name='editor',
+
+        # HCAttendance has been retired from the active Django application,
+        # but its PostgreSQL table contains historical Homecell attendance
+        # records that must be preserved.
+        #
+        # Remove the model from Django's migration state only. Do NOT drop
+        # people_hcattendance or any of its legacy columns.
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.DeleteModel(
+                    name='HCAttendance',
+                ),
+            ],
         ),
-        migrations.RemoveField(
-            model_name='hcattendance',
-            name='homecell',
-        ),
+
         migrations.AlterModelOptions(
             name='attendance',
             options={'ordering': ['-timestamp']},
         ),
+
         migrations.RemoveField(
             model_name='attendance',
             name='category',
         ),
+
         migrations.AlterField(
             model_name='attendance',
             name='church',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='attendances', to='churches.church'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='attendances',
+                to='churches.church',
+            ),
         ),
+
         migrations.AlterField(
             model_name='attendance',
             name='homecell',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='attendances', to='people.homecell'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='attendances',
+                to='people.homecell',
+            ),
         ),
+
         migrations.AlterField(
             model_name='attendance',
             name='report',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='attendances', to='reports.assemblyreport'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name='attendances',
+                to='reports.assemblyreport',
+            ),
         ),
+
         migrations.AlterField(
             model_name='attendance',
             name='service_type',
-            field=models.CharField(choices=[('friday', 'Friday'), ('homecell', 'Homecell'), ('outreach', 'Outreach'), ('other', 'Other'), ('sunday', 'Sunday')], db_index=True, default='sunday', max_length=24),
+            field=models.CharField(
+                choices=[
+                    ('friday', 'Friday'),
+                    ('homecell', 'Homecell'),
+                    ('outreach', 'Outreach'),
+                    ('other', 'Other'),
+                    ('sunday', 'Sunday'),
+                ],
+                db_index=True,
+                default='sunday',
+                max_length=24,
+            ),
         ),
+
         migrations.AlterField(
             model_name='attendance',
             name='timestamp',
             field=models.DateField(db_index=True),
         ),
+
         migrations.AddConstraint(
             model_name='attendance',
-            constraint=models.UniqueConstraint(fields=('church', 'timestamp', 'service_type', 'homecell'), name='unique_service_attendance'),
-        ),
-        migrations.DeleteModel(
-            name='HCAttendance',
+            constraint=models.UniqueConstraint(
+                fields=(
+                    'church',
+                    'timestamp',
+                    'service_type',
+                    'homecell',
+                ),
+                name='unique_service_attendance',
+            ),
         ),
     ]

@@ -7,10 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = os.environ.get('DJANGO_ENV') == 'LOCAL'
 
-if DEBUG:
-    SECRET_KEY = os.environ.get('LOCAL_SECRET_KEY')
-else:
-    SECRET_KEY = os.environ.get('PRODUCTION_SECRET_KEY')
+SECRET_KEY = 'g6qacxrqm8^k=6l%^c#7lcl#h82rf_lr+v^=78i4lppis(wwgu'
+
+# if DEBUG:
+#     SECRET_KEY = os.environ.get('LOCAL_SECRET_KEY')
+# else:
+#     SECRET_KEY = os.environ.get('PRODUCTION_SECRET_KEY')
 
 
 if DEBUG:

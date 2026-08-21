@@ -46,27 +46,72 @@ ensure_active_membership = ensure_current_membership
 
 
 @transaction.atomic
-def create_transfer_request(*, member, to_assembly, effective_date, reason="", notes="", requested_by=None):
-    member = Member.objects.select_for_update().select_related(
-        "assembly", "assembly__zone", "assembly__zone__region"
-    ).get(pk=member.pk)
+def create_transfer_request(
+    *,
+    member,
+    to_assembly,
+    effective_date,
+    reason="",
+    notes="",
+    requested_by=None,
+):
+    member = (
+        Member.objects
+        .select_for_update(of=("self",))
+        .select_related(
+            "assembly",
+            "assembly__zone",
+            "assembly__zone__region",
+        )
+        .get(pk=member.pk)
+    )
+
     if not can_create_transfer(requested_by, member):
-        raise PermissionDenied("You do not have permission to transfer this member.")
+        raise PermissionDenied(
+            "You do not have permission to transfer this member."
+        )
+
     if member.assembly_id is None:
-        raise ValidationError({"member": "The member has no current assembly."})
+        raise ValidationError(
+            {"member": "The member has no current assembly."}
+        )
+
     if member.assembly_id == to_assembly.id:
-        raise ValidationError({"to_assembly": "Destination must differ from the current assembly."})
+        raise ValidationError(
+            {
+                "to_assembly":
+                    "Destination must differ from the current assembly."
+            }
+        )
+
     if MemberTransferRequest.objects.filter(
         member=member,
-        status__in=[MemberTransferRequest.Status.PENDING, MemberTransferRequest.Status.ACCEPTED],
+        status__in=[
+            MemberTransferRequest.Status.PENDING,
+            MemberTransferRequest.Status.ACCEPTED,
+        ],
     ).exists():
-        raise ValidationError({"member": "This member already has an open transfer request."})
+        raise ValidationError(
+            {"member": "This member already has an open transfer request."}
+        )
 
     membership = ensure_current_membership(member, requested_by)
+
     if membership.assembly_id != member.assembly_id:
-        raise ValidationError({"member": "The current membership does not match Member.assembly."})
+        raise ValidationError(
+            {
+                "member":
+                    "The current membership does not match Member.assembly."
+            }
+        )
+
     if effective_date < membership.joined_on:
-        raise ValidationError({"effective_date": "Transfer date cannot precede the membership join date."})
+        raise ValidationError(
+            {
+                "effective_date":
+                    "Transfer date cannot precede the membership join date."
+            }
+        )
 
     return MemberTransferRequest.objects.create(
         member=member,
@@ -80,12 +125,26 @@ def create_transfer_request(*, member, to_assembly, effective_date, reason="", n
 
 
 @transaction.atomic
-def complete_transfer_request(*, transfer, completed_by=None, notes=""):
-    transfer = MemberTransferRequest.objects.select_for_update().select_related(
-        "from_assembly", "to_assembly"
-    ).get(pk=transfer.pk)
+def complete_transfer_request(
+    *,
+    transfer,
+    completed_by=None,
+    notes="",
+):
+    transfer = (
+        MemberTransferRequest.objects
+        .select_for_update(of=("self",))
+        .select_related(
+            "from_assembly",
+            "to_assembly",
+        )
+        .get(pk=transfer.pk)
+    )
+
     if not can_review_transfer(completed_by, transfer):
-        raise PermissionDenied("You do not have permission to complete this transfer.")
+        raise PermissionDenied(
+            "You do not have permission to complete this transfer."
+        )
 
     if transfer.status == MemberTransferRequest.Status.COMPLETED:
         destination = AssemblyMembership.objects.filter(

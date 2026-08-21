@@ -53,28 +53,58 @@ def populate_category_metadata(apps, schema_editor):
     OverheadType = apps.get_model("bookkeeper", "OverheadType")
 
     seen_revenue = set()
+
     for category in RevenueCategory.objects.order_by("pk"):
         key = (category.assembly_id, normalize(category.name))
         normalized_name = key[1]
+
         if key in seen_revenue:
             normalized_name = f"{normalized_name} legacy {category.pk}"
+
         seen_revenue.add(key)
+
         category.normalized_name = normalized_name
-        if category.assembly_id:
-            category.is_standard = False
-            category.needs_review = True
-        category.save(update_fields=["normalized_name", "is_standard", "needs_review"])
+
+        # Scope must agree with the constraints added later:
+        # - assembly=None means a global/standard category
+        # - assembly set means an assembly-specific custom category
+        category.is_standard = category.assembly_id is None
+        category.needs_review = category.assembly_id is not None
+
+        category.save(
+            update_fields=[
+                "normalized_name",
+                "is_standard",
+                "needs_review",
+            ]
+        )
 
     seen_overhead = set()
+
     for overhead_type in OverheadType.objects.order_by("pk"):
         key = (overhead_type.assembly_id, normalize(overhead_type.name))
         normalized_name = key[1]
+
         if key in seen_overhead:
             normalized_name = f"{normalized_name} legacy {overhead_type.pk}"
+
         seen_overhead.add(key)
+
         overhead_type.normalized_name = normalized_name
-        overhead_type.needs_review = not overhead_type.is_global
-        overhead_type.save(update_fields=["normalized_name", "needs_review"])
+
+        # Scope must agree with valid_overhead_type_scope:
+        # - assembly=None means global
+        # - assembly set means assembly-specific
+        overhead_type.is_global = overhead_type.assembly_id is None
+        overhead_type.needs_review = overhead_type.assembly_id is not None
+
+        overhead_type.save(
+            update_fields=[
+                "normalized_name",
+                "is_global",
+                "needs_review",
+            ]
+        )
 
     for name, reporting_group in REVENUE_STANDARDS:
         RevenueCategory.objects.get_or_create(
@@ -109,6 +139,10 @@ def noop_reverse(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
+    # RunPython writes category rows before this migration adds constraints
+    # to those same PostgreSQL tables. Commit operations independently so
+    # FK trigger events are resolved before ALTER TABLE.
+    atomic = False
 
     dependencies = [
         ('bookkeeper', '0069_alter_expenditure_options_expenditure_timestamp_and_more'),

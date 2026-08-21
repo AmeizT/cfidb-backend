@@ -16,10 +16,33 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FixedExpense',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('timestamp', models.DateField()),
-                ('assembly', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='churches.church')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'amount',
+                    models.DecimalField(
+                        decimal_places=2,
+                        max_digits=10,
+                    ),
+                ),
+                (
+                    'timestamp',
+                    models.DateField(),
+                ),
+                (
+                    'assembly',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='churches.church',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'fixed expense',
@@ -27,80 +50,144 @@ class Migration(migrations.Migration):
                 'ordering': ['-timestamp'],
             },
         ),
+
         migrations.CreateModel(
             name='FixedExpenseType',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('is_global', models.BooleanField(default=True)),
-                ('assembly', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='churches.church')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(max_length=100),
+                ),
+                (
+                    'is_global',
+                    models.BooleanField(default=True),
+                ),
+                (
+                    'assembly',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='churches.church',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'fixed expense type',
                 'verbose_name_plural': 'fixed expenses',
             },
         ),
+
+        # These legacy models/tables contain no production records and may
+        # continue through their normal retirement path.
         migrations.RemoveField(
             model_name='payroll',
             name='church',
         ),
+
         migrations.RemoveField(
             model_name='pledge',
             name='branch',
         ),
+
         migrations.RemoveField(
             model_name='pledge',
             name='member',
         ),
+
         migrations.RemoveField(
             model_name='pledge',
             name='project',
         ),
-        migrations.RemoveField(
-            model_name='remittance',
-            name='branch',
-        ),
-        migrations.RemoveField(
-            model_name='remittance',
-            name='editor',
-        ),
+
+        # IMPORTANT:
+        # ShortfallPayment still has a ForeignKey to the legacy Remittance
+        # model at this point. Remove that relationship BEFORE removing
+        # Remittance from Django's migration state.
         migrations.RemoveField(
             model_name='shortfallpayment',
             name='branch',
         ),
+
         migrations.RemoveField(
             model_name='shortfallpayment',
             name='editor',
         ),
+
         migrations.RemoveField(
             model_name='shortfallpayment',
             name='remittance',
         ),
+
+        # The legacy bookkeeper_remittance table contains historical
+        # production records.
+        #
+        # Remove Remittance from Django's model state ONLY.
+        # Do not modify or drop the physical PostgreSQL table.
+        #
+        # This preserves:
+        # - the 5 historical rows
+        # - branch_id
+        # - editor_id
+        # - amount_due
+        # - amount_paid
+        # - shortfall
+        # - payment_method
+        # - attachment
+        # - timestamp / period
+        # - created_at / updated_at
+        migrations.SeparateDatabaseAndState(
+            database_operations=[],
+            state_operations=[
+                migrations.DeleteModel(
+                    name='Remittance',
+                ),
+            ],
+        ),
+
         migrations.DeleteModel(
             name='BankStatement',
         ),
+
         migrations.DeleteModel(
             name='Payroll',
         ),
+
         migrations.DeleteModel(
             name='Pledge',
         ),
-        migrations.DeleteModel(
-            name='Remittance',
-        ),
+
         migrations.DeleteModel(
             name='ShortfallPayment',
         ),
+
         migrations.AddField(
             model_name='fixedexpense',
             name='expense_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookkeeper.fixedexpensetype'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='bookkeeper.fixedexpensetype',
+            ),
         ),
+
         migrations.AddField(
             model_name='fixedexpense',
             name='report',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='reports.assemblyreport'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='reports.assemblyreport',
+            ),
         ),
+
         migrations.AlterUniqueTogether(
             name='fixedexpense',
             unique_together={('report', 'expense_type')},
