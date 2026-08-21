@@ -39,32 +39,32 @@ if DEBUG:
 
 else:
     ALLOWED_HOSTS = [
-        'honeste-backend.vercel.app',
-        'cfidb-backend.vercel.app',
-        'api.cfi.church',
+        "honeste-backend.vercel.app",
+        "cfidb-backend.vercel.app",
+        "api.cfi.church",
     ]
 
     CORS_ALLOWED_ORIGINS = [
-        'https://cfidb.com',
-        'https://www.cfidb.com',
-        'https://blog.cfi.church',
-        'https://api.cfi.church',
+        "https://cfidb.com",
+        "https://www.cfidb.com",
+        "https://blog.cfi.church",
+        "https://api.cfi.church",
     ]
 
     CSRF_TRUSTED_ORIGINS = [
-        'https://cfidb.com',
-        'https://www.cfidb.com',
-        'https://blog.cfi.church',
-        'https://api.cfi.church',
+        "https://cfidb.com",
+        "https://www.cfidb.com",
+        "https://blog.cfi.church",
+        "https://api.cfi.church",
     ]
 
     SESSION_COOKIE_SAMESITE = "None"
     SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_DOMAIN = ".cfi.church"
+    SESSION_COOKIE_DOMAIN = None
 
     CSRF_COOKIE_SAMESITE = "None"
     CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_DOMAIN = ".cfi.church"
+    CSRF_COOKIE_DOMAIN = None
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = False
@@ -212,6 +212,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cfidb.wsgi.application'
 
+print("IS_DEBUG", DEBUG)
+print("WHICH ENV", os.environ.get('DJANGO_ENV'))
+
 if DEBUG:
     print("LOCAL DB")
 
@@ -222,7 +225,7 @@ if DEBUG:
         }
     }
 else:
-    print("Production DB")
+    print("PRODUCTION DB ACTIVE NOW",)
     DATABASES = {
         'default': {
             'ENGINE': str(os.environ.get('DB_ENGINE')),
@@ -349,7 +352,7 @@ SIMPLE_JWT = {
     "AUTH_COOKIE": "accessToken",
     "AUTH_COOKIE_REFRESH": "refreshToken",
     "AUTH_COOKIE_SECURE": not DEBUG,
-    "AUTH_COOKIE_SAMESITE": "Lax",
+    "AUTH_COOKIE_SAMESITE": "None" if not DEBUG else "Lax",
     "TOKEN_TYPE_CLAIM": "token_type",
     "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
 }

@@ -25,91 +25,6 @@ from apps.reports.migration.core import (
 from apps.reports.services.lifecycle import ensure_report
 from apps.reports.services.periods import report_period
 
-HISTORICAL_DATE_MAPPING_VERSION = "cfi-historical-date-normalization-v1"
-
-HISTORICAL_PERIOD_START = date(2020, 1, 1)
-HISTORICAL_PERIOD_END = date(2026, 8, 31)
-
-# Obviously malformed years. Month/day are preserved.
-HISTORICAL_YEAR_CORRECTIONS = {
-    23: 2023,      # 0023 -> 2023
-    223: 2023,     # 0223 -> 2023
-    225: 2025,     # 0225 -> 2025
-    2924: 2024,
-}
-
-# Technically valid years, but confirmed historical entry errors.
-HISTORICAL_DATE_OVERRIDES = {
-    ("people", "attendance", 456): date(2024, 1, 28),
-    ("bookkeeper", "expenditure", 17): date(2023, 5, 30),
-}
-
-# Unresolvable dates. Do not infer a replacement.
-HISTORICAL_DATE_SKIPS = {
-    ("bookkeeper", "income", 58): (
-        "Invalid Lusaka date 0002-01-31; no missing 2023-2026 month "
-        "justifies inferring a replacement."
-    ),
-    ("bookkeeper", "income", 1058): (
-        "Invalid Asmara date 2026-12-02; intended month cannot be proven."
-    ),
-}
-
-
-def resolve_historical_date(source, value, *, pk=None):
-    """
-    Returns:
-        (normalized_date, status, reason)
-
-    status:
-        ok         - no correction required
-        corrected  - date was deterministically corrected
-        skipped    - explicitly approved source row should be omitted
-        conflict   - unexpected invalid date requiring manual review
-    """
-    if value is None:
-        return None, "skipped", "Source date is null."
-
-    model = source if isinstance(source, type) else source.__class__
-    source_pk = pk if pk is not None else source.pk
-
-    key = (
-        model._meta.app_label,
-        model._meta.model_name,
-        int(source_pk),
-    )
-
-    skip_reason = HISTORICAL_DATE_SKIPS.get(key)
-    if skip_reason:
-        return None, "skipped", skip_reason
-
-    original = value
-
-    override = HISTORICAL_DATE_OVERRIDES.get(key)
-    if override is not None:
-        value = value.replace(
-            year=override.year,
-            month=override.month,
-            day=override.day,
-        )
-    elif value.year in HISTORICAL_YEAR_CORRECTIONS:
-        value = value.replace(
-            year=HISTORICAL_YEAR_CORRECTIONS[value.year]
-        )
-
-    if value < HISTORICAL_PERIOD_START or value > HISTORICAL_PERIOD_END:
-        return (
-            None,
-            "conflict",
-            f"Normalized date {value} is outside the approved historical "
-            f"range {HISTORICAL_PERIOD_START}..{HISTORICAL_PERIOD_END}.",
-        )
-
-    if value != original:
-        return value, "corrected", f"{original} -> {value}"
-
-    return value, "ok", ""
-
 
 def _rank(row):
     def value(field):
@@ -160,151 +75,36 @@ def _create_lineage(
 
 
 def _source_months(assemblies, from_date=None, to_date=None):
-    from apps.bookkeeper.models import (
-        Expenditure,
-        FixedExpenditure,
-        Income,
-        Overhead,
-        Revenue,
-        Tithe,
-    )
+    from apps.bookkeeper.models import Expenditure, FixedExpenditure, Income, Overhead, Revenue, Tithe
     from apps.people.models import Attendance, SundaySchoolAttendance
 
     assembly_ids = list(assemblies.values_list("pk", flat=True))
     dates = set()
-    notices = []
-
     specs = [
-        (
-            Attendance.objects.filter(assembly_id__in=assembly_ids),
-            "assembly_id",
-            "timestamp",
-        ),
-        (
-            Tithe.all_objects.filter(
-                assembly_id__in=assembly_ids,
-                is_trash=False,
-            ),
-            "assembly_id",
-            "timestamp",
-        ),
-        (
-            Revenue.objects.filter(assembly_id__in=assembly_ids),
-            "assembly_id",
-            "timestamp",
-        ),
-        (
-            Overhead.objects.filter(assembly_id__in=assembly_ids),
-            "assembly_id",
-            "timestamp",
-        ),
-        (
-            Income.objects.filter(church_id__in=assembly_ids),
-            "church_id",
-            "timestamp",
-        ),
-        (
-            FixedExpenditure.objects.filter(assembly_id__in=assembly_ids),
-            "assembly_id",
-            "timestamp",
-        ),
-        (
-            SundaySchoolAttendance.objects.filter(
-                assembly_id__in=assembly_ids
-            ),
-            "assembly_id",
-            "service_date",
-        ),
+        (Attendance.objects.filter(assembly_id__in=assembly_ids), "timestamp"),
+        (Tithe.all_objects.filter(assembly_id__in=assembly_ids, is_trash=False), "timestamp"),
+        (Revenue.objects.filter(assembly_id__in=assembly_ids), "timestamp"),
+        (Overhead.objects.filter(assembly_id__in=assembly_ids), "timestamp"),
+        (Income.objects.filter(church_id__in=assembly_ids), "timestamp"),
+        (FixedExpenditure.objects.filter(assembly_id__in=assembly_ids), "timestamp"),
+        (SundaySchoolAttendance.objects.filter(assembly_id__in=assembly_ids), "service_date"),
     ]
-
-    for queryset, assembly_field, date_field in specs:
-        rows = queryset.exclude(
-            **{f"{date_field}__isnull": True}
-        ).values_list(
-            "pk",
-            assembly_field,
-            date_field,
-        )
-
-        for pk, assembly_id, original_date in rows:
-            value, status, reason = resolve_historical_date(
-                queryset.model,
-                original_date,
-                pk=pk,
-            )
-
-            label = queryset.model._meta.label
-
-            if status == "skipped":
-                notices.append((
-                    "skipped",
-                    f"SKIP HISTORICAL DATE {label} #{pk}: "
-                    f"{original_date} | {reason}",
-                ))
-                continue
-
-            if status == "conflict":
-                notices.append((
-                    "conflicts",
-                    f"HISTORICAL DATE CONFLICT {label} #{pk}: "
-                    f"{original_date} | {reason}",
-                ))
-                continue
-
-            if status == "corrected":
-                notices.append((
-                    "skipped",
-                    f"NORMALIZE HISTORICAL DATE {label} #{pk}: "
-                    f"{original_date} -> {value}",
-                ))
-
+    for queryset, field in specs:
+        for assembly_id, value in queryset.exclude(**{f"{field}__isnull": True}).values_list(
+            queryset.model._meta.get_field("assembly").attname
+            if any(f.name == "assembly" for f in queryset.model._meta.fields)
+            else "church_id",
+            field,
+        ):
             if in_range(value, from_date, to_date):
                 dates.add((assembly_id, value.replace(day=1)))
-
-    for row in Expenditure.objects.filter(
-        assembly_id__in=assembly_ids
-    ).only(
-        "id",
-        "assembly_id",
-        "timestamp",
-        "invoice_date",
+    for row in Expenditure.objects.filter(assembly_id__in=assembly_ids).only(
+        "assembly_id", "timestamp", "invoice_date"
     ):
-        original_date = row.timestamp or row.invoice_date
-        if original_date is None:
-            continue
-
-        value, status, reason = resolve_historical_date(
-            row,
-            original_date,
-        )
-
-        if status == "skipped":
-            notices.append((
-                "skipped",
-                f"SKIP HISTORICAL DATE {row._meta.label} #{row.pk}: "
-                f"{original_date} | {reason}",
-            ))
-            continue
-
-        if status == "conflict":
-            notices.append((
-                "conflicts",
-                f"HISTORICAL DATE CONFLICT {row._meta.label} #{row.pk}: "
-                f"{original_date} | {reason}",
-            ))
-            continue
-
-        if status == "corrected":
-            notices.append((
-                "skipped",
-                f"NORMALIZE HISTORICAL DATE {row._meta.label} #{row.pk}: "
-                f"{original_date} -> {value}",
-            ))
-
-        if in_range(value, from_date, to_date):
+        value = row.timestamp or row.invoice_date
+        if value and in_range(value, from_date, to_date):
             dates.add((row.assembly_id, value.replace(day=1)))
-
-    return sorted(dates), notices
+    return sorted(dates)
 
 
 def backfill_monthly_reports(*, apply=False, assembly=None, from_date=None, to_date=None):
@@ -313,16 +113,7 @@ def backfill_monthly_reports(*, apply=False, assembly=None, from_date=None, to_d
 
     result = MigrationResult(dry_run=not apply)
     assemblies = filtered_assemblies(assembly)
-
-    months, date_notices = _source_months(
-        assemblies,
-        from_date,
-        to_date,
-    )
-
-    for kind, message in date_notices:
-        result.add(message, kind=kind)
-
+    months = _source_months(assemblies, from_date, to_date)
     for assembly_id, month in months:
         church = Church.objects.get(pk=assembly_id)
         start, end = report_period(month)
@@ -382,11 +173,7 @@ def _relationship_specs(assembly_ids):
     ]
 
 
-def _authoritative_legacy_monthly(assembly_ids,
-    from_date=None,
-    to_date=None,
-    result=None,
-):
+def _authoritative_legacy_monthly(assembly_ids, from_date=None, to_date=None):
     from apps.bookkeeper.models import FixedExpenditure, Income
 
     authoritative = []
@@ -396,104 +183,32 @@ def _authoritative_legacy_monthly(assembly_ids,
         (FixedExpenditure.objects.filter(assembly_id__in=assembly_ids), "assembly_id"),
     )
     for queryset, assembly_attr in specs:
-        rows = []
-
-        for row in queryset:
-            value, status, reason = resolve_historical_date(
-                row,
-                row.timestamp,
-            )
-
-            if value is None:
-                if result is not None:
-                    kind = "skipped" if status == "skipped" else "conflicts"
-                    result.add(
-                        f"HISTORICAL DATE {status.upper()} "
-                        f"{row._meta.label} #{row.pk}: "
-                        f"{row.timestamp} | {reason}",
-                        kind=kind,
-                    )
-                continue
-
-            if in_range(
-                value,
-                from_date,
-                to_date,
-            ):
-                rows.append(row)
-
-
-        for candidates in _group_monthly(
-            rows,
-            assembly_attr,
-            result=result,
-        ).values():
+        rows = [row for row in queryset if in_range(row.timestamp, from_date, to_date)]
+        for candidates in _group_monthly(rows, assembly_attr).values():
             winner, older = latest_wins(candidates)
             authoritative.append(winner)
             superseded.extend((row, winner) for row in older)
     return authoritative, superseded
 
 
-def _authoritative_tithes(
-    assembly_ids,
-    from_date=None,
-    to_date=None,
-    result=None,
-):
+def _authoritative_tithes(assembly_ids, from_date=None, to_date=None):
     from apps.bookkeeper.models import Tithe
 
-    rows = list(
-        Tithe.all_objects.filter(
-            assembly_id__in=assembly_ids,
-            is_trash=False,
-        )
-    )
-
+    rows = list(Tithe.all_objects.filter(assembly_id__in=assembly_ids, is_trash=False))
     groups = defaultdict(list)
     anonymous = []
-
     for row in rows:
-        value, status, reason = resolve_historical_date(
-            row,
-            row.timestamp,
-        )
-
-        if value is None:
-            if result is not None:
-                kind = "skipped" if status == "skipped" else "conflicts"
-                result.add(
-                    f"HISTORICAL DATE {status.upper()} "
-                    f"Tithe #{row.pk}: {row.timestamp} | {reason}",
-                    kind=kind,
-                )
+        if not in_range(row.timestamp, from_date, to_date):
             continue
-
-        if not in_range(value, from_date, to_date):
-            continue
-
         if row.member_id is None:
             anonymous.append(row)
         else:
-            groups[
-                (
-                    row.assembly_id,
-                    row.member_id,
-                    value.year,
-                    value.month,
-                )
-            ].append(row)
-
-    authoritative = list(anonymous)
-    superseded = []
-
+            groups[(row.assembly_id, row.member_id, row.timestamp.year, row.timestamp.month)].append(row)
+    authoritative, superseded = list(anonymous), []
     for candidates in groups.values():
         winner, older = latest_wins(candidates)
         authoritative.append(winner)
-        superseded.extend(
-            (row, winner)
-            for row in older
-        )
-
+        superseded.extend((row, winner) for row in older)
     return authoritative, superseded
 
 
@@ -505,19 +220,9 @@ def backfill_report_relationships(*, apply=False, assembly=None, from_date=None,
     assemblies = filtered_assemblies(assembly)
     assembly_ids = list(assemblies.values_list("pk", flat=True))
     specs = _relationship_specs(assembly_ids)
-
-    tithes, superseded_tithes = _authoritative_tithes(
-        assembly_ids,
-        from_date,
-        to_date,
-        result=result,
-    )
-
+    tithes, superseded_tithes = _authoritative_tithes(assembly_ids, from_date, to_date)
     legacy_monthly, superseded_legacy = _authoritative_legacy_monthly(
-        assembly_ids,
-        from_date,
-        to_date,
-        result=result,
+        assembly_ids, from_date, to_date
     )
     specs.append((tithes, "assembly", "timestamp"))
     specs.extend([
@@ -555,41 +260,9 @@ def backfill_report_relationships(*, apply=False, assembly=None, from_date=None,
     for rows, assembly_field, date_field in specs:
         iterable = rows.iterator() if hasattr(rows, "iterator") else iter(rows)
         for row in iterable:
-
-            if isinstance(row, Expenditure):
-                original_value = row.timestamp or row.invoice_date
-            else:
-                original_value = getattr(row, date_field)
-
-            if original_value is None:
+            value = (row.timestamp or row.invoice_date) if isinstance(row, Expenditure) else getattr(row, date_field)
+            if value is None or not in_range(value, from_date, to_date):
                 continue
-
-            value, date_status, date_reason = resolve_historical_date(
-                row,
-                original_value,
-            )
-
-            if value is None:
-                kind = "skipped" if date_status == "skipped" else "conflicts"
-                result.add(
-                    f"HISTORICAL DATE {date_status.upper()} "
-                    f"{row._meta.label} #{row.pk}: "
-                    f"{original_value} | {date_reason}",
-                    kind=kind,
-                )
-                continue
-
-            if date_status == "corrected":
-                result.add(
-                    f"NORMALIZE DATE {row._meta.label} #{row.pk}: "
-                    f"{original_value} -> {value}",
-                    kind="updated",
-                )
-
-            if not in_range(value, from_date, to_date):
-                continue
-
-
             if row._meta.model_name == "sundayschoolattendance" and value < SUNDAY_SCHOOL_START_DATE:
                 result.add(
                     f"PRE-LAUNCH SUNDAY SCHOOL #{row.pk} {value}: manual review required",
@@ -625,12 +298,7 @@ def backfill_report_relationships(*, apply=False, assembly=None, from_date=None,
                             checksum=checksum, mapping_version=RELATIONSHIP_MAPPING_VERSION,
                             status=HistoricalMigrationLineage.Status.MIGRATED,
                             target=report,
-                            details={
-                                "previous_report_id": row.report_id,
-                                "original_date": original_value.isoformat(),
-                                "effective_date": value.isoformat(),
-                                "date_normalized": original_value != value,
-                            },
+                            details={"previous_report_id": row.report_id},
                         )
                 result.affected_report_ids.add(report.pk)
             result.add(
@@ -642,36 +310,11 @@ def backfill_report_relationships(*, apply=False, assembly=None, from_date=None,
     return result
 
 
-def _group_monthly(rows, assembly_attr, result=None):
+def _group_monthly(rows, assembly_attr):
     groups = defaultdict(list)
-
     for row in rows:
-        value, status, reason = resolve_historical_date(
-            row,
-            row.timestamp,
-        )
-
-        if value is None:
-            if result is not None:
-                kind = "skipped" if status == "skipped" else "conflicts"
-                result.add(
-                    f"HISTORICAL DATE {status.upper()} "
-                    f"{row._meta.label} #{row.pk}: "
-                    f"{row.timestamp} | {reason}",
-                    kind=kind,
-                )
-            continue
-
         assembly_id = getattr(row, assembly_attr)
-
-        groups[
-            (
-                assembly_id,
-                value.year,
-                value.month,
-            )
-        ].append(row)
-
+        groups[(assembly_id, row.timestamp.year, row.timestamp.month)].append(row)
     return groups
 
 
@@ -765,41 +408,18 @@ def _migrate_component(
 
 def _authoritative_tithe_total(assembly_id, year, month):
     rows, _ = _authoritative_tithes([assembly_id])
-
-    total = Decimal("0.00")
-
-    for row in rows:
-        value, status, _reason = resolve_historical_date(
-            row,
-            row.timestamp,
-        )
-
-        if value is None:
-            continue
-
-        if value.year == year and value.month == month:
-            total += row.amount
-
-    return total
+    return sum(
+        (row.amount for row in rows if row.timestamp.year == year and row.timestamp.month == month),
+        Decimal("0.00"),
+    )
 
 
-def _migrate_remittance(
-    result,
-    fixed,
-    report,
-    mapping_version,
-    apply,
-    effective_date,
-):
+def _migrate_remittance(result, fixed, report, mapping_version, apply):
     from apps.bookkeeper.models import RemittanceObligation, RemittancePayment
     from apps.reports.models import HistoricalMigrationLineage
 
     component = "remittance_obligation"
-    tithe_total = _authoritative_tithe_total(
-        fixed.assembly_id,
-        effective_date.year,
-        effective_date.month,
-    )
+    tithe_total = _authoritative_tithe_total(fixed.assembly_id, fixed.timestamp.year, fixed.timestamp.month)
     rate = Decimal(REMITTANCE_RATE)
     amount_due = (tithe_total * rate).quantize(Decimal("0.01"))
     checksum = stable_checksum({
@@ -869,7 +489,7 @@ def _migrate_remittance(
         obligation=obligation,
         report=report,
         amount_paid=fixed.remittance,
-        payment_date=effective_date,
+        payment_date=fixed.timestamp,
         receipt=fixed.remittance_receipt.name,
         status=RemittancePayment.Status.VERIFIED if verified else RemittancePayment.Status.PENDING,
         submitted_by=fixed.created_by,
@@ -905,79 +525,15 @@ def backfill_finance_models(
     result = MigrationResult(dry_run=not apply)
     manifest = load_mapping_manifest()
     metadata = mapping_metadata()
-
-    mapping_fingerprint = stable_checksum({
-        "finance_mapping_version": metadata["version"],
-        "finance_mapping_checksum": metadata["checksum"],
-        "date_mapping_version": HISTORICAL_DATE_MAPPING_VERSION,
-    })
-
-    mapping_version = (
-        f"{metadata['version']}:"
-        f"{mapping_fingerprint[:32]}"
-    )
-
-    assert len(mapping_version) <= 100
-
+    mapping_version = f"{metadata['version']}:{metadata['checksum']}"
     assembly_ids = list(filtered_assemblies(assembly).values_list("pk", flat=True))
-
-
-    raw_income_rows = list(
-        Income.objects.filter(
-            church_id__in=assembly_ids
-        ).exclude(timestamp=None)
-    )
-
-    raw_fixed_rows = list(
-        FixedExpenditure.objects.filter(
-            assembly_id__in=assembly_ids
-        )
-    )
-
-
-    def finance_rows_in_scope(rows):
-        scoped = []
-
-        for row in rows:
-            effective_date, status, reason = resolve_historical_date(
-                row,
-                row.timestamp,
-            )
-
-            if effective_date is None:
-                kind = "skipped" if status == "skipped" else "conflicts"
-                result.add(
-                    f"HISTORICAL DATE {status.upper()} "
-                    f"{row._meta.label} #{row.pk}: "
-                    f"{row.timestamp} | {reason}",
-                    kind=kind,
-                )
-                continue
-
-            if not in_range(
-                effective_date,
-                from_date,
-                to_date,
-            ):
-                continue
-
-            scoped.append((row, effective_date))
-
-        return scoped
-
-
-    income_scoped = finance_rows_in_scope(raw_income_rows)
-    fixed_scoped = finance_rows_in_scope(raw_fixed_rows)
-
-    post_cutoff = [
-        (row, effective_date)
-        for row, effective_date in [
-            *income_scoped,
-            *fixed_scoped,
-        ]
-        if effective_date >= NEW_FINANCE_START
+    income_rows = list(Income.objects.filter(church_id__in=assembly_ids).exclude(timestamp=None))
+    fixed_rows = list(FixedExpenditure.objects.filter(assembly_id__in=assembly_ids))
+    rows_in_scope = [
+        row for row in [*income_rows, *fixed_rows]
+        if in_range(row.timestamp, from_date, to_date)
     ]
-
+    post_cutoff = [row for row in rows_in_scope if row.timestamp >= NEW_FINANCE_START]
     if post_cutoff and not allow_post_cutoff:
         raise ValidationError({
             "cutoff": (
@@ -985,85 +541,27 @@ def backfill_finance_models(
                 f"{NEW_FINANCE_START}; use --allow-post-cutoff only after manual approval."
             )
         })
-
-    income_rows = [
-        row
-        for row, _effective_date in income_scoped
-    ]
-
-    fixed_rows = [
-        row
-        for row, _effective_date in fixed_scoped
-    ]
-
+    income_rows = [row for row in income_rows if in_range(row.timestamp, from_date, to_date)]
+    fixed_rows = [row for row in fixed_rows if in_range(row.timestamp, from_date, to_date)]
 
     groups = []
     for label, source_rows, assembly_attr in (
         ("Income", income_rows, "church_id"),
         ("FixedExpenditure", fixed_rows, "assembly_id"),
     ):
-        for key, candidates in _group_monthly(
-            source_rows,
-            assembly_attr,
-            result=result,
-        ).items():
+        for key, candidates in _group_monthly(source_rows, assembly_attr).items():
             winner, older = latest_wins(candidates)
             groups.append((label, key, winner, older))
 
-
-    for label, _key, winner, older in sorted(
-        groups,
-        key=lambda item: (item[1], item[0]),
-    ):
+    for label, _key, winner, older in sorted(groups, key=lambda item: (item[1], item[0])):
         if older:
-            result.add(
-                _format_duplicate(
-                    label,
-                    winner,
-                    older,
-                )
-            )
-
-        effective_date, date_status, date_reason = resolve_historical_date(
-            winner,
-            winner.timestamp,
-        )
-
-        if effective_date is None:
-            kind = "skipped" if date_status == "skipped" else "conflicts"
-            result.add(
-                f"HISTORICAL DATE {date_status.upper()} "
-                f"{label} #{winner.pk}: "
-                f"{winner.timestamp} | {date_reason}",
-                kind=kind,
-            )
-            continue
-
-        if date_status == "corrected":
-            result.add(
-                f"NORMALIZE FINANCE DATE {label} #{winner.pk}: "
-                f"{winner.timestamp} -> {effective_date}",
-                kind="updated",
-            )
-
+            result.add(_format_duplicate(label, winner, older))
         try:
-            assembly_obj = (
-                winner.church
-                if label == "Income"
-                else winner.assembly
-            )
-            report = canonical_report_for(
-                assembly_obj,
-                effective_date,
-            )
+            assembly_obj = winner.church if label == "Income" else winner.assembly
+            report = canonical_report_for(assembly_obj, winner.timestamp)
         except ValidationError as exc:
-            result.add(
-                f"FINANCE REPORT CONFLICT {label} #{winner.pk}: {exc}",
-                kind="conflicts",
-            )
+            result.add(f"FINANCE REPORT CONFLICT {label} #{winner.pk}: {exc}", kind="conflicts")
             continue
-
-
         if is_protected_report(report):
             result.add(f"PROTECTED REPORT #{report.pk}: skip {label} #{winner.pk}", kind="conflicts")
             continue
@@ -1085,7 +583,7 @@ def backfill_finance_models(
                         target_lookup={"report": report, "category": category},
                         target_values={
                             "assembly_id": winner.church_id, "report": report,
-                            "category": category, "amount": amount, "timestamp": effective_date,
+                            "category": category, "amount": amount, "timestamp": winner.timestamp,
                             "notes": winner.notes, "statement": winner.statement.name if winner.statement else "",
                         },
                         apply=apply,
@@ -1107,18 +605,11 @@ def backfill_finance_models(
                         target_values={
                             "assembly_id": winner.assembly_id, "report": report,
                             "overhead_type": overhead_type, "amount": amount,
-                            "timestamp": effective_date, "notes": winner.remarks,
+                            "timestamp": winner.timestamp, "notes": winner.remarks,
                         },
                         apply=apply,
                     )
-                _migrate_remittance(
-                    result,
-                    winner,
-                    report,
-                    mapping_version,
-                    apply,
-                    effective_date,
-                )
+                _migrate_remittance(result, winner, report, mapping_version, apply)
         if apply:
             _recalculate_reports({report.pk})
     return result
@@ -1131,58 +622,14 @@ def backfill_attendance_headcounts(*, apply=False, assembly=None, from_date=None
     result = MigrationResult(dry_run=not apply)
     assembly_ids = list(filtered_assemblies(assembly).values_list("pk", flat=True))
     queryset = Attendance.objects.filter(assembly_id__in=assembly_ids, is_deleted=False)
-
-
-    for row in queryset.order_by(
-        "assembly_id",
-        "timestamp",
-        "id",
-    ):
-        original_date = row.timestamp
-
-        effective_date, date_status, date_reason = resolve_historical_date(
-            row,
-            original_date,
-        )
-
-        if effective_date is None:
-            kind = "skipped" if date_status == "skipped" else "conflicts"
-            result.add(
-                f"HISTORICAL DATE {date_status.upper()} "
-                f"Attendance #{row.pk}: "
-                f"{original_date} | {date_reason}",
-                kind=kind,
-            )
+    for row in queryset.order_by("assembly_id", "timestamp", "id"):
+        if not in_range(row.timestamp, from_date, to_date):
             continue
-
-        if date_status == "corrected":
-            result.add(
-                f"NORMALIZE ATTENDANCE DATE #{row.pk}: "
-                f"{original_date} -> {effective_date}",
-                kind="updated",
-            )
-
-        if not in_range(
-            effective_date,
-            from_date,
-            to_date,
-        ):
-            continue
-
         try:
-            report = canonical_report_for(
-                row.assembly,
-                effective_date,
-            )
+            report = canonical_report_for(row.assembly, row.timestamp)
         except ValidationError as exc:
-            result.add(
-                f"ATTENDANCE REPORT CONFLICT #{row.pk}: {exc}",
-                kind="conflicts",
-            )
+            result.add(f"ATTENDANCE REPORT CONFLICT #{row.pk}: {exc}", kind="conflicts")
             continue
-
-
-
         if is_protected_report(report) or (row.report and is_protected_report(row.report)):
             result.add(f"PROTECTED REPORT: skip Attendance #{row.pk}", kind="conflicts")
             continue
@@ -1227,9 +674,6 @@ def backfill_attendance_headcounts(*, apply=False, assembly=None, from_date=None
                         "formula": "adults + legacy children + online_viewers",
                         "visitors_excluded": True,
                         "gender_breakdown": "not_collected",
-                        "original_date": original_date.isoformat(),
-                        "effective_date": effective_date.isoformat(),
-                        "date_normalized": original_date != effective_date,
                     },
                 )
             result.affected_report_ids.add(report.pk)
