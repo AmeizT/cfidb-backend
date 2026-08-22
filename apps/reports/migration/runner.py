@@ -906,16 +906,10 @@ def backfill_finance_models(
     manifest = load_mapping_manifest()
     metadata = mapping_metadata()
 
-    mapping_fingerprint = stable_checksum({
-        "finance_mapping_version": metadata["version"],
-        "finance_mapping_checksum": metadata["checksum"],
-        "date_mapping_version": HISTORICAL_DATE_MAPPING_VERSION,
-    })
-
-    mapping_version = (
-        f"{metadata['version']}:"
-        f"{mapping_fingerprint[:32]}"
-    )
+    # Keep the lineage key identical to the verifier's canonical manifest key.
+    # A date-normalization fingerprint here made every migrated component look
+    # unevaluated during reconciliation despite a successful migration.
+    mapping_version = f"{metadata['version']}:{metadata['checksum']}"
 
     assert len(mapping_version) <= 100
 

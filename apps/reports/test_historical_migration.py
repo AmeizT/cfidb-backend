@@ -4,7 +4,8 @@ from io import StringIO
 import os
 from unittest.mock import patch
 
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
+from django.core.management.base import CommandError
 from django.core.management import call_command
 from django.db import connection
 from django.test import TestCase
@@ -17,6 +18,7 @@ from apps.bookkeeper.models import (
     RemittanceObligation,
     RemittancePayment,
     Revenue,
+    RevenueCategory,
     Tithe,
 )
 from apps.churches.models import Church
@@ -27,7 +29,10 @@ from apps.reports.migration.runner import (
     backfill_report_relationships,
     latest_wins,
 )
-from apps.reports.migration.core import assert_local_or_explicitly_authorized
+from apps.reports.migration.core import (
+    assert_local_or_explicitly_authorized,
+    load_mapping_manifest,
+)
 from apps.reports.migration.verification import verify_historical_migration
 from apps.reports.models import (
     AssemblyReport,
@@ -364,13 +369,63 @@ class CommandSafetyTests(HistoricalMigrationBase):
             HistoricalMigrationLineage.objects.count(),
         ))
 
-    def test_neon_is_rejected_without_explicit_rehearsal_authorization(self):
+    def test_rehearsal_neon_requires_rehearsal_authorization(self):
         with patch.dict(
             connection.settings_dict,
-            {"HOST": "ep-example.neon.tech", "NAME": "production"},
-        ), patch.dict(os.environ, {}, clear=False):
+            {
+                "HOST": "ep-example.neon.tech",
+                "NAME": "rehearsal",
+                "ENGINE": "django.db.backends.postgresql",
+            },
+        ), patch.dict(os.environ, {"DJANGO_ENV": "REHEARSAL"}, clear=False):
             os.environ.pop("CFI_MIGRATION_REHEARSAL", None)
-            with self.assertRaises(ImproperlyConfigured):
+            with self.assertRaises(CommandError):
+                assert_local_or_explicitly_authorized(apply=False)
+
+    def test_production_neon_dry_run_is_allowed(self):
+        with patch.dict(
+            connection.settings_dict,
+            {
+                "HOST": "ep-example.neon.tech",
+                "NAME": "production",
+                "ENGINE": "django.db.backends.postgresql",
+            },
+        ), patch.dict(os.environ, {"DJANGO_ENV": "PRODUCTION"}, clear=False):
+            os.environ.pop("CFI_MIGRATION_REHEARSAL", None)
+            os.environ.pop("CFI_ALLOW_HISTORICAL_MIGRATION", None)
+            assert_local_or_explicitly_authorized(apply=False)
+
+    def test_production_neon_write_requires_write_authorization(self):
+        with patch.dict(
+            connection.settings_dict,
+            {
+                "HOST": "ep-example.neon.tech",
+                "NAME": "production",
+                "ENGINE": "django.db.backends.postgresql",
+            },
+        ), patch.dict(os.environ, {"DJANGO_ENV": "PRODUCTION"}, clear=False):
+            os.environ.pop("CFI_MIGRATION_REHEARSAL", None)
+            os.environ.pop("CFI_ALLOW_HISTORICAL_MIGRATION", None)
+            with self.assertRaises(CommandError):
+                assert_local_or_explicitly_authorized(apply=True)
+
+    def test_production_neon_rehearsal_flag_is_blocked(self):
+        with patch.dict(
+            connection.settings_dict,
+            {
+                "HOST": "ep-example.neon.tech",
+                "NAME": "production",
+                "ENGINE": "django.db.backends.postgresql",
+            },
+        ), patch.dict(
+            os.environ,
+            {
+                "DJANGO_ENV": "PRODUCTION",
+                "CFI_MIGRATION_REHEARSAL": "1",
+            },
+            clear=False,
+        ):
+            with self.assertRaises(CommandError):
                 assert_local_or_explicitly_authorized(apply=False)
 
     def _make_source(self):
@@ -382,6 +437,12 @@ class CommandSafetyTests(HistoricalMigrationBase):
 
     def test_completed_sequence_reconciles_without_blockers(self):
         self.report()
+        for mapping in load_mapping_manifest()["income_to_revenue"]:
+            RevenueCategory.objects.get_or_create(
+                assembly=None,
+                is_standard=True,
+                name=mapping["target_category"],
+            )
         Income.objects.create(
             church=self.assembly,
             timestamp=date(2026, 7, 31),
@@ -395,9 +456,33 @@ class CommandSafetyTests(HistoricalMigrationBase):
             guest_attendance=3,
             online_viewers=1,
         )
-        backfill_report_relationships(apply=True, assembly=self.assembly.pk)
-        backfill_attendance_headcounts(apply=True, assembly=self.assembly.pk)
-        backfill_finance_models(apply=True, assembly=self.assembly.pk)
+        relationship_result = backfill_report_relationships(
+            apply=True,
+            assembly=self.assembly.pk,
+        )
+        self.assertEqual(
+            relationship_result.conflicts,
+            0,
+            relationship_result.payload(),
+        )
+        attendance_result = backfill_attendance_headcounts(
+            apply=True,
+            assembly=self.assembly.pk,
+        )
+        self.assertEqual(
+            attendance_result.conflicts,
+            0,
+            attendance_result.payload(),
+        )
+        finance_result = backfill_finance_models(
+            apply=True,
+            assembly=self.assembly.pk,
+        )
+        self.assertEqual(
+            finance_result.conflicts,
+            0,
+            finance_result.payload(),
+        )
         verification = verify_historical_migration(assembly=self.assembly.pk)
         self.assertFalse(verification.blocked, verification.payload())
 

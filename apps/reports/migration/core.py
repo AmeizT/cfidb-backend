@@ -4,12 +4,13 @@ import hashlib
 import json
 import os
 import uuid
+
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
+from django.core.management.base import CommandError
 from django.db import connection
 from django.db.models import Q
 
@@ -82,36 +83,68 @@ def parse_date(value, option_name):
         raise ValidationError({option_name: "Use YYYY-MM-DD."}) from exc
 
 
+
 def filtered_assemblies(selector=None):
     from apps.churches.models import Church
 
     queryset = Church.objects.all().order_by("pk")
-    if not selector:
+
+    if selector is None or str(selector).strip() == "":
         return queryset
-    query = Q(code__iexact=selector)
-    if str(selector).isdigit():
-        query |= Q(pk=int(selector))
+
+    selector_value = str(selector).strip()
+
+    query = (
+        Q(code__iexact=selector_value)
+        | Q(name__iexact=selector_value)
+    )
+
+    if selector_value.isdigit():
+        query |= Q(pk=int(selector_value))
+
     matches = queryset.filter(query)
+
     if not matches.exists():
-        raise ValidationError({"assembly": f"No assembly matches {selector!r}."})
+        raise ValidationError({
+            "assembly": f"No assembly matches {selector_value!r}."
+        })
+
     return matches
 
 
 def assert_local_or_explicitly_authorized(*, apply=False):
-    """Hard-stop accidental Phase 2 production/Neon writes."""
+    """Hard-stop accidental historical migration writes."""
+
     config = connection.settings_dict
     host = str(config.get("HOST") or "").casefold()
     name = str(config.get("NAME") or "").casefold()
     engine = str(config.get("ENGINE") or "").casefold()
+
     is_neon = "neon" in host or "neon" in name
-    if is_neon and os.environ.get("CFI_MIGRATION_REHEARSAL") != "1":
-        raise ImproperlyConfigured(
-            "Neon access is disabled for historical migration commands unless "
-            "CFI_MIGRATION_REHEARSAL=1 is explicitly set on an approved rehearsal branch."
-        )
-    if apply and "sqlite" not in engine and os.environ.get("CFI_ALLOW_HISTORICAL_MIGRATION") != "1":
-        raise ImproperlyConfigured(
-            "Writes to a non-local database require CFI_ALLOW_HISTORICAL_MIGRATION=1."
+
+    django_env = os.environ.get("DJANGO_ENV", "").upper()
+    is_rehearsal = os.environ.get("CFI_MIGRATION_REHEARSAL") == "1"
+    allow_historical_writes = (
+        os.environ.get("CFI_ALLOW_HISTORICAL_MIGRATION") == "1"
+    )
+
+    if is_neon:
+        if django_env == "PRODUCTION":
+            if is_rehearsal:
+                raise CommandError(
+                    "CFI_MIGRATION_REHEARSAL=1 must not be used while "
+                    "DJANGO_ENV=PRODUCTION."
+                )
+        elif not is_rehearsal:
+            raise CommandError(
+                "Neon rehearsal access requires "
+                "CFI_MIGRATION_REHEARSAL=1."
+            )
+
+    if apply and "sqlite" not in engine and not allow_historical_writes:
+        raise CommandError(
+            "Writes to a non-local database require "
+            "CFI_ALLOW_HISTORICAL_MIGRATION=1."
         )
 
 
