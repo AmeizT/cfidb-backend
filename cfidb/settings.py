@@ -49,6 +49,9 @@ else:
         "https://www.cfidb.com",
         "https://blog.cfi.church",
         "https://api.cfi.church",
+
+        # Vercel frontend
+        "https://cfi-db-dvku.vercel.app",
     ]
 
     CSRF_TRUSTED_ORIGINS = [
@@ -56,6 +59,9 @@ else:
         "https://www.cfidb.com",
         "https://blog.cfi.church",
         "https://api.cfi.church",
+
+        # Vercel frontend
+        "https://cfi-db-dvku.vercel.app",
     ]
 
     SESSION_COOKIE_SAMESITE = "None"
