@@ -51,6 +51,7 @@ else:
         "https://api.cfi.church",
 
         # Vercel frontend
+        'http://localhost:3000',
         "https://cfi-db-dvku.vercel.app",
     ]
 
@@ -61,6 +62,7 @@ else:
         "https://api.cfi.church",
 
         # Vercel frontend
+        'http://localhost:3000',
         "https://cfi-db-dvku.vercel.app",
     ]
 
