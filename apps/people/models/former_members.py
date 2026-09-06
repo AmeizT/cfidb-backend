@@ -78,6 +78,7 @@ class HouseholdQuerySet(models.QuerySet):
                 "household_memberships",
                 filter=Q(
                     household_memberships__left_on__isnull=True,
+                    household_memberships__member__is_trash=False,
                 ),
                 distinct=True,
             ),
@@ -85,6 +86,7 @@ class HouseholdQuerySet(models.QuerySet):
                 "household_memberships",
                 filter=Q(
                     household_memberships__left_on__isnull=True,
+                    household_memberships__member__is_trash=False,
                     household_memberships__role__in=[
                         HouseholdRole.HEAD,
                         HouseholdRole.SPOUSE,
@@ -98,6 +100,7 @@ class HouseholdQuerySet(models.QuerySet):
                 "household_memberships",
                 filter=Q(
                     household_memberships__left_on__isnull=True,
+                    household_memberships__member__is_trash=False,
                     household_memberships__role__in=[
                         HouseholdRole.CHILD,
                         HouseholdRole.DEPENDENT,
@@ -260,6 +263,7 @@ class Household(models.Model):
                     membership
                     for membership in prefetched["household_memberships"]
                     if membership.left_on is None
+                    and not membership.member.is_trash
                     and membership.is_primary_contact
                 ),
                 None,
@@ -269,6 +273,7 @@ class Household(models.Model):
             self.household_memberships.filter(
                 left_on__isnull=True,
                 is_primary_contact=True,
+                member__is_trash=False,
             )
             .select_related("member")
             .first()
@@ -288,6 +293,7 @@ class Household(models.Model):
 
         return self.household_memberships.filter(
             left_on__isnull=True,
+            member__is_trash=False,
         ).count()
 
     def add_member(

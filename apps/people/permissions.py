@@ -6,6 +6,32 @@ class IsAdminOrOverseer(permissions.BasePermission):
         return request.user.is_overseer
 
 
+class CanManageMembers(permissions.BasePermission):
+    """Allow authenticated creation; keep existing roles for other member writes."""
+
+    def has_permission(self, request, view):
+        user = request.user
+        if not user or not getattr(user, "is_authenticated", False):
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        if getattr(view, "action", None) == "create":
+            return True
+        return bool(
+            getattr(user, "is_superuser", False)
+            or getattr(user, "is_admin", False)
+            or getattr(user, "is_staff", False)
+            or getattr(user, "is_db_staff", False)
+            or getattr(user, "is_region_staff", False)
+            or getattr(user, "is_db_zone_staff", False)
+        )
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return can_access_assembly(request.user, obj.assembly)
+
+
 def is_global_transfer_admin(user):
     if not user or not getattr(user, "is_authenticated", False):
         return False

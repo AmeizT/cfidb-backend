@@ -1,6 +1,9 @@
 from django.db import transaction # type: ignore
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.shortcuts import get_object_or_404
 from apps.reports.models import AuditLog
 
 
@@ -10,6 +13,29 @@ class SoftDeleteMixin:
 
     def get_restore_description(self, instance):
         return f"{instance} restored"
+
+    def _assert_report_editable(self, instance):
+        report = getattr(instance, "report", None)
+        if report is None:
+            return
+        from apps.reports.services.lifecycle import get_report_state
+
+        if not get_report_state(report, self.request.user).is_editable:  # type: ignore
+            raise PermissionDenied("This report is locked for editing.")
+
+    def _all_objects_queryset(self):
+        model = self.queryset.model  # type: ignore
+        manager = getattr(model, "all_objects", model._base_manager)
+        queryset = manager.all()
+        user = self.request.user  # type: ignore
+        if getattr(user, "is_admin", False) or getattr(user, "is_superuser", False):
+            return queryset
+        if getattr(user, "is_region_staff", False):
+            return queryset.filter(assembly__zone__region__in=user.assigned_regions.all()).distinct()
+        if getattr(user, "is_db_zone_staff", False):
+            return queryset.filter(assembly__zone__in=user.assigned_zones.all()).distinct()
+        assembly = getattr(user, "church", None)
+        return queryset.filter(assembly=assembly) if assembly else queryset.none()
 
     def perform_destroy(self, instance):
         if not hasattr(instance, "is_deleted"):
@@ -21,10 +47,18 @@ class SoftDeleteMixin:
             return
 
         with transaction.atomic():
+            self._assert_report_editable(instance)
             old_data = getattr(instance, "_capture_old_data", lambda: None)()
-
+            instance.__class__.all_objects.filter(pk=instance.pk, is_deleted=False).update(
+                is_deleted=True
+            )
             instance.is_deleted = True
-            instance.save(update_fields=["is_deleted"])
+
+            report = getattr(instance, "report", None)
+            if report is not None:
+                from django.core.cache import cache
+                report.recalculate_attendance_totals()
+                cache.delete(f"report_cashflow_{report.pk}")
 
             instance.log_audit(
                 user=self.request.user,  # type: ignore
@@ -36,7 +70,7 @@ class SoftDeleteMixin:
 
     @action(detail=True, methods=["post"])
     def restore(self, request, pk=None):
-        instance = self.get_object()  # type: ignore
+        instance = get_object_or_404(self._all_objects_queryset(), pk=pk, is_deleted=True)
 
         if not hasattr(instance, "is_deleted"):
             raise AttributeError(
@@ -50,10 +84,18 @@ class SoftDeleteMixin:
             )
 
         with transaction.atomic():
+            self._assert_report_editable(instance)
             old_data = getattr(instance, "_capture_old_data", lambda: None)()
-
+            instance.__class__.all_objects.filter(pk=instance.pk, is_deleted=True).update(
+                is_deleted=False
+            )
             instance.is_deleted = False
-            instance.save(update_fields=["is_deleted"])
+
+            report = getattr(instance, "report", None)
+            if report is not None:
+                from django.core.cache import cache
+                report.recalculate_attendance_totals()
+                cache.delete(f"report_cashflow_{report.pk}")
 
             instance.log_audit(
                 user=request.user,
@@ -75,18 +117,31 @@ class SoftDeleteMixin:
                 status=400,
             )
 
-        instances = self.get_queryset().filter( # type: ignore
+        instances = list(self.get_queryset().filter( # type: ignore
             id__in=ids,
             is_deleted=False,
-        )
+        ))
 
-        with transaction.atomic():
-            for instance in instances:
-                self.perform_destroy(instance)
+        deleted_ids = []
+        errors = {}
+        instances_by_id = {instance.pk: instance for instance in instances}
+        for record_id in ids:
+            instance = instances_by_id.get(record_id)
+            if instance is None:
+                errors[str(record_id)] = "Record was not found or is already deleted."
+                continue
+            try:
+                with transaction.atomic():
+                    self.perform_destroy(instance)
+                deleted_ids.append(record_id)
+            except (DjangoValidationError, PermissionDenied) as exc:
+                errors[str(record_id)] = str(exc)
 
-        return Response(
-            {"detail": f"{instances.count()} deleted"}
-        )
+        return Response({
+            "count": len(deleted_ids),
+            "deleted_ids": deleted_ids,
+            "errors": errors,
+        }, status=200 if deleted_ids else 400)
 
     @action(detail=False, methods=["post"])
     def bulk_restore(self, request):
@@ -98,18 +153,31 @@ class SoftDeleteMixin:
                 status=400,
             )
 
-        instances = self.get_queryset().filter( # type: ignore
+        instances = list(self._all_objects_queryset().filter(
             id__in=ids,
             is_deleted=True,
-        )
+        ))
 
         with transaction.atomic():
             for instance in instances:
+                self._assert_report_editable(instance)
+                old_data = getattr(instance, "_capture_old_data", lambda: None)()
+                instance.__class__.all_objects.filter(pk=instance.pk).update(is_deleted=False)
                 instance.is_deleted = False
-                instance.save(update_fields=["is_deleted"])
+                report = getattr(instance, "report", None)
+                if report is not None:
+                    from django.core.cache import cache
+                    report.recalculate_attendance_totals()
+                    cache.delete(f"report_cashflow_{report.pk}")
+                instance.log_audit(
+                    user=request.user,
+                    action=AuditLog.Action.RESTORE,
+                    old_data=old_data,
+                    description=self.get_restore_description(instance),
+                )
 
         return Response(
-            {"detail": f"{instances.count()} restored"}
+            {"count": len(instances), "restored_ids": [instance.pk for instance in instances]}
         )
 
 
@@ -117,11 +185,7 @@ class SoftDeleteMixin:
 class SoftDeleteQueryMixin:
     def get_queryset(self):
         queryset = super().get_queryset() # type: ignore
-
-        if "is_deleted" not in self.request.query_params: # type: ignore
-            queryset = queryset.filter(is_deleted=False)
-
-        return queryset
+        return queryset.filter(is_deleted=False)
 
 
 from django.db import models

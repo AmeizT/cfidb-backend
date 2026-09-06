@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.db import models
-from django.utils import timezone
 from apps.people.models import Member
 from apps.bookkeeper.models import FinancialBase
 from apps.bookkeeper.utils import tithe_receipt_path
@@ -13,14 +12,6 @@ class PaymentMethod(models.TextChoices):
     CHEQUE = 'Cheque', 'Cheque'
     PBP = 'Mobile Money', 'Mobile Money'
     OTHER = 'Other', 'Other'
-
-
-class TitheManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_trash=False)
-
-    def trashed(self):
-        return super().get_queryset().filter(is_trash=True)
 
 
 class Tithe(AuditLogMixin, FinancialBase):
@@ -50,12 +41,6 @@ class Tithe(AuditLogMixin, FinancialBase):
         blank=True,
     )
     reference_code = models.CharField(max_length=100, blank=True)
-    is_trash = models.BooleanField(default=False)
-    trash_date = models.DateTimeField(null=True, blank=True)
-
-    objects = TitheManager()
-    all_objects = models.Manager()
-
     class Meta: # type: ignore
         verbose_name = "Tithe"
         verbose_name_plural = "Tithes"
@@ -63,6 +48,7 @@ class Tithe(AuditLogMixin, FinancialBase):
         constraints = [
             models.UniqueConstraint(
                 fields=["report", "member"],
+                condition=models.Q(is_trash=False),
                 name="unique_report_member_tithe"
             )
         ]
@@ -70,17 +56,6 @@ class Tithe(AuditLogMixin, FinancialBase):
     def __str__(self):
         member_name = self.member.full_name if self.member else "Anonymous"
         return f"{member_name}, {self.timestamp} - {self.assembly.name}"
-
-    # --- Soft delete ---
-    def delete(self, using=None, keep_parents=False): # type: ignore
-        self.is_trash = True
-        self.trash_date = timezone.now()
-        self.save()
-
-    def restore(self):
-        self.is_trash = False
-        self.trash_date = None
-        self.save()
 
     def save(self, *args, **kwargs):
         is_create = not self.pk

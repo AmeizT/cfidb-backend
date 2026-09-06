@@ -51,7 +51,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True,
         unique=True,
-        help_text="Used for account recovery or alternative communication."
+        verbose_name="Recovery Email",
+        help_text="Personal email used for password recovery and account security notifications.",
     )
     church = models.ForeignKey(
         related_name='church', 
@@ -139,6 +140,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     ACADEMY_STUDENT_ROLES = {
         'Student',
     }
+
+    @property
+    def security_email(self):
+        """
+        Address used for password recovery and security notifications.
+
+        Prefer the user's recovery email. Fall back to their CFI email
+        if no recovery email has been configured.
+        """
+        return self.recovery_email or self.email
     
     @property
     def is_student(self):

@@ -102,6 +102,7 @@ class Revenue(AuditLogMixin, FinancialBase):
         constraints = [
             models.UniqueConstraint(
                 fields=["report", "category"],
+                condition=models.Q(is_trash=False),
                 name="unique_report_category"
             )
         ]

@@ -28,6 +28,19 @@ class MembershipStage(models.TextChoices):
     ESTABLISHED = "established", "Established"
     ASSOCIATE = "associate", "Associate"
 
+
+class ActiveMemberQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_trash=False)
+
+    def trashed(self):
+        return self.filter(is_trash=True)
+
+
+class ActiveMemberManager(models.Manager.from_queryset(ActiveMemberQuerySet)):
+    def get_queryset(self):
+        return super().get_queryset().active()
+
 class Ministry(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -204,10 +217,13 @@ class Member(models.Model):
     notes = models.TextField(blank=True) 
     pin_set = models.BooleanField(default=False)
     access_pin = models.CharField(max_length=128, blank=True)
-    is_trash = models.BooleanField(default=False)
+    is_trash = models.BooleanField(default=False, db_index=True)
     trash_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = ActiveMemberManager()
+    all_objects = models.Manager()
 
     class Meta:
         ordering = ["-created_at"]
@@ -222,9 +238,12 @@ class Member(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=['first_name', 'last_name', 'date_of_birth', 'phone_number'],
+                condition=models.Q(is_trash=False),
                 name='unique_member_keyentity'
             )
         ]
+        default_manager_name = "objects"
+        base_manager_name = "all_objects"
 
     @property
     def full_name(self):
@@ -291,6 +310,38 @@ class Member(models.Model):
         if not self.member_key:
             self.member_key = generate()
         super(Member, self).save(*args, **kwargs)
+
+    def soft_delete(self, user=None):
+        if self.is_trash:
+            return False
+        deleted_at = timezone.now()
+        self.__class__.all_objects.filter(pk=self.pk, is_trash=False).update(
+            is_trash=True,
+            trash_date=deleted_at,
+            updated_by=user if getattr(user, "is_authenticated", False) else None,
+            updated_at=deleted_at,
+        )
+        self.is_trash = True
+        self.trash_date = deleted_at
+        if getattr(user, "is_authenticated", False):
+            self.updated_by = user
+        return True
+
+    def restore(self, user=None):
+        if not self.is_trash:
+            return False
+        restored_at = timezone.now()
+        self.__class__.all_objects.filter(pk=self.pk, is_trash=True).update(
+            is_trash=False,
+            trash_date=None,
+            updated_by=user if getattr(user, "is_authenticated", False) else None,
+            updated_at=restored_at,
+        )
+        self.is_trash = False
+        self.trash_date = None
+        if getattr(user, "is_authenticated", False):
+            self.updated_by = user
+        return True
 
 
     @property

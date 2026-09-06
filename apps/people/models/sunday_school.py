@@ -7,6 +7,7 @@ from django.utils import timezone
 from apps.people.choices.services import SundaySchoolClassChoices
 from apps.reports.mixins import AuditLogMixin
 from apps.people.constants import SUNDAY_SCHOOL_START_DATE
+from apps.shared.mixins.soft_delete import SoftDeleteManager
 
 
 class SundaySchoolAttendance(AuditLogMixin, models.Model):
@@ -80,10 +81,13 @@ class SundaySchoolAttendance(AuditLogMixin, models.Model):
     )
     submitted_at = models.DateTimeField(null=True, blank=True)
     reviewed_at = models.DateTimeField(null=True, blank=True)
-    is_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
     COUNT_FIELDS = [
         "boys",

@@ -28,6 +28,21 @@ class MemberSerializer(serializers.ModelSerializer):
         many=True, slug_field="name", queryset=Position.objects.all()
     )
 
+    def get_fields(self):
+        fields = super().get_fields()
+        request = self.context.get("request")
+        assembly_id = getattr(self.instance, "assembly_id", None) or getattr(
+            getattr(request, "user", None), "church_id", None
+        )
+        fields["spouse"].queryset = Member.objects.filter(assembly_id=assembly_id) if assembly_id else Member.objects.none()
+        # Authentication secrets must never be included in member responses.
+        fields.pop("access_pin", None)
+        return fields
+
+    def validate_avatar(self, value):
+        from apps.people.create_security import validate_create_image
+        return validate_create_image(value) if value else value
+
     class Meta:
         model = Member
         fields = '__all__'
@@ -38,6 +53,15 @@ class MemberSerializer(serializers.ModelSerializer):
             'spouse_full_name',
             'has_pending_transfer',
             'pending_transfer_id',
+            'assembly',
+            'created_by',
+            'updated_by',
+            'is_trash',
+            'trash_date',
+            'created_at',
+            'updated_at',
+            'pin_set',
+            'access_pin',
         ]
 
     def get_full_name(self, obj):
@@ -60,12 +84,24 @@ class MemberSerializer(serializers.ModelSerializer):
         return pending_transfer.id if pending_transfer else None
     
     def validate(self, attrs):
-        if Member.objects.filter(
-            first_name__iexact=attrs['first_name'].strip(),
-            last_name__iexact=attrs['last_name'].strip(),
-            date_of_birth=attrs['date_of_birth'],
-            phone_number=attrs['phone_number'].strip()
-        ).exists():
+        request = self.context.get("request")
+        if self.instance is None and request is not None:
+            from apps.people.create_security import active_create_assembly, reject_other_assembly
+            reject_other_assembly(request, active_create_assembly(request))
+        instance = self.instance
+        first_name = attrs.get('first_name', getattr(instance, 'first_name', '')).strip()
+        last_name = attrs.get('last_name', getattr(instance, 'last_name', '')).strip()
+        date_of_birth = attrs.get('date_of_birth', getattr(instance, 'date_of_birth', None))
+        phone_number = attrs.get('phone_number', getattr(instance, 'phone_number', '')).strip()
+        duplicate = Member.objects.filter(
+            first_name__iexact=first_name,
+            last_name__iexact=last_name,
+            date_of_birth=date_of_birth,
+            phone_number=phone_number,
+        )
+        if instance is not None:
+            duplicate = duplicate.exclude(pk=instance.pk)
+        if duplicate.exists():
             raise serializers.ValidationError("A member with the same name, birth date, and phone number already exists.")
         return attrs
     

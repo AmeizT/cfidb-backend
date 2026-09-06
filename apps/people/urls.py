@@ -18,6 +18,7 @@ from apps.people.views import (
     SundaySchoolAttendanceViewSet,
 )
 from django.urls import path, include
+from apps.people.views.create_options import create_options
 from rest_framework.routers import DefaultRouter
 
 app_name = "people"
@@ -36,6 +37,7 @@ router.register(r'households', HouseholdViewSet, basename='households')
 router.register(r'household-members', HouseholdMemberViewSet, basename='household-members')
 
 urlpatterns = [
+    path('create-options/', create_options, name='create-options'),
     path('', include(router.urls)),
     path('belong/check-member/', check_member_existence, name='check-member'),
     path('belong/check-in/', verify_member_pin, name='verify-member-pin'),

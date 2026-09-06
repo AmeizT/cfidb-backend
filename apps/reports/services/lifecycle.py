@@ -11,6 +11,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import F, Sum
 from django.utils import timezone
 
+from apps.people.constants import SUNDAY_SCHOOL_START_DATE
 from apps.reports.models import (
     AssemblyReport,
     AuditLog,
@@ -28,6 +29,7 @@ RESOLVED_SECTION_STATUSES = {
     ReportSectionStatus.Status.COMPLETED,
     ReportSectionStatus.Status.NO_ACTIVITY,
     ReportSectionStatus.Status.SKIPPED,
+    "not_required",
 }
 
 
@@ -237,7 +239,20 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
     }
 
 
-def get_effective_section_status(section: ReportSectionStatus, source: dict[str, Any]) -> str:
+def is_section_required(report: AssemblyReport, section_key: str) -> bool:
+    return not (
+        section_key == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE
+        and report.period_start < SUNDAY_SCHOOL_START_DATE
+    )
+
+
+def get_effective_section_status(
+    report: AssemblyReport,
+    section: ReportSectionStatus,
+    source: dict[str, Any],
+) -> str:
+    if not is_section_required(report, section.section):
+        return "not_required"
     if section.status in {
         ReportSectionStatus.Status.SKIPPED,
         ReportSectionStatus.Status.NO_ACTIVITY,
@@ -261,12 +276,13 @@ def get_report_sections(report: AssemblyReport) -> list[dict[str, Any]]:
         if section is None:
             section = ReportSectionStatus(report=report, section=key)
         source = get_section_source(report, key)
+        status = get_effective_section_status(report, section, source)
         payload.append({
             "object": section,
             "key": key,
             "label": label,
-            "status": get_effective_section_status(section, source),
-            "resolved": get_effective_section_status(section, source) in RESOLVED_SECTION_STATUSES,
+            "status": status,
+            "resolved": status in RESOLVED_SECTION_STATUSES,
             "source": source,
         })
     return payload
@@ -471,6 +487,8 @@ def set_section_status(
         raise ValidationError({"report": "This submitted report is locked for editing."})
     if section_key not in REQUIRED_SECTIONS:
         raise ValidationError({"section": "Unknown report section."})
+    if not is_section_required(report, section_key):
+        raise ValidationError({"section": "This report section is not required for the reporting period."})
     if status not in ReportSectionStatus.Status.values:
         raise ValidationError({"status": "Invalid section status."})
 

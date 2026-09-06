@@ -1,9 +1,11 @@
 from datetime import date
 from decimal import Decimal
+from io import BytesIO
 import json
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from openpyxl import load_workbook
 from rest_framework.test import APIClient
 
 from apps.bookkeeper.models import Expenditure, Overhead, OverheadType, Revenue, RevenueCategory, Tithe
@@ -102,6 +104,80 @@ class ManualEntryBatchApiTests(TestCase):
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(Overhead.objects.filter(report=self.report).count(), 2)
 
+    def test_revenue_template_uses_current_scoped_categories_for_dropdown(self):
+        RevenueCategory.objects.create(
+            assembly=self.assembly, name="Youth Fund", needs_review=True,
+        )
+        RevenueCategory.objects.create(
+            assembly=self.other_assembly, name="Other Assembly Income", needs_review=True,
+        )
+        RevenueCategory.objects.create(
+            assembly=self.assembly, name="Inactive Income", needs_review=True,
+            is_active=False,
+        )
+
+        response = self.client.get(
+            "/api/v1/bookkeeper/revenue/download_revenue_template/"
+        )
+        self.assertEqual(response.status_code, 200)
+        workbook = load_workbook(BytesIO(response.content))
+        worksheet = workbook["Revenue"]
+        options_sheet = workbook["Categories"]
+        options = [cell.value for cell in options_sheet["A"][1:]]
+        validation = list(worksheet.data_validations.dataValidation)[0]
+
+        self.assertEqual(
+            [cell.value for cell in worksheet[1]],
+            ["timestamp", "category", "amount", "notes"],
+        )
+        self.assertEqual(options_sheet.sheet_state, "hidden")
+        self.assertIn("Youth Fund", options)
+        self.assertNotIn("Other Assembly Income", options)
+        self.assertNotIn("Inactive Income", options)
+        self.assertEqual(validation.type, "list")
+        self.assertEqual(str(validation.sqref), "B2:B1000")
+        self.assertEqual(
+            validation.formula1,
+            f"=Categories!$A$2:$A${len(options) + 1}",
+        )
+
+    def test_overhead_template_uses_current_scoped_types_for_dropdown(self):
+        OverheadType.objects.create(
+            assembly=self.assembly, name="Local Security", needs_review=True,
+        )
+        OverheadType.objects.create(
+            assembly=self.other_assembly, name="Other Assembly Cost", needs_review=True,
+        )
+        OverheadType.objects.create(
+            assembly=self.assembly, name="Inactive Cost", needs_review=True,
+            is_active=False,
+        )
+
+        response = self.client.get(
+            "/api/v1/bookkeeper/overhead/download_overhead_template/"
+        )
+        self.assertEqual(response.status_code, 200)
+        workbook = load_workbook(BytesIO(response.content))
+        worksheet = workbook["Overheads"]
+        options_sheet = workbook["Overhead Types"]
+        options = [cell.value for cell in options_sheet["A"][1:]]
+        validation = list(worksheet.data_validations.dataValidation)[0]
+
+        self.assertEqual(
+            [cell.value for cell in worksheet[1]],
+            ["timestamp", "overhead_type", "amount", "notes"],
+        )
+        self.assertEqual(options_sheet.sheet_state, "hidden")
+        self.assertIn("Local Security", options)
+        self.assertNotIn("Other Assembly Cost", options)
+        self.assertNotIn("Inactive Cost", options)
+        self.assertEqual(validation.type, "list")
+        self.assertEqual(str(validation.sqref), "B2:B1000")
+        self.assertEqual(
+            validation.formula1,
+            f"='Overhead Types'!$A$2:$A${len(options) + 1}",
+        )
+
     def test_expense_batch_preserves_file_and_rolls_back_invalid_row(self):
         receipt = SimpleUploadedFile("receipt.txt", b"receipt", content_type="text/plain")
         response = self.client.post("/api/v1/bookkeeper/expenditure/batch/", {
@@ -135,6 +211,39 @@ class ManualEntryBatchApiTests(TestCase):
         self.assertEqual(updated.status_code, 201, updated.data)
         record.refresh_from_db()
         self.assertEqual(record.total_adults, 27)
+
+    def test_attendance_batch_persists_details_without_losing_metrics(self):
+        created = self.client.post("/api/v1/people/attendance/batch/", self.envelope([
+            {
+                "timestamp": "2026-07-05", "service_type": "sunday",
+                "men": 10, "women": 12, "visitor_men": 3,
+            },
+        ]), format="json")
+        self.assertEqual(created.status_code, 201, created.data)
+        record = Attendance.objects.get(report=self.report, timestamp=date(2026, 7, 5))
+
+        updated = self.client.post("/api/v1/people/attendance/batch/", self.envelope([
+            {
+                "id": record.pk, "timestamp": "2026-07-05",
+                "service_type": "sunday", "men": 10, "women": 12,
+                "visitor_men": 3, "is_special_event": True,
+                "special_event_name": "Family Sunday", "preacher": "E. Zhuwao",
+                "sermon": "Faith in action", "scriptures": "James 2:14-26",
+                "weather": "sunny", "notes": "Full morning service",
+            },
+        ]), format="json")
+        self.assertEqual(updated.status_code, 201, updated.data)
+
+        record.refresh_from_db()
+        self.assertEqual(record.men, 10)
+        self.assertEqual(record.women, 12)
+        self.assertEqual(record.visitor_men, 3)
+        self.assertEqual(record.preacher, "E. Zhuwao")
+        self.assertEqual(record.sermon, "Faith in action")
+        self.assertEqual(record.scriptures, "James 2:14-26")
+        self.assertEqual(record.weather, "sunny")
+        self.assertEqual(record.special_event_name, "Family Sunday")
+        self.assertEqual(record.notes, "Full morning service")
 
     def test_batch_requires_an_active_assembly(self):
         user = User.objects.create_user(

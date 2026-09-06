@@ -100,6 +100,7 @@ class Overhead(AuditLogMixin, FinancialBase):
         constraints = [
             models.UniqueConstraint(
                 fields=["report", "overhead_type"],
+                condition=models.Q(is_trash=False),
                 name="unique_report_overhead_type"
             )
         ]

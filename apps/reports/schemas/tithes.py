@@ -39,6 +39,16 @@ TITHES_TABLE_SCHEMA = {
             "id": "payment_method", 
             "label": "Payment Method", 
             "editable": True,
+            "editor": {
+                "type": "select",
+                "options": [
+                    {"label": "Bank", "value": "Bank"},
+                    {"label": "Cash", "value": "Cash"},
+                    {"label": "Cheque", "value": "Cheque"},
+                    {"label": "Mobile Money", "value": "Mobile Money"},
+                    {"label": "Other", "value": "Other"},
+                ],
+            },
             "meta": {
                 "badge": True,
             }
@@ -212,10 +222,10 @@ def _schema_with_interaction(schema, *, editable=False, selectable=False, densit
     return schema
 
 
-def get_tithes_schema(user):
+def get_tithes_schema(user, *, editable=True):
     return _schema_with_interaction(
         TITHES_TABLE_SCHEMA,
-        editable=True,
+        editable=editable,
         selectable=True,
     )
 

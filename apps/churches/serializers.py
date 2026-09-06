@@ -120,6 +120,12 @@ class AssemblySummarySerializer(serializers.ModelSerializer):
 
 
 class AssemblyISOSerializer(serializers.ModelSerializer):
+    language = serializers.SerializerMethodField()
+
+    def get_language(self, obj):
+        # Preserve the existing response key after Church moved to locale.
+        return (obj.locale or "").replace("_", "-").split("-")[0]
+
     class Meta:
         model = Church
         fields = ['id', 'country_code', 'language', 'currency']

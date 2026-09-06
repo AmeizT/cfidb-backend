@@ -5,13 +5,13 @@ from apps.bookkeeper.serializers import (
 from apps.bookkeeper.models import Asset
 from rest_framework import viewsets, permissions
 from apps.bookkeeper.pagination import StandardPagination
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 
 class AssetView(viewsets.ModelViewSet):
     queryset = Asset.objects.all()
     serializer_class = AssetSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
     pagination_class = StandardPagination
 
     def get_serializer_class(self):

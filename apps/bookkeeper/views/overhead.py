@@ -9,7 +9,7 @@ from apps.reports.models.audit import AuditLog
 from apps.bookkeeper.serializers import OverheadBatchEntrySerializer, OverheadSerializer, OverheadTypeSerializer
 from apps.bookkeeper.services import BatchEntryValidationError, create_overheads
 from apps.bookkeeper.views.batch import active_assembly_or_error, batch_error_response, parse_batch_payload, validate_batch_entries
-from rest_framework.viewsets import ModelViewSet
+from apps.bookkeeper.views.base import FinancialViewSet
 from apps.bookkeeper.category_matching import rank_financial_category_matches
 
 
@@ -20,7 +20,7 @@ from apps.uploads.mixins.upload_mixin import UploadExcelMixin
 class OverheadViewSet(
     UploadExcelMixin,
     OverheadTemplateMixin,
-    ModelViewSet
+    FinancialViewSet
 ):
     """
     Handles CRUD for Overheads. Supports batch creation (list of overheads) 
@@ -29,6 +29,7 @@ class OverheadViewSet(
     serializer_class = OverheadSerializer
     permission_classes = [permissions.IsAuthenticated]
     upload_service_class = OverheadUploadService
+    queryset = Overhead.objects.all()
 
     @action(detail=False, methods=["get", "post"], url_path="types")
     def types(self, request):
@@ -96,9 +97,7 @@ class OverheadViewSet(
         return Response({"count": len(created), "records": OverheadSerializer(created, many=True).data, "report_totals": totals}, status=201)
 
     def get_queryset(self): # type: ignore
-        return Overhead.objects.filter(
-            assembly=self.request.user.church # type: ignore
-        ).select_related("overhead_type", "report")
+        return super().get_queryset().select_related("overhead_type", "report")
 
     def create(self, request, *args, **kwargs):
         """

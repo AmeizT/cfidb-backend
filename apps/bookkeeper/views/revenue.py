@@ -8,7 +8,7 @@ from apps.bookkeeper.serializers import RevenueBatchEntrySerializer, RevenueCate
 from apps.bookkeeper.services import BatchEntryValidationError, create_revenues
 from apps.bookkeeper.views.batch import active_assembly_or_error, batch_error_response, parse_batch_payload, validate_batch_entries
 from apps.reports.models.audit import AuditLog
-from rest_framework.viewsets import ModelViewSet
+from apps.bookkeeper.views.base import FinancialViewSet
 from apps.bookkeeper.category_matching import rank_financial_category_matches
 
 
@@ -19,8 +19,9 @@ from apps.uploads.mixins.upload_mixin import UploadExcelMixin
 class RevenueViewSet(
     UploadExcelMixin,
     RevenueTemplateMixin,
-    ModelViewSet
+    FinancialViewSet
 ):
+    queryset = Revenue.objects.all()
     serializer_class = RevenueSerializer
     permission_classes = [permissions.IsAuthenticated]
     upload_service_class = RevenueUploadService
@@ -94,9 +95,7 @@ class RevenueViewSet(
         return Response({"count": len(created), "records": RevenueSerializer(created, many=True).data, "report_totals": totals}, status=201)
 
     def get_queryset(self): # type: ignore
-        return Revenue.objects.filter(
-            assembly=self.request.user.church # type: ignore
-        ).select_related("category", "report")
+        return super().get_queryset().select_related("category", "report")
 
     def create(self, request, *args, **kwargs):
         """
@@ -138,14 +137,4 @@ class RevenueViewSet(
                 )
 
     def perform_update(self, serializer):
-        instance = serializer.instance
-        old_data = instance._capture_old_data()
-        updated_instance = serializer.save()
-
-        user = self.request.user if self.request.user.is_authenticated else None
-
-        updated_instance.log_audit(
-            user=user,
-            action=AuditLog.Action.UPDATE,
-            old_data=old_data
-        )
+        return super().perform_update(serializer)

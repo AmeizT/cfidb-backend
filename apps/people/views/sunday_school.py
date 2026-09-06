@@ -12,12 +12,17 @@ from apps.people.serializers import (
     SundaySchoolAttendanceApprovalSerializer,
     SundaySchoolAttendanceSerializer,
 )
+from apps.people.mixins import SundaySchoolTemplateMixin
 from apps.reports.models.audit import AuditLog
+from apps.uploads.mixins import UploadExcelMixin
+from apps.uploads.services import SundaySchoolAttendanceUploadService
 from apps.shared.mixins.prevent_deleted_updates import PreventDeletedUpdatesMixin
 from apps.shared.mixins.soft_delete import SoftDeleteMixin
 
 
 class SundaySchoolAttendanceViewSet(
+    UploadExcelMixin,
+    SundaySchoolTemplateMixin,
     PreventDeletedUpdatesMixin,
     SoftDeleteMixin,
     viewsets.ModelViewSet,
@@ -34,13 +39,12 @@ class SundaySchoolAttendanceViewSet(
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = SundaySchoolAttendanceFilter
+    upload_service_class = SundaySchoolAttendanceUploadService
 
     def get_queryset(self):
         queryset = self.queryset.all()
         user = self.request.user
-
-        if not self._should_include_deleted():
-            queryset = queryset.filter(is_deleted=False)
+        queryset = queryset.filter(is_deleted=False)
 
         if getattr(user, "is_admin", False):
             return queryset
@@ -60,14 +64,6 @@ class SundaySchoolAttendanceViewSet(
             return queryset.filter(assembly=assembly)
 
         return queryset.none()
-
-    def _should_include_deleted(self):
-        params = self.request.query_params
-        return (
-            params.get("include_deleted") == "true"
-            or params.get("is_deleted") == "true"
-            or params.get("trash") == "true"
-        )
 
     def _audit(self, instance, action, old_data=None, description=None):
         instance.log_audit(

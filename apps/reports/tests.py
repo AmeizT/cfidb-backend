@@ -15,10 +15,13 @@ from apps.reports.models import AssemblyReport, ReportSectionSnapshot, ReportSec
 from apps.reports.services.lifecycle import (
     REQUIRED_SECTIONS,
     ensure_report,
+    get_report_sections,
     get_report_state,
+    get_section_source,
     set_section_status,
     start_amendment,
     submit_report,
+    validate_report,
 )
 from apps.users.models import User
 
@@ -283,10 +286,9 @@ class ReportLifecycleTests(APITestCase):
             password="password123",
             church=self.assembly,
         )
-        today = timezone.localdate()
         self.report = ensure_report(
             assembly=self.assembly,
-            period_start=today.replace(day=1),
+            period_start=date(2026, 9, 1),
             actor=self.user,
         )
 
@@ -330,6 +332,29 @@ class ReportLifecycleTests(APITestCase):
         self.assertEqual(state.status, "ready_to_submit")
         self.assertEqual(state.completion_percentage, 100)
         self.assertTrue(state.can_submit)
+
+    def test_no_activity_is_explicit_and_reversible_without_source_records(self):
+        section_key = ReportSectionStatus.Section.REVENUE
+        section = set_section_status(
+            report=self.report,
+            section_key=section_key,
+            status=ReportSectionStatus.Status.NO_ACTIVITY,
+            actor=self.user,
+            no_activity_note="There was no revenue activity this month.",
+        )
+        self.assertEqual(section.status, ReportSectionStatus.Status.NO_ACTIVITY)
+        self.assertIsNotNone(section.no_activity_confirmed_at)
+        self.assertEqual(get_section_source(self.report, section_key)["record_count"], 0)
+
+        section = set_section_status(
+            report=self.report,
+            section_key=section_key,
+            status=ReportSectionStatus.Status.NOT_STARTED,
+            actor=self.user,
+        )
+        self.assertEqual(section.status, ReportSectionStatus.Status.NOT_STARTED)
+        self.assertIsNone(section.no_activity_confirmed_at)
+        self.assertIsNone(section.no_activity_confirmed_by)
 
     def test_submission_is_versioned_and_boundary_lock_is_derived(self):
         self.resolve_all_sections()
@@ -415,6 +440,147 @@ class ReportLifecycleTests(APITestCase):
         self.assertEqual(existing.status_code, status.HTTP_200_OK)
         self.assertEqual(existing.data["id"], self.report.id)
         self.assertEqual(len(existing.data["sections"]), 6)
+
+    def test_past_period_can_start_but_future_period_cannot(self):
+        self.client.force_authenticate(user=self.user)
+
+        past = self.client.post("/api/v1/reports/current/?year=2000&month=1", {})
+        self.assertEqual(past.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(past.data["id"])
+
+        today = timezone.localdate().replace(day=1)
+        future_year = today.year + (1 if today.month == 12 else 0)
+        future_month = 1 if today.month == 12 else today.month + 1
+        AssemblyReport.objects.filter(
+            assembly=self.assembly,
+            period_start__year=future_year,
+            period_start__month=future_month,
+        ).delete()
+        future_placeholder = self.client.get(
+            "/api/v1/reports/current/",
+            {"year": future_year, "month": future_month},
+        )
+        self.assertEqual(future_placeholder.status_code, status.HTTP_200_OK)
+        self.assertEqual(future_placeholder.data["status"], "not_started")
+        self.assertFalse(future_placeholder.data["capabilities"]["can_start"])
+        future = self.client.post(
+            f"/api/v1/reports/current/?year={future_year}&month={future_month}",
+            {},
+        )
+        self.assertEqual(future.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_assembly_with_no_report_history_can_start_first_current_report(self):
+        self.client.force_authenticate(user=self.user)
+        AssemblyReport.objects.filter(assembly=self.assembly).delete()
+
+        placeholder = self.client.get("/api/v1/reports/current/")
+        self.assertEqual(placeholder.status_code, status.HTTP_200_OK)
+        self.assertIsNone(placeholder.data["id"])
+        self.assertTrue(placeholder.data["capabilities"]["can_start"])
+
+        created = self.client.post("/api/v1/reports/current/", {})
+        self.assertEqual(created.status_code, status.HTTP_200_OK)
+        self.assertGreater(created.data["id"], 0)
+        self.assertEqual(created.data["assembly"]["id"], self.assembly.id)
+        self.assertEqual(len(created.data["sections"]), 6)
+
+        repeated = self.client.post("/api/v1/reports/current/", {})
+        self.assertEqual(repeated.status_code, status.HTTP_200_OK)
+        self.assertEqual(repeated.data["id"], created.data["id"])
+        self.assertEqual(
+            AssemblyReport.objects.filter(assembly=self.assembly).count(),
+            1,
+        )
+
+    def test_assembly_lifecycle_metadata_does_not_make_month_optional(self):
+        current_start = timezone.localdate().replace(day=1)
+        AssemblyReport.objects.filter(
+            assembly=self.assembly,
+            period_start=current_start,
+        ).delete()
+        self.assembly.status = "closed"
+        self.assembly.established_date = date(
+            current_start.year + 1,
+            current_start.month,
+            1,
+        )
+        self.assembly.save(update_fields=["status", "established_date"])
+        self.client.force_authenticate(user=self.user)
+
+        placeholder = self.client.get(
+            "/api/v1/reports/current/",
+            {"year": current_start.year, "month": current_start.month},
+        )
+        self.assertEqual(placeholder.status_code, status.HTTP_200_OK)
+        self.assertIsNone(placeholder.data["id"])
+        self.assertEqual(placeholder.data["status"], "not_started")
+        self.assertEqual(placeholder.data["completion_percentage"], 0)
+        self.assertTrue(placeholder.data["capabilities"]["can_start"])
+
+        overview = self.client.get(
+            "/api/v1/reports/overview/",
+            {"year": current_start.year},
+        )
+        self.assertEqual(overview.status_code, status.HTTP_200_OK)
+        overview_month = overview.data["months"][current_start.month - 1]
+        self.assertEqual(overview_month["status"], "not_started")
+        self.assertEqual(overview_month["completion_percentage"], 0)
+        self.assertTrue(overview_month["capabilities"]["can_start"])
+
+        created = self.client.post(
+            "/api/v1/reports/current/"
+            f"?year={current_start.year}&month={current_start.month}",
+            {},
+        )
+        self.assertEqual(created.status_code, status.HTTP_200_OK, created.data)
+        repeated = self.client.post(
+            "/api/v1/reports/current/"
+            f"?year={current_start.year}&month={current_start.month}",
+            {},
+        )
+        self.assertEqual(repeated.status_code, status.HTTP_200_OK, repeated.data)
+        self.assertEqual(repeated.data["id"], created.data["id"])
+        self.assertEqual(
+            AssemblyReport.objects.filter(
+                assembly=self.assembly,
+                period_start=current_start,
+            ).count(),
+            1,
+        )
+
+    def test_sunday_school_is_not_required_before_september_2026(self):
+        august_report = ensure_report(
+            assembly=self.assembly,
+            period_start=date(2026, 8, 1),
+            actor=self.user,
+        )
+        sections = get_report_sections(august_report)
+        sunday_school = next(
+            item for item in sections
+            if item["key"] == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE
+        )
+
+        self.assertEqual(sunday_school["status"], "not_required")
+        self.assertTrue(sunday_school["resolved"])
+        self.assertFalse(any(
+            finding.get("section") == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE
+            for finding in validate_report(august_report, sections)
+        ))
+        with self.assertRaises(ValidationError):
+            set_section_status(
+                report=august_report,
+                section_key=ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE,
+                status=ReportSectionStatus.Status.NO_ACTIVITY,
+                actor=self.user,
+            )
+
+        september_sections = get_report_sections(self.report)
+        september_sunday_school = next(
+            item for item in september_sections
+            if item["key"] == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE
+        )
+        self.assertEqual(september_sunday_school["status"], "not_started")
+        self.assertFalse(september_sunday_school["resolved"])
 
     def test_overview_returns_all_months_with_canonical_month_state(self):
         self.client.force_authenticate(user=self.user)

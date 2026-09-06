@@ -1,9 +1,13 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Q
 from rest_framework.decorators import action
 from apps.reports.models.audit import AuditLog
+from apps.reports.services.lifecycle import get_report_state
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.shortcuts import get_object_or_404
 
 
 class FinancialViewSet(viewsets.ModelViewSet):
@@ -116,9 +120,13 @@ class FinancialViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         with transaction.atomic():
-            instances = serializer.save(
-                assembly=user.church # type: ignore
-            )
+            save_kwargs = {"assembly": user.church}
+            model = getattr(getattr(serializer, "Meta", None), "model", None)
+            if model is None and hasattr(serializer, "child"):
+                model = getattr(getattr(serializer.child, "Meta", None), "model", None)
+            if model is not None and any(field.name == "created_by" for field in model._meta.fields):
+                save_kwargs["created_by"] = user
+            instances = serializer.save(**save_kwargs)
 
             if not isinstance(instances, list):
                 instances = [instances]
@@ -135,6 +143,9 @@ class FinancialViewSet(viewsets.ModelViewSet):
     # -----------------------------
     def perform_update(self, serializer):
         instance = serializer.instance
+        report = getattr(instance, "report", None)
+        if report is not None and not get_report_state(report, self.request.user).is_editable:
+            raise PermissionDenied("This report is locked for editing.")
         old_data = instance._capture_old_data()
 
         updated_instance = serializer.save()
@@ -150,14 +161,47 @@ class FinancialViewSet(viewsets.ModelViewSet):
     # -----------------------------
     def perform_destroy(self, instance):
         user = self.request.user
+        report = getattr(instance, "report", None)
+        if report is not None and not get_report_state(report, user).is_editable:
+            raise PermissionDenied("This report is locked for editing.")
         old_data = instance._capture_old_data()
 
-        instance.delete()
+        instance.delete(user=user)
         instance.log_audit(
             user=user,
-            action=AuditLog.Action.SOFT_DELETE, # type: ignore
+            action=AuditLog.Action.DELETE,
             old_data=old_data
         )
+
+    @action(detail=False, methods=["post"], url_path="bulk_delete")
+    def bulk_delete(self, request):
+        ids = request.data.get("ids", [])
+        if not isinstance(ids, list) or not ids:
+            return Response({"detail": "IDs must be a non-empty list."}, status=400)
+
+        instances_by_id = {
+            instance.pk: instance
+            for instance in self.get_queryset().filter(pk__in=ids, is_trash=False)
+        }
+        deleted_ids = []
+        errors = {}
+        for record_id in ids:
+            instance = instances_by_id.get(record_id)
+            if instance is None:
+                errors[str(record_id)] = "Record was not found or is already deleted."
+                continue
+            try:
+                with transaction.atomic():
+                    self.perform_destroy(instance)
+                deleted_ids.append(record_id)
+            except (DjangoValidationError, PermissionDenied) as exc:
+                errors[str(record_id)] = str(exc)
+
+        return Response({
+            "count": len(deleted_ids),
+            "deleted_ids": deleted_ids,
+            "errors": errors,
+        }, status=200 if deleted_ids else 400)
 
     # -----------------------------
     # Restore trashed item
@@ -165,13 +209,28 @@ class FinancialViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def restore(self, request, pk=None):
         user = self.request.user
-        instance = self.get_object()
+        model = self.queryset.model
+        manager = getattr(model, "all_objects", model.objects)
+        instance = get_object_or_404(
+            manager.select_related("report"),
+            pk=pk,
+            assembly=user.church,
+            is_trash=True,
+        )
+        report = getattr(instance, "report", None)
+        if report is not None and not get_report_state(report, user).is_editable:
+            raise PermissionDenied("This report is locked for editing.")
 
         old_data = instance._capture_old_data()
-        instance.restore()
+        try:
+            instance.restore(user=user)
+        except IntegrityError as exc:
+            raise ValidationError({
+                "detail": "This record conflicts with an active replacement and cannot be restored."
+            }) from exc
         instance.log_audit(
             user=user,
-            action=AuditLog.Action.RESTORED,
+            action=AuditLog.Action.RESTORE,
             old_data=old_data
         )
 

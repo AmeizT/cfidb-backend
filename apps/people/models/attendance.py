@@ -4,6 +4,7 @@ from apps.reports.mixins import AuditLogMixin
 from apps.reports.models import AssemblyReport
 from apps.people.choices.weather import WeatherCondition
 from apps.people.choices.services import AttendanceCategories
+from apps.shared.mixins.soft_delete import SoftDeleteManager
 
 
 class Attendance(AuditLogMixin, models.Model):
@@ -91,11 +92,14 @@ class Attendance(AuditLogMixin, models.Model):
     volunteers_on_duty = models.PositiveIntegerField(default=0)
     total_leaders_present = models.PositiveIntegerField(default=0)
 
-    is_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False, db_index=True)
 
     timestamp = models.DateField(db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = SoftDeleteManager()
+    all_objects = models.Manager()
 
     NUMERIC_FIELDS = [
         "adults",
@@ -129,6 +133,7 @@ class Attendance(AuditLogMixin, models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["assembly", "timestamp", "service_type", "homecell"],
+                condition=models.Q(is_deleted=False),
                 name="unique_service_attendance"
             )
         ]
@@ -159,7 +164,7 @@ class Attendance(AuditLogMixin, models.Model):
     def numeric_fields_changed(self):
         if not self.pk:
             return True
-        old = Attendance.objects.get(pk=self.pk)
+        old = Attendance.all_objects.get(pk=self.pk)
         return any(getattr(old, f) != getattr(self, f) for f in self.NUMERIC_FIELDS)
 
     def assign_report(self):

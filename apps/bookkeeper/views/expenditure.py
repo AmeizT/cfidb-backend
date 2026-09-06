@@ -11,7 +11,7 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.bookkeeper.pagination import StandardPagination
-from rest_framework.viewsets import ModelViewSet
+from apps.bookkeeper.views.base import FinancialViewSet
 from apps.uploads.mixins import ExpenditureTemplateMixin
 from apps.uploads.services import ExpenditureUploadService
 from apps.uploads.mixins.upload_mixin import UploadExcelMixin, UploadImageMixin
@@ -24,7 +24,7 @@ class ExpenditureView(
     UploadExcelMixin,
     UploadImageMixin,
     ExpenditureTemplateMixin,
-    ModelViewSet
+    FinancialViewSet
 ):
     queryset = Expenditure.objects.all()
     serializer_class = ExpenditureSerializer
@@ -51,9 +51,10 @@ class ExpenditureView(
         return Response({"count": len(created), "records": ExpenditureSerializer(created, many=True).data, "report_totals": totals}, status=201)
     
     def get_queryset(self): # type: ignore
-        return Expenditure.objects.filter(assembly=self.request.user.church)  # type: ignore
-    
-       
+        return super().get_queryset()
+
+
+
 class RegularExpenditureView(viewsets.ModelViewSet):
     queryset = FixedExpenditure.objects.all()
     permission_classes = [permissions.IsAuthenticated]

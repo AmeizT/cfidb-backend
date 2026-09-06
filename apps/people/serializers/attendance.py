@@ -4,6 +4,7 @@ from apps.people.models import Attendance
 from apps.core.serializers import HyperlinkedModelSerializer
 from apps.people.services import get_monthly_summary
 from drf_spectacular.utils import extend_schema_serializer, extend_schema_field
+from apps.reports.services.lifecycle import get_report_state
 
 @extend_schema_serializer(
     examples=[
@@ -228,6 +229,11 @@ class AttendanceSerializer(HyperlinkedModelSerializer):
         return instance
 
     def validate(self, attrs):
+        request = self.context.get("request")
+        report = getattr(self.instance, "report", None)
+        if report is not None and not get_report_state(report, getattr(request, "user", None)).is_editable:
+            raise serializers.ValidationError({"detail": "This report is locked for editing."})
+
         allowed_fields = set(self.fields.keys())
         sent_fields = set(self.initial_data.keys()) # type: ignore
         extra_fields = sent_fields - allowed_fields

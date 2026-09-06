@@ -1,12 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from django.db import IntegrityError
 from django.utils import timezone
-from rest_framework import filters, permissions, viewsets
+from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apps.people.filters import MemberFilter
 from apps.people.models import AssemblyMembership, MemberTransferRequest
 from apps.people.models.members import JuniorMember, Member
-from apps.people.permissions import filter_membership_queryset_for_user, filter_transfer_queryset_for_user
+from apps.people.permissions import (
+    CanManageMembers,
+    can_access_assembly,
+    filter_membership_queryset_for_user,
+    filter_transfer_queryset_for_user,
+)
 from apps.people.serializers.members import JuniorMemberSerializer, MemberSerializer
 from apps.people.schemas import PeopleTableSchemaMixin
 from apps.shared.pagination import DataTablePagination
@@ -16,7 +22,7 @@ from apps.people.serializers.transfers import AssemblyMembershipSerializer, Memb
 class MemberView(PeopleTableSchemaMixin, viewsets.ModelViewSet):
     queryset = Member.objects.all()
     serializer_class = MemberSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, CanManageMembers]
     pagination_class = DataTablePagination
     table_schema_name = "members"
     filter_backends = [DjangoFilterBackend]
@@ -41,6 +47,44 @@ class MemberView(PeopleTableSchemaMixin, viewsets.ModelViewSet):
                 cutoff = today.replace(year=today.year - 18, day=28)
             queryset = queryset.filter(date_of_birth__lte=cutoff)
         return queryset
+
+    def perform_create(self, serializer):
+        from apps.people.create_security import active_create_assembly
+        assembly = active_create_assembly(self.request)
+        serializer.save(assembly=assembly, created_by=self.request.user, updated_by=self.request.user)
+
+    def perform_update(self, serializer):
+        self.check_object_permissions(self.request, serializer.instance)
+        serializer.save(updated_by=self.request.user)
+
+    def perform_destroy(self, instance):
+        self.check_object_permissions(self.request, instance)
+        instance.soft_delete(user=self.request.user)
+
+    @action(detail=True, methods=["post"])
+    def restore(self, request, member_key=None):
+        queryset = Member.all_objects.filter(is_trash=True)
+        user = request.user
+        if getattr(user, "is_admin", False) or getattr(user, "is_superuser", False):
+            pass
+        elif getattr(user, "is_region_staff", False):
+            queryset = queryset.filter(assembly__zone__region__in=user.assigned_regions.all())
+        elif getattr(user, "is_db_zone_staff", False):
+            queryset = queryset.filter(assembly__zone__in=user.assigned_zones.all())
+        else:
+            queryset = queryset.filter(assembly=user.church)
+        instance = queryset.filter(member_key=member_key).first()
+        if instance is None:
+            return Response({"detail": "Deleted member not found."}, status=status.HTTP_404_NOT_FOUND)
+        self.check_object_permissions(request, instance)
+        try:
+            instance.restore(user=request.user)
+        except IntegrityError as exc:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({
+                "detail": "This member conflicts with an active replacement and cannot be restored."
+            }) from exc
+        return Response(self.get_serializer(instance).data)
 
     @action(detail=True, methods=["get"])
     def transfers(self, request, member_key=None):

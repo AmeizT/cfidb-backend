@@ -120,7 +120,7 @@ def create_tithes(*, assembly, user, period, entries, report_id=None):
     )
     existing = set()
     if report and member_ids:
-        existing = set(Tithe.all_objects.filter(report=report, member_id__in=member_ids).values_list("member_id", flat=True))
+        existing = set(Tithe.objects.filter(report=report, member_id__in=member_ids).values_list("member_id", flat=True))
     for index, row in enumerate(entries):
         member_id = row.get("member_id")
         if member_id in invalid_members:

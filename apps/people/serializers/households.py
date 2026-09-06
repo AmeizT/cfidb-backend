@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
+from rest_framework.exceptions import PermissionDenied
+from apps.people.permissions import can_access_assembly
 
 from apps.churches.models import Church
 from apps.people.models import (
@@ -76,6 +78,9 @@ class HouseholdMemberSerializer(serializers.ModelSerializer):
         instance = self.instance
         household = attrs.get("household", getattr(instance, "household", None))
         member = attrs.get("member", getattr(instance, "member", None))
+        request = self.context.get("request")
+        if household and request and not can_access_assembly(request.user, household.assembly):
+            raise PermissionDenied("You cannot modify this household.")
         if household and member and household.assembly_id != member.assembly_id:
             raise serializers.ValidationError({"member": "Member and household must be in the same assembly."})
         if household and household.status == "closed" and not getattr(instance, "left_on", None):
@@ -106,6 +111,12 @@ class HouseholdSerializer(serializers.ModelSerializer):
     head_of_household = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()
     contact = serializers.SerializerMethodField()
+
+    def validate_assembly(self, assembly):
+        request = self.context.get("request")
+        if request and not can_access_assembly(request.user, assembly):
+            raise PermissionDenied("You cannot modify households in this assembly.")
+        return assembly
 
     class Meta:
         model = Household

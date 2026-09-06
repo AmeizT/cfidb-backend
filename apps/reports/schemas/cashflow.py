@@ -6,7 +6,7 @@ CASHFLOW_TABLE_SCHEMA = {
         {
             "id": "label",
             "label": "Date, Transaction Type",
-            "editable": True,
+            "editable": False,
             "meta": {
                 "isSection": True,
                 "isTotal": True,
@@ -19,7 +19,7 @@ CASHFLOW_TABLE_SCHEMA = {
             "label": "Income",
             "formatter": "currency",
             "isFooterSum": True,
-            "editable": True,
+            "editable": False,
             "cellClass": "cell-income",
             "isNumeric": True,
         },
@@ -28,7 +28,7 @@ CASHFLOW_TABLE_SCHEMA = {
             "label": "Expense",
             "formatter": "currency",
             "isFooterSum": True,
-            "editable": True,
+            "editable": False,
             "cellClass": "cell-expense",
             "isNumeric": True,
         },
@@ -52,7 +52,7 @@ CASHFLOW_TABLE_SCHEMA = {
         "border": "subtle",
         "theme": "neutral",
         "interaction": {
-            "editable": True,
+            "editable": False,
             "selectable": False,
             "density": "compact"
         }
@@ -64,7 +64,7 @@ def get_cashflow_schema(user):
 
     if "variant" in schema:
         schema["variant"]["interaction"] = {
-            "editable": True,
+            "editable": False,
             "selectable": True,
             "density": "compact",
         }

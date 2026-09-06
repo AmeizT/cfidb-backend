@@ -7,7 +7,10 @@ from apps.bookkeeper.utils import (
     remittance_receipt_path,
 )
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 from apps.bookkeeper.historical import NEW_FINANCE_START
+from apps.bookkeeper.models.base import ActiveFinancialManager
+from apps.reports.mixins.audit import AuditLogMixin
 
 
 class FixedExpenditure(models.Model):
@@ -146,7 +149,8 @@ class FixedExpenditure(models.Model):
         return f'{self.assembly.name} - {self.timestamp}'
     
 
-class Expenditure(models.Model):
+class Expenditure(AuditLogMixin, models.Model):
+    AUDIT_TRANSACTION_TYPE = "Expenditure"
     EXPENSE_TYPE_CHOICES = (
         ('amenities', 'Amenities'),
         ('conference', 'Conference'),
@@ -169,7 +173,7 @@ class Expenditure(models.Model):
     )
     report = models.ForeignKey(
         "reports.AssemblyReport",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="variable_expenditure_set",
         null=True,
         blank=True
@@ -205,8 +209,13 @@ class Expenditure(models.Model):
         editable=False
     )
     receipt = models.FileField(upload_to=expenditure_receipt_path, blank=True, null=True)
+    is_trash = models.BooleanField(default=False, db_index=True)
+    trash_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = ActiveFinancialManager()
+    all_objects = models.Manager()
     
     class Meta:
         verbose_name = 'Expenditure'
@@ -239,14 +248,80 @@ class Expenditure(models.Model):
         # Assign report automatically
         self.assign_report()
 
-        if self.report and self.report.status != self.report.Status.DRAFT:
+        if (
+            self.report
+            and self.report.status != self.report.Status.DRAFT
+            and not self.report.amendment_started_at
+        ):
             from django.core.exceptions import ValidationError
             raise ValidationError("Start an amendment before changing source records in a submitted report.")
 
         super().save(*args, **kwargs)
 
+        if self.report:
+            from django.core.cache import cache
 
+            self.report.calculate_totals()
+            self.report.save(update_fields=[
+                "income_total", "expense_total", "tithe_total", "balance", "updated_at"
+            ])
+            cache.delete(f"report_cashflow_{self.report_id}")
 
+    def _assert_report_editable(self, user=None):
+        if not self.report:
+            return
+        if user and getattr(user, "is_authenticated", False):
+            from apps.reports.services.lifecycle import get_report_state
+
+            if not get_report_state(self.report, user).is_editable:
+                raise ValidationError(
+                    "Start an amendment before deleting source records from a submitted report."
+                )
+            return
+        if self.report.status != self.report.Status.DRAFT and not self.report.amendment_started_at:
+            raise ValidationError(
+                "Start an amendment before deleting source records from a submitted report."
+            )
+
+    def delete(self, using=None, keep_parents=False, user=None):
+        if self.is_trash:
+            return (0, {})
+        self._assert_report_editable(user)
+        deleted_at = timezone.now()
+        self.__class__.all_objects.filter(pk=self.pk, is_trash=False).update(
+            is_trash=True, trash_date=deleted_at, updated_at=deleted_at
+        )
+        self.is_trash = True
+        self.trash_date = deleted_at
+        if self.report:
+            from django.core.cache import cache
+
+            self.report.calculate_totals()
+            self.report.save(update_fields=[
+                "income_total", "expense_total", "tithe_total", "balance", "updated_at"
+            ])
+            cache.delete(f"report_cashflow_{self.report_id}")
+        return (1, {self._meta.label: 1})
+
+    def restore(self, user=None):
+        if not self.is_trash:
+            return False
+        self._assert_report_editable(user)
+        restored_at = timezone.now()
+        self.__class__.all_objects.filter(pk=self.pk, is_trash=True).update(
+            is_trash=False, trash_date=None, updated_at=restored_at
+        )
+        self.is_trash = False
+        self.trash_date = None
+        if self.report:
+            from django.core.cache import cache
+
+            self.report.calculate_totals()
+            self.report.save(update_fields=[
+                "income_total", "expense_total", "tithe_total", "balance", "updated_at"
+            ])
+            cache.delete(f"report_cashflow_{self.report_id}")
+        return True
 
 
 

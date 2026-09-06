@@ -1,6 +1,8 @@
 from datetime import date
 from decimal import Decimal
+from io import BytesIO
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.apps import apps as django_apps
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -8,6 +10,7 @@ from django.db import IntegrityError, transaction
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient
 from django.urls import reverse
+from openpyxl import load_workbook
 
 from apps.bookkeeper.models import Tithe
 from apps.churches.models import Church, Region, RegionLeadership, Zone
@@ -21,6 +24,7 @@ from apps.people.models import (
     Household,
     HouseholdMember,
     HouseholdRole,
+    SundaySchoolAttendance,
 )
 from apps.people.services.member_transfer_service import (
     accept_transfer_request,
@@ -30,6 +34,110 @@ from apps.people.services.member_transfer_service import (
     complete_transfer_request,
 )
 from apps.users.models import User
+
+
+class SundaySchoolTemplateUploadTests(TestCase):
+    template_url = (
+        "/api/v1/people/sunday-school-attendance/"
+        "download_sunday_school_template/"
+    )
+    upload_url = "/api/v1/people/sunday-school-attendance/upload_excel/"
+    expected_headers = [
+        "service_date",
+        "class_name",
+        "teacher_name",
+        "boys",
+        "girls",
+        "male_visitors",
+        "female_visitors",
+        "male_first_timers",
+        "female_first_timers",
+        "lesson_title",
+        "scripture_reference",
+        "offering",
+        "remarks",
+    ]
+
+    def setUp(self):
+        self.assembly = Church.objects.create(name="Sunday School Upload Assembly")
+        self.user = User.objects.create_user(
+            first_name="Upload",
+            last_name="Admin",
+            username="sunday-school-upload-admin",
+            email="sunday-school-upload@example.com",
+            password="password",
+            church=self.assembly,
+        )
+        self.teacher = Member.objects.create(
+            assembly=self.assembly,
+            first_name="Sunday",
+            last_name="Teacher",
+            date_of_birth=date(1990, 1, 1),
+            gender="Female",
+            country="Botswana",
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def download_workbook(self):
+        response = self.client.get(self.template_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response["Content-Type"],
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        self.assertIn(
+            "sunday_school_attendance_template.xlsx",
+            response["Content-Disposition"],
+        )
+        return load_workbook(BytesIO(response.content))
+
+    def test_template_headers_match_upload_schema(self):
+        workbook = self.download_workbook()
+        worksheet = workbook["Sunday School"]
+
+        self.assertEqual(
+            [cell.value for cell in worksheet[1]],
+            self.expected_headers,
+        )
+        self.assertEqual(worksheet.freeze_panes, "A2")
+        self.assertEqual(workbook["Teachers"].sheet_state, "hidden")
+
+    def test_downloaded_template_can_be_filled_and_uploaded(self):
+        workbook = self.download_workbook()
+        worksheet = workbook["Sunday School"]
+        worksheet["C2"] = self.teacher.full_name
+
+        output = BytesIO()
+        workbook.save(output)
+        upload = SimpleUploadedFile(
+            "sunday_school_attendance.xlsx",
+            output.getvalue(),
+            content_type=(
+                "application/vnd.openxmlformats-officedocument."
+                "spreadsheetml.sheet"
+            ),
+        )
+
+        response = self.client.post(
+            self.upload_url,
+            {"file": upload},
+            format="multipart",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["created"], 1)
+        self.assertEqual(response.data["updated"], 0)
+        self.assertEqual(response.data["errors"], [])
+        record = SundaySchoolAttendance.objects.get(
+            assembly=self.assembly,
+            service_date=date(2026, 9, 6),
+            class_name="beginners",
+        )
+        self.assertEqual(record.teacher, self.teacher)
+        self.assertEqual(record.boys, 12)
+        self.assertEqual(record.offering, Decimal("120.00"))
 
 
 class MemberResponseContractTests(TestCase):

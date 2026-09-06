@@ -101,12 +101,12 @@ ATTENDANCE_TABLE_SCHEMA = {
     },
 }
 
-def get_attendance_schema(user):
+def get_attendance_schema(user, *, editable=True):
     schema = deepcopy(ATTENDANCE_TABLE_SCHEMA)
 
     if "variant" in schema:
         schema["variant"]["interaction"] = {
-            "editable": True,
+            "editable": editable,
             "selectable": True,
             "density": "comfortable",
         }

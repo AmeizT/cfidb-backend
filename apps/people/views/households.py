@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.utils.dateparse import parse_date
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -93,7 +93,10 @@ class HouseholdViewSet(PeopleTableSchemaMixin, viewsets.ModelViewSet):
         queryset = (
             Household.objects.with_member_counts()
             .select_related("assembly")
-            .prefetch_related("household_memberships__member")
+            .prefetch_related(Prefetch(
+                "household_memberships",
+                queryset=HouseholdMember.objects.filter(member__is_trash=False).select_related("member"),
+            ))
             .order_by("name", "pk")
         )
         queryset = _scope_households(queryset, self.request.user)
@@ -115,6 +118,11 @@ class HouseholdViewSet(PeopleTableSchemaMixin, viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
+        from apps.people.create_security import active_create_assembly
+        if self.request.headers.get("X-Assembly-ID") is not None:
+            active = active_create_assembly(self.request)
+            if serializer.validated_data.get("assembly", active) != active:
+                raise PermissionDenied("The requested assembly does not match the active workspace.")
         assembly = serializer.validated_data.get("assembly") or getattr(self.request.user, "church", None)
         if assembly is None or not can_access_assembly(self.request.user, assembly):
             raise PermissionDenied("You cannot create a household for this assembly.")
@@ -146,7 +154,9 @@ class HouseholdMemberViewSet(viewsets.ModelViewSet):
     serializer_class = HouseholdMemberSerializer
 
     def get_queryset(self):
-        queryset = HouseholdMember.objects.select_related("household", "household__assembly", "member")
+        queryset = HouseholdMember.objects.filter(member__is_trash=False).select_related(
+            "household", "household__assembly", "member"
+        )
         return _scope_households(queryset, self.request.user, field="household__assembly")
 
     def perform_create(self, serializer):

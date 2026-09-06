@@ -51,7 +51,7 @@ else:
         "https://api.cfi.church",
 
         # Vercel frontend
-        'http://localhost:3000',
+        
         "https://cfi-db-dvku.vercel.app",
     ]
 
@@ -62,7 +62,6 @@ else:
         "https://api.cfi.church",
 
         # Vercel frontend
-        'http://localhost:3000',
         "https://cfi-db-dvku.vercel.app",
     ]
 
@@ -329,10 +328,6 @@ DJOSER = {
         'password_changed_confirmation': 'apps.users.mail.PasswordChangedConfirmationEmail',
         'password_changed_reset': 'djoser.email.PasswordChangedResetEmail',
     },
-    # 'SERIALIZERS': {
-    #     'user': 'apps.users.serializers.ListUserSerializer',
-    #     'current_user': 'apps.users.serializers.ListUserSerializer',
-    # }
     "SERIALIZERS": {
         "user": "apps.users.serializers.CurrentUserSerializer",
         "current_user": "apps.users.serializers.CurrentUserSerializer",
@@ -374,9 +369,9 @@ EMAIL_HOST_USER = str(os.environ.get('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.environ.get('EMAIL_HOST_PASSWORD'))
 
 if DEBUG:
-    DOMAIN = 'localhost'
+    DOMAIN = 'localhost:3000'
 else:
-    DOMAIN = 'cfiws.com'
+    DOMAIN = 'app.cfiws.com'
     
 SITE_NAME = 'CFI Workspace'
 

@@ -454,17 +454,17 @@ class ReportViewSet(
         due_report = AssemblyReport(assembly=assembly, period_start=start, period_end=end)
         due_at = get_due_at(due_report)
         today = timezone.localdate()
-        applicable = assembly.status == "open" and (
-            not assembly.established_date or end >= assembly.established_date
-        )
+        is_overdue = timezone.now() > due_at
+        can_start = start <= today.replace(day=1)
         return {
             "id": None,
             "assembly": AssemblySerializer(assembly).data,
             "period_start": start,
             "period_end": end,
-            "status": "not_required" if not applicable else (
-                "overdue" if timezone.now() > due_at else "not_started"
-            ),
+            # Monthly reports are obligations for every assembly. Assembly
+            # lifecycle metadata must not turn a missing report into an
+            # optional period; creation timing remains a separate capability.
+            "status": "overdue" if is_overdue else "not_started",
             "workflow_status": None,
             "submitted_at": None,
             "due_at": due_at,
@@ -472,10 +472,10 @@ class ReportViewSet(
             "current_version": None,
             "completion_percentage": 0,
             "capabilities": {
-                "is_overdue": applicable and timezone.now() > due_at,
+                "is_overdue": is_overdue,
                 "is_locked": False,
-                "is_editable": applicable and start <= today.replace(day=1),
-                "can_start": applicable and start <= today.replace(day=1),
+                "is_editable": can_start,
+                "can_start": can_start,
                 "can_submit": False,
                 "can_amend": False,
                 "can_request_reopen": False,
@@ -688,6 +688,7 @@ class ReportViewSet(
     @action(detail=True)
     def attendance(self, request, pk=None):
         report = self.get_object()
+        report_state = get_report_state(report, request.user)
 
         # Compute monthly summary
         first_attendance = report.attendance_set.first()
@@ -707,6 +708,16 @@ class ReportViewSet(
             total_altar_call=Sum("total_altar_call"),
             total_baptisms=Sum("total_baptisms"),
         )
+        search = request.query_params.get("search", "").strip()
+        if search:
+            queryset = queryset.filter(
+                Q(service_type__icontains=search)
+                | Q(special_event_name__icontains=search)
+                | Q(preacher__icontains=search)
+                | Q(sermon__icontains=search)
+                | Q(scriptures__icontains=search)
+                | Q(notes__icontains=search)
+            )
         children_by_date = get_children_counts_by_date(
             report.assembly,
             report.period_start,
@@ -745,6 +756,7 @@ class ReportViewSet(
                 "sermon": a.sermon,
                 "scriptures": a.scriptures,
                 "is_deleted": a.is_deleted,
+                "can_edit": report_state.is_editable and not a.is_deleted,
                 "legacy": {
                     "adults": a.adults,
                     "guest_attendance": a.guest_attendance,
@@ -755,7 +767,10 @@ class ReportViewSet(
             })
 
         extra = {
-            "config": get_attendance_schema(request.user),
+            "config": get_attendance_schema(
+                request.user,
+                editable=report_state.is_editable,
+            ),
             "meta": {
                 "attendance_auto_sum": attendance_auto_sum,
                 "breakdown": {
@@ -795,7 +810,10 @@ class ReportViewSet(
         total_tithes = queryset.aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
 
         extra = {
-            "config": get_tithes_schema(request.user),
+            "config": get_tithes_schema(
+                request.user,
+                editable=get_report_state(report, request.user).is_editable,
+            ),
             "meta": {
                 "tithes_auto_sum": total_tithes,
             }
@@ -1307,6 +1325,12 @@ class ReportViewSet(
         
         raw_data = SimpleFinanceSerializer.from_report(report)
         rows = normalize_cashflow(raw_data)
+        search = request.query_params.get("search", "").strip().lower()
+        if search:
+            rows = [
+                row for row in rows
+                if search in str(row.get("label", "")).lower()
+            ]
 
         data = {
             "rows": rows,
