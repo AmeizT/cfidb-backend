@@ -28,3 +28,6 @@ def generate_oklch_color():
     
     # Return as a string in oklch() format
     return f'oklch({L} {C} {H})'
+
+def zone_images_path(instance, filename):
+    return f"zones/profile/{filename}"

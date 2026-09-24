@@ -356,6 +356,91 @@ class ReportLifecycleTests(APITestCase):
         self.assertIsNone(section.no_activity_confirmed_at)
         self.assertIsNone(section.no_activity_confirmed_by)
 
+    def test_skip_without_notes_persists_and_undo_updates_readiness(self):
+        self.resolve_all_sections()
+        self.client.force_authenticate(self.user)
+        key = ReportSectionStatus.Section.REVENUE
+        url = f"/api/v1/reports/{self.report.pk}/sections/{key}/"
+        response = self.client.post(url, {
+            "status": "skipped", "skip_reason_code": "records_unavailable",
+        }, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        section = self.report.sections.get(section=key)
+        self.assertEqual(section.status, "skipped")
+        self.assertEqual(section.skip_notes, "")
+        self.assertTrue(get_report_state(self.report, self.user).can_submit)
+        self.assertEqual(validate_report(self.report), [])
+        persisted = self.client.get(url)
+        self.assertEqual(persisted.data["status"], "skipped")
+        response = self.client.post(url, {"status": "not_started"}, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        section.refresh_from_db()
+        self.assertEqual(section.status, "not_started")
+        self.assertIsNone(section.skipped_at)
+        self.assertIsNone(section.skip_reason)
+        self.assertFalse(get_report_state(self.report, self.user).can_submit)
+
+    def test_skip_optional_notes_are_saved_and_submission_accepts_empty_notes(self):
+        self.resolve_all_sections()
+        for notes in (None, "  Source register pending.  "):
+            section = set_section_status(
+                report=self.report, section_key=ReportSectionStatus.Section.REVENUE,
+                status="skipped", actor=self.user,
+                skip_reason_code="records_unavailable", skip_reason_detail=notes,
+            )
+            section.refresh_from_db()
+            self.assertEqual(section.skip_notes, (notes or "").strip())
+        set_section_status(
+            report=self.report, section_key=ReportSectionStatus.Section.REVENUE,
+            status="skipped", actor=self.user, skip_reason_code="records_unavailable",
+        )
+        version = submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        self.assertEqual(version.section_snapshots.get(section="revenue").skip_reason_detail, "")
+
+    def test_undo_skip_preserves_source_records_and_skip_requires_reason(self):
+        member = Member.objects.create(
+            assembly=self.assembly, first_name="Report", last_name="Member",
+            member_key="skip-history-member", date_of_birth=date(1990, 1, 1),
+            gender="Male", country="Namibia", phone_number="",
+        )
+        tithe = Tithe.objects.create(
+            assembly=self.assembly, report=self.report, member=member,
+            amount=Decimal("25.00"), timestamp=self.report.period_start,
+        )
+        key = ReportSectionStatus.Section.TITHES
+        with self.assertRaises(ValidationError):
+            set_section_status(report=self.report, section_key=key, status="skipped", actor=self.user)
+        set_section_status(
+            report=self.report, section_key=key, status="skipped", actor=self.user,
+            skip_reason_code="records_unavailable",
+        )
+        section = set_section_status(report=self.report, section_key=key, status="not_started", actor=self.user)
+        section.refresh_from_db()
+        self.assertEqual(section.status, "not_started")
+        self.assertIsNone(section.skip_reason)
+        self.assertIsNone(section.skipped_by)
+        tithe.refresh_from_db()
+        self.assertEqual(tithe.report_id, self.report.pk)
+        self.assertEqual(tithe.amount, Decimal("25.00"))
+        self.assertEqual(get_section_source(self.report, key)["record_count"], 1)
+        with self.assertRaises(ValidationError):
+            set_section_status(report=self.report, section_key=key, status="no_activity", actor=self.user)
+
+    def test_non_required_no_activity_persists_and_allows_submission(self):
+        self.report = ensure_report(assembly=self.assembly, period_start=date(2026, 8, 1), actor=self.user)
+        self.resolve_all_sections()
+        section = self.report.sections.get(section="sunday_school_attendance")
+        self.assertEqual(section.status, "no_activity")
+        self.assertEqual(section.no_activity_confirmed_by, self.user)
+        self.assertIsNotNone(section.no_activity_confirmed_at)
+        resolved = next(item for item in get_report_sections(self.report) if item["key"] == section.section)
+        self.assertTrue(resolved["resolved"])
+        self.assertEqual(resolved["status"], "no_activity")
+        self.assertEqual(validate_report(self.report), [])
+        self.assertTrue(get_report_state(self.report, self.user).can_submit)
+        version = submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        self.assertEqual(version.section_snapshots.get(section=section.section).status, "no_activity")
+
     def test_submission_is_versioned_and_boundary_lock_is_derived(self):
         self.resolve_all_sections()
         version = submit_report(
@@ -566,13 +651,21 @@ class ReportLifecycleTests(APITestCase):
             finding.get("section") == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE
             for finding in validate_report(august_report, sections)
         ))
-        with self.assertRaises(ValidationError):
-            set_section_status(
-                report=august_report,
-                section_key=ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE,
-                status=ReportSectionStatus.Status.NO_ACTIVITY,
-                actor=self.user,
-            )
+        confirmed = set_section_status(
+            report=august_report,
+            section_key=ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE,
+            status=ReportSectionStatus.Status.NO_ACTIVITY,
+            actor=self.user,
+        )
+        confirmed.refresh_from_db()
+        self.assertEqual(confirmed.status, "no_activity")
+        set_section_status(
+            report=august_report, section_key=confirmed.section,
+            status=ReportSectionStatus.Status.NOT_STARTED, actor=self.user,
+        )
+        restored = next(item for item in get_report_sections(august_report) if item["key"] == confirmed.section)
+        self.assertEqual(restored["status"], "not_required")
+        self.assertTrue(restored["resolved"])
 
         september_sections = get_report_sections(self.report)
         september_sunday_school = next(

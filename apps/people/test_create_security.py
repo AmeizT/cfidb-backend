@@ -193,7 +193,7 @@ class CreateSecurityTests(TestCase):
             self.assertEqual(read.status_code, 200)
             self.assertTrue(read.data["avatar"])
 
-    def test_regular_user_can_create_but_cannot_assign_audit_fields_or_manage_members(self):
+    def test_regular_user_can_create_and_delete_but_cannot_assign_audit_fields_or_edit_members(self):
         endpoint, _, payload, _ = self.contracts()[0]
         ordinary = User.objects.create_user(username="ordinary-create", email="ordinary@example.com",
             first_name="Ordinary", last_name="Test", password="test-only", church=self.assembly)
@@ -214,5 +214,5 @@ class CreateSecurityTests(TestCase):
         self.assertEqual(read.status_code, 200)
         self.assertEqual(read.data["assembly"], self.assembly.pk)
         self.assertEqual(self.client.patch(detail, {"first_name": "Changed"}, format="json").status_code, 403)
-        self.assertEqual(self.client.delete(detail).status_code, 403)
+        self.assertEqual(self.client.delete(detail).status_code, 204)
         self.assertEqual(self.client.post(f"{detail}restore/", {}, format="json").status_code, 403)

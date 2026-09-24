@@ -1,9 +1,9 @@
 from apps.churches.models import Church
 from rest_framework.response import Response
-from apps.churches.permissions import IsAdminUserOrOverseer
+from apps.churches.permissions import IsAdminUserOrOverseer, CanCreateAssembly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, permissions, viewsets, status
-from apps.churches.serializers import ChurchAppearanceSerializer, ChurchSerializer
+from apps.churches.serializers import ChurchAppearanceSerializer, ChurchSerializer, CreateChurchSerializer
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
 
@@ -20,7 +20,22 @@ class ChurchView(viewsets.ModelViewSet):
     lookup_field = "public_id"
     lookup_url_kwarg = "public_id"
 
+    def get_serializer_class(self):
+        return CreateChurchSerializer if self.action == "create" else ChurchSerializer
+
+    @action(detail=False, methods=["get"], url_path="create-options", permission_classes=[CanCreateAssembly])
+    def create_options(self, request):
+        from apps.churches.country_defaults import country_options
+        from apps.users.models import User
+        return Response({
+            "countries": country_options(),
+            "pastors": [{"id": user.pk, "name": user.full_name} for user in
+                        User.objects.filter(is_active=True, roles__name__in=["Pastor", "Senior Pastor"]).distinct()],
+        })
+
     def get_permissions(self):
+        if self.action == "create":
+            return [CanCreateAssembly()]
         if self.action == "partial_update":
             return [IsAdminUserOrOverseer()]
         return super().get_permissions()

@@ -91,11 +91,9 @@ class FinancialBase(models.Model):
             raise ValidationError("Transaction date outside report period.")
 
     def clean(self):
-        if (
-            self.report
-            and self.report.status != self.report.Status.DRAFT
-            and not self.report.amendment_started_at
-        ):
+        from apps.reports.services.lifecycle import report_is_open
+
+        if self.report and not report_is_open(self.report):
             raise ValidationError(
                 "Cannot modify transaction under finalized/reviewed/approved report."
             )
@@ -124,10 +122,9 @@ class FinancialBase(models.Model):
                     "Start an amendment before changing source records in a submitted report."
                 )
             return
-        if (
-            self.report.status != self.report.Status.DRAFT
-            and not self.report.amendment_started_at
-        ):
+        from apps.reports.services.lifecycle import report_is_open
+
+        if not report_is_open(self.report):
             raise ValidationError(
                 "Start an amendment before changing source records in a submitted report."
             )

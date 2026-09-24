@@ -354,6 +354,26 @@ class MemberTransferWorkflowTests(TestCase):
             1,
         )
 
+    def test_transfer_api_refreshes_source_and_destination_without_duplicate_member(self):
+        source_client = APIClient()
+        destination_client = APIClient()
+        source_client.force_authenticate(self.source_user)
+        destination_client.force_authenticate(self.receiving_user)
+        member_count = Member.all_objects.count()
+        transfer = self.create_pending_transfer()
+        response = destination_client.post(f"/api/v1/people/member-transfers/{transfer.pk}/accept/", {}, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.member.refresh_from_db()
+        self.assertEqual(self.member.assembly_id, self.to_assembly.pk)
+        self.assertEqual(Member.all_objects.count(), member_count)
+        for _ in range(2):
+            source = source_client.get("/api/v1/people/members/")
+            destination = destination_client.get("/api/v1/people/members/")
+            self.assertEqual(source.status_code, 200)
+            self.assertEqual(destination.status_code, 200)
+            self.assertNotIn(self.member.member_key, str(source.data))
+            self.assertIn(self.member.member_key, str(destination.data))
+
     def test_rejecting_transfer_does_not_move_member(self):
         transfer = self.create_pending_transfer()
 
@@ -393,10 +413,16 @@ class MemberTransferWorkflowTests(TestCase):
         )
 
     def test_old_tithe_and_report_records_are_not_migrated_on_accept(self):
+        from apps.reports.models import AssemblyReport
+
+        historical_report = AssemblyReport.objects.create(
+            assembly=self.from_assembly, period_start=date(2026, 1, 1), period_end=date(2026, 1, 31),
+        )
         tithe = Tithe.objects.create(
             member=self.member,
             assembly=self.from_assembly,
             amount=Decimal("25.00"),
+            report=historical_report,
             payment_method="Cash",
             timestamp=date(2026, 1, 15),
         )

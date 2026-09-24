@@ -1,8 +1,11 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch
+from apps.churches.services.regional_scope import active_zone, uses_regional_shell
 from django.http import FileResponse
 from django.utils import timezone
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -33,6 +36,7 @@ from apps.reports.services.regional_dashboard.overview import build_region_overv
 from apps.reports.services.regional_dashboard.risk import build_region_risk_module
 from apps.reports.services.regional_compliance_pdf import (
     build_regional_monthly_compliance_pdf,
+    _user_can_access_region,
 )
 
 
@@ -54,7 +58,17 @@ def _int_or_none(value):
     return int(value)
 
 
-class RegionMetricsViewSet(ViewSet):
+class RegionalReportAccessMixin:
+    permission_classes = [IsAuthenticated]
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        region = get_object_or_404(Region, pk=kwargs.get("pk"))
+        if not _user_can_access_region(request.user, region):
+            raise PermissionDenied("You do not have access to this region.")
+
+
+class RegionMetricsViewSet(RegionalReportAccessMixin, ViewSet):
 
     def retrieve(self, request, pk=None):
         year = _resolve_year(request)
@@ -68,9 +82,19 @@ class RegionMetricsViewSet(ViewSet):
         return Response(serializer.data)
 
 
-class RegionViewSet(ViewSet):
+class RegionViewSet(RegionalReportAccessMixin, ViewSet):
+    def _scoped_region(self, pk):
+        if not uses_regional_shell(self.request.user):
+            return get_object_or_404(Region, pk=pk)
+        zone = active_zone(self.request.user)
+        if zone is None or str(zone.region_id) != str(pk):
+            raise PermissionDenied("Select an active zone in this region first.")
+        region = get_object_or_404(Region.objects.prefetch_related(Prefetch("zones", queryset=Zone.objects.filter(pk=zone.pk))), pk=pk)
+        region._summary_zone_id = zone.pk
+        return region
+
     def _dashboard_context(self, pk, year):
-        region = get_object_or_404(Region, pk=pk)
+        region = self._scoped_region(pk)
         assemblies_with_reports = get_region_reports(
             region=region,
             year=year,
@@ -216,7 +240,7 @@ class RegionViewSet(ViewSet):
     @action(detail=True, methods=["get"], url_path="countries/(?P<country>[^/.]+)")
     def country(self, request, pk=None, country=None):
         year = _resolve_year(request)
-        region = get_object_or_404(Region, pk=pk)
+        region = self._scoped_region(pk)
         assemblies = get_country_reports(
             region=region,
             country=country,
@@ -232,7 +256,8 @@ class RegionViewSet(ViewSet):
     @action(detail=True, methods=["get"], url_path="zones/(?P<zone_id>[^/.]+)/compliance")
     def zone_compliance(self, request, pk=None, zone_id=None):
         year = _resolve_year(request)
-        zone = get_object_or_404(Zone, pk=zone_id)
+        region = self._scoped_region(pk)
+        zone = get_object_or_404(region.zones.all(), pk=zone_id)
         data = build_zone_compliance_timeline(zone, year)
         return Response(data)
 
@@ -254,9 +279,10 @@ class RegionViewSet(ViewSet):
     @action(detail=True, methods=["get"], url_path="compliance/audit-log")
     def compliance_audit_log(self, request, pk=None):
         year = _resolve_year(request)
+        region = self._scoped_region(pk)
         payload = build_audit_log_payload(
             region_id=int(pk),
-            zone_id=_int_or_none(request.query_params.get("zone_id")),
+            zone_id=getattr(region, "_summary_zone_id", None) or _int_or_none(request.query_params.get("zone_id")),
             country=request.query_params.get("country"),
             assembly_id=_int_or_none(request.query_params.get("assembly_id")),
             reason=request.query_params.get("reason"),
@@ -271,11 +297,14 @@ class RegionViewSet(ViewSet):
 
     @action(detail=True, methods=["get"], url_path="compliance/monthly-report.pdf")
     def monthly_compliance_report_pdf(self, request, pk=None):
-        region = get_object_or_404(Region, pk=pk)
+        region = self._scoped_region(pk)
+        params = request.query_params.copy()
+        if getattr(region, "_summary_zone_id", None):
+            params["zone_id"] = str(region._summary_zone_id)
         result = build_regional_monthly_compliance_pdf(
             region=region,
             user=request.user,
-            query_params=request.query_params,
+            query_params=params,
         )
         response = FileResponse(
             result.buffer,

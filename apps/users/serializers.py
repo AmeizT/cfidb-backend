@@ -236,6 +236,39 @@ class AssignedZoneSerializer(serializers.ModelSerializer):
         )
 
 class CurrentUserSerializer(serializers.ModelSerializer):
+    uses_regional_shell = serializers.SerializerMethodField()
+    regional_zones = serializers.SerializerMethodField()
+    active_regional_zone = serializers.SerializerMethodField()
+    regional_zone = serializers.PrimaryKeyRelatedField(queryset=Zone.objects.all(), required=False, allow_null=True)
+
+    def get_uses_regional_shell(self, obj):
+        from apps.churches.services.regional_scope import uses_regional_shell
+        return uses_regional_shell(obj)
+
+    def get_regional_zones(self, obj):
+        from apps.churches.services.regional_scope import permitted_zones
+        from apps.churches.zone_serializers import ZoneIdentitySerializer
+        return ZoneIdentitySerializer(permitted_zones(obj), many=True, context=self.context).data if self.get_uses_regional_shell(obj) else []
+
+    def get_active_regional_zone(self, obj):
+        from apps.churches.services.regional_scope import active_zone
+        from apps.churches.zone_serializers import ZoneIdentitySerializer
+        zone = active_zone(obj) if self.get_uses_regional_shell(obj) else None
+        return ZoneIdentitySerializer(zone, context=self.context).data if zone else None
+
+    def validate_regional_zone(self, value):
+        from apps.churches.services.regional_scope import permitted_zones, uses_regional_shell
+        user = self.context["request"].user
+        if not uses_regional_shell(user) or (value and not permitted_zones(user).filter(pk=value.pk).exists()):
+            raise serializers.ValidationError("You do not have access to this regional zone.")
+        return value
+
+    can_create_assembly = serializers.SerializerMethodField()
+
+    def get_can_create_assembly(self, obj):
+        from apps.churches.permissions import can_create_assembly
+        return can_create_assembly(obj)
+
     assemblies = AssemblySummarySerializer(many=True, read_only=True)
     roles = RoleSerializer(many=True, read_only=True)
     assembly = AssemblySummarySerializer(source="church", read_only=True)
@@ -266,6 +299,17 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
+    can_view_executive_summary = serializers.SerializerMethodField()
+    can_view_assembly_summary = serializers.SerializerMethodField()
+
+    def get_can_view_executive_summary(self, obj):
+        from apps.reports.services.summaries.access import can_view_executive_summary
+        return can_view_executive_summary(obj)
+
+    def get_can_view_assembly_summary(self, obj):
+        from apps.reports.services.summaries.access import can_view_assembly_summary
+        return can_view_assembly_summary(obj)
+
     active_region = serializers.SerializerMethodField()
     can_manage_church_appearance = serializers.SerializerMethodField()
 
@@ -278,6 +322,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "uses_regional_shell", "regional_zones", "active_regional_zone", "regional_zone", "is_superuser",
             "id",
             "user_id",
             "full_name",
@@ -291,6 +336,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "assemblies",
             "roles",
             "is_region_staff",
+            "can_view_executive_summary",
+            "can_view_assembly_summary",
             "active_region",
             "region_roles",
             "assigned_regions",
@@ -300,6 +347,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_admin",
             "can_manage_church_appearance",
+            "can_create_assembly",
             "is_onboarded",
             "is_db_staff",
             "is_db_zone_staff",
@@ -311,6 +359,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         )
 
         read_only_fields = [
+            "is_superuser",
             "full_name",
             "assemblies",
             "roles",

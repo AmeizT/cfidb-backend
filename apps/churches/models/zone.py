@@ -1,6 +1,6 @@
 from django.db import models # type: ignore
 from apps.users.models import User
-from apps.churches.utils import generate_zone_code
+from apps.churches.utils import generate_zone_code, generate_oklch_color, zone_images_path
 from django.utils.translation import gettext_lazy as _ # type: ignore
 
 class Zone(models.Model):
@@ -19,6 +19,8 @@ class Zone(models.Model):
         blank=True,
         editable=False,
     )
+    zone_avatar = models.ImageField(upload_to=zone_images_path, blank=True)
+    zone_avatar_fallback = models.CharField(max_length=36, blank=True)
     description = models.TextField(blank=True)
 
     office_location = models.CharField(max_length=255, blank=True)
@@ -53,6 +55,10 @@ class Zone(models.Model):
     
 
     def save(self, *args, **kwargs):
+        if not self.zone_avatar_fallback:
+            self.zone_avatar_fallback = generate_oklch_color()
+            if kwargs.get("update_fields") is not None:
+                kwargs["update_fields"] = set(kwargs["update_fields"]) | {"zone_avatar_fallback"}
         if not self.code:
             self.code = generate_zone_code(self.region)
         super().save(*args, **kwargs)

@@ -12,6 +12,8 @@ from apps.reports.views.section_viewset import ReportSectionViewSet
 from apps.reports.views.region_viewset import RegionMetricsViewSet, RegionViewSet
 from apps.reports.views.zone_viewset import ZoneMetricsViewSet
 
+from apps.reports.views.summaries import RegionalSummaryView, AssemblySummaryView, SummaryContributorsView
+
 app_name = "reports"
 
 router = SimpleRouter()
@@ -28,6 +30,9 @@ router.register(r"metrics/zones", ZoneMetricsViewSet, basename="zone-metrics")
 router.register(r"metrics/regions", RegionViewSet, basename="region-metrics")
 
 urlpatterns = [
+    path("summaries/regional/", RegionalSummaryView.as_view(), name="summary-regional"),
+    path("summaries/assembly/", AssemblySummaryView.as_view(), name="summary-assembly"),
+    path("summaries/contributors/", SummaryContributorsView.as_view(), name="summary-contributors"),
     path("", include(router.urls)),
     path(
         "region/<int:pk>/overview/",

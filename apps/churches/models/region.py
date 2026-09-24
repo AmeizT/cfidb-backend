@@ -15,6 +15,7 @@ class Region(models.Model):
 
 class RegionLeadership(models.Model):
     class Role(models.TextChoices):
+        REGIONAL_ADMIN = "regional_admin", "Regional Admin"
         OVERSEER = "overseer", "Overseer"
         OVERSEER_PA = "overseer_pa", "Overseer PA"
         REGION_MODERATOR = "region_moderator", "Region Moderator"

@@ -5,6 +5,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from typing import Any
 
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
@@ -39,6 +40,7 @@ class ReportState:
     is_overdue: bool
     is_locked: bool
     is_editable: bool
+    backfill_active: bool
     can_submit: bool
     can_amend: bool
     can_request_reopen: bool
@@ -85,6 +87,49 @@ def can_edit_report(user, report: AssemblyReport) -> bool:
         or getattr(user, "is_admin", False)
         or getattr(user, "is_db_staff", False)
     )
+
+
+def is_backfill_period(period_start, *, now=None) -> bool:
+    """The temporary window is not a role grant or a submission override."""
+    config = settings.REPORT_BACKFILL
+    today = timezone.localdate(now or timezone.now())
+    start, end = report_period(period_start)
+    return bool(
+        config["enabled"]
+        and config["starts_on"] <= today <= config["ends_on"]
+        and config["period_starts_on"] <= start
+        and end <= config["period_ends_on"]
+    )
+
+
+def report_is_open(report: AssemblyReport) -> bool:
+    """Preserve the normal version/amendment policy and protected stored states."""
+    if report.current_version_id:
+        return bool(report.amendment_started_at)
+    return report.status in {
+        AssemblyReport.Status.DRAFT,
+        AssemblyReport.Status.IN_PROGRESS,
+        AssemblyReport.Status.REJECTED,
+    } and not report.submitted_at
+
+
+def can_complete_report(user, report: AssemblyReport, *, now=None) -> bool:
+    if not can_edit_report(user, report) or not report_is_open(report):
+        return False
+    if not report.current_version_id and is_backfill_period(report.period_start, now=now):
+        return True
+    # Normal policy has no deadline cutoff for open reports. Overdue is a
+    # compliance state, so expiry of backfill does not itself lock a report.
+    return report_is_open(report)
+
+
+def can_create_report(user, *, assembly, period_start, now=None) -> bool:
+    now = now or timezone.now()
+    start, end = report_period(period_start)
+    candidate = AssemblyReport(assembly=assembly, period_start=start, period_end=end)
+    if not can_edit_report(user, candidate):
+        return False
+    return is_backfill_period(start, now=now) or start <= timezone.localdate(now).replace(day=1)
 
 
 def can_approve_reopening(user, report: AssemblyReport) -> bool:
@@ -251,13 +296,13 @@ def get_effective_section_status(
     section: ReportSectionStatus,
     source: dict[str, Any],
 ) -> str:
-    if not is_section_required(report, section.section):
-        return "not_required"
     if section.status in {
         ReportSectionStatus.Status.SKIPPED,
         ReportSectionStatus.Status.NO_ACTIVITY,
     }:
         return section.status
+    if not is_section_required(report, section.section):
+        return "not_required"
     if source["record_count"]:
         if section.section == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE:
             has_drafts = any(row.get("status") == "draft" for row in source["breakdown"])
@@ -315,13 +360,13 @@ def validate_report(
                 "blocking": True,
             })
         if section.status == ReportSectionStatus.Status.SKIPPED and (
-            not section.skip_reason or not (section.skip_notes or "").strip()
+            not section.skip_reason
         ):
             findings.append({
-                "code": "skip_detail_required",
+                "code": "skip_reason_required",
                 "level": "error",
                 "section": key,
-                "message": "A skip reason and detailed explanation are required.",
+                "message": "A skip reason is required.",
                 "blocking": True,
             })
     for missing in set(REQUIRED_SECTIONS) - seen:
@@ -372,7 +417,7 @@ def get_report_state(
     else:
         status = "not_started"
 
-    editable = not current_version or has_amendment
+    editable = can_complete_report(user, report, now=now)
     owns_edit = can_edit_report(user, report)
     can_submit = bool(owns_edit and editable and ready)
     can_amend = bool(
@@ -388,6 +433,9 @@ def get_report_state(
         is_overdue=is_overdue,
         is_locked=is_locked,
         is_editable=editable and owns_edit,
+        backfill_active=bool(
+            editable and not current_version and is_backfill_period(report.period_start, now=now)
+        ),
         can_submit=can_submit,
         can_amend=can_amend,
         can_request_reopen=can_request,
@@ -419,6 +467,10 @@ def ensure_report(
     *, assembly, period_start, period_end=None, actor=None, historical_backfill=False
 ) -> AssemblyReport:
     period_start, calculated_end = report_period(period_start)
+    if actor is not None and not can_create_report(
+        actor, assembly=assembly, period_start=period_start
+    ):
+        raise PermissionDenied("You do not have permission to start this reporting period.")
     if period_end is not None and period_end != calculated_end:
         raise ValidationError({
             "period_end": f"Expected canonical month end {calculated_end}."
@@ -487,7 +539,9 @@ def set_section_status(
         raise ValidationError({"report": "This submitted report is locked for editing."})
     if section_key not in REQUIRED_SECTIONS:
         raise ValidationError({"section": "Unknown report section."})
-    if not is_section_required(report, section_key):
+    if not is_section_required(report, section_key) and status not in {
+        ReportSectionStatus.Status.NO_ACTIVITY, ReportSectionStatus.Status.NOT_STARTED,
+    }:
         raise ValidationError({"section": "This report section is not required for the reporting period."})
     if status not in ReportSectionStatus.Status.values:
         raise ValidationError({"status": "Invalid section status."})
@@ -505,13 +559,11 @@ def set_section_status(
         if status == ReportSectionStatus.Status.SKIPPED:
             if skip_reason_code not in ReportSectionStatus.SkipReason.values:
                 raise ValidationError({"skip_reason_code": "Select a valid skip reason."})
-            if not (skip_reason_detail or "").strip():
-                raise ValidationError({"skip_reason_detail": "A detailed explanation is required."})
 
         now = timezone.now()
         section.status = status
         section.skip_reason = skip_reason_code if status == ReportSectionStatus.Status.SKIPPED else None
-        section.skip_notes = skip_reason_detail.strip() if status == ReportSectionStatus.Status.SKIPPED else None
+        section.skip_notes = (skip_reason_detail or "").strip() if status == ReportSectionStatus.Status.SKIPPED else None
         section.skipped_by = actor if status == ReportSectionStatus.Status.SKIPPED else None
         section.skipped_at = now if status == ReportSectionStatus.Status.SKIPPED else None
         section.no_activity_confirmed_by = actor if status == ReportSectionStatus.Status.NO_ACTIVITY else None

@@ -920,6 +920,10 @@ def get_region_reports(
         .order_by("assembly_id", "period_start")
     )
 
+    if getattr(region, "_summary_zone_id", None):
+        assemblies = assemblies.filter(zone_id=region._summary_zone_id)
+        reports = reports.filter(assembly__zone_id=region._summary_zone_id)
+
     reports_by_assembly: dict[int, list[AssemblyReport]] = defaultdict(list)
     for report in reports:
         reports_by_assembly[report.assembly_id].append(report) # type: ignore
@@ -955,6 +959,10 @@ def get_country_reports(
         .prefetch_related("sections")
         .order_by("assembly_id", "period_start")
     )
+
+    if getattr(region, "_summary_zone_id", None):
+        assemblies = assemblies.filter(zone_id=region._summary_zone_id)
+        reports = reports.filter(assembly__zone_id=region._summary_zone_id)
 
     reports_by_assembly: dict[int, list[AssemblyReport]] = defaultdict(list)
     for report in reports:

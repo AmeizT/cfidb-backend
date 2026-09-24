@@ -151,6 +151,7 @@ class AttendanceViewSet(
             with transaction.atomic():
                 report = resolve_report(
                     assembly=assembly,
+                    user=request.user,
                     period=payload["period"],
                     report_id=payload.get("report"),
                 )

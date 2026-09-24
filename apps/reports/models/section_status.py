@@ -122,8 +122,8 @@ class ReportSectionStatus(models.Model):
         from django.core.exceptions import ValidationError
 
         if self.status == self.Status.SKIPPED:
-            if not self.skip_reason or not (self.skip_notes or "").strip():
-                raise ValidationError("Skip reason and a detailed explanation are required.")
+            if not self.skip_reason:
+                raise ValidationError("A skip reason is required.")
 
         if self.status == self.Status.NO_ACTIVITY and (
             not self.no_activity_confirmed_by_id or not self.no_activity_confirmed_at
@@ -131,7 +131,7 @@ class ReportSectionStatus(models.Model):
             raise ValidationError("No activity must record who confirmed it and when.")
 
 
-    def mark_skipped(self, reason, notes, user=None):
+    def mark_skipped(self, reason, notes="", user=None):
         from apps.reports.services.section_state_service import update_section_status
 
         return update_section_status(

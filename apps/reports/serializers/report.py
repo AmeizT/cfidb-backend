@@ -114,6 +114,7 @@ class AssemblyReportSerializer(HyperlinkedModelSerializer):
             "is_overdue": state.is_overdue,
             "is_locked": state.is_locked,
             "is_editable": state.is_editable,
+            "backfill_active": state.backfill_active,
             "can_submit": state.can_submit,
             "can_amend": state.can_amend,
             "can_request_reopen": state.can_request_reopen,

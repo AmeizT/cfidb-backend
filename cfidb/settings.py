@@ -1,9 +1,19 @@
 import os
 from pathlib import Path
-from datetime import timedelta
+from datetime import date, timedelta
 from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Temporary onboarding window, evaluated using the active Django timezone.
+# Normal report policy resumes automatically after ends_on; no scheduled job.
+REPORT_BACKFILL = {
+    "enabled": True,
+    "starts_on": date(2026, 9, 1),
+    "ends_on": date(2026, 9, 30),
+    "period_starts_on": date(2026, 1, 1),
+    "period_ends_on": date(2026, 8, 31),
+}
 
 DEBUG = os.environ.get('DJANGO_ENV') == 'LOCAL'
 

@@ -10,9 +10,26 @@ class ChurchAppearanceSerializer(serializers.Serializer):
     avatar_fallback = serializers.ChoiceField(choices=sorted(CHURCH_APPEARANCE_COLORS))
 
 class CreateChurchSerializer(serializers.ModelSerializer):
+    # The selected ISO country is the sole input for derived geographic fields.
+    country = serializers.CharField()
+
     class Meta:
         model = Church
-        fields = '__all__'
+        fields = [
+            "id", "public_id", "name", "code", "description", "address", "city", "province",
+            "country", "country_code", "locale", "currency", "phone_number", "email",
+            "status", "avatar", "avatar_fallback", "cover_image", "cover_image_position",
+            "established_date", "assigned_pastors",
+        ]
+        read_only_fields = ["id", "public_id", "country_code", "locale", "currency"]
+
+    def validate(self, attrs):
+        from apps.churches.country_defaults import country_defaults
+        try:
+            attrs.update(country_defaults(attrs["country"]))
+        except ValueError as exc:
+            raise serializers.ValidationError({"country": str(exc)}) from exc
+        return attrs
 
 
 class ZoneLeadershipSerializer(serializers.ModelSerializer):
@@ -38,6 +55,8 @@ class ZoneSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'leadership',
+            'zone_avatar',
+            'zone_avatar_fallback',
         ]
 
 class AssemblyCurrencySerializer(serializers.ModelSerializer):

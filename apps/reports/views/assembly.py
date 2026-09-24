@@ -45,6 +45,9 @@ from apps.reports.services.tithe_contributors_pdf import (
 )
 from apps.reports.services.analytics.tithes_engine import build_tithes_year
 from apps.reports.services.lifecycle import (
+    can_complete_report,
+    can_create_report,
+    is_backfill_period,
     ensure_report,
     get_due_at,
     get_report_sections,
@@ -66,6 +69,11 @@ class ReportViewSet(
     serializer_class = AssemblyReportSerializer
     pagination_class = DataTablePagination
     permission_classes = [permissions.IsAuthenticated]
+
+    def perform_update(self, serializer):
+        if not can_complete_report(self.request.user, serializer.instance):
+            raise PermissionDenied("This report is locked for editing.")
+        serializer.save()
 
     def _add_paginated_table_fields(self, response, rows, **extra):
         response.data["data"] = rows
@@ -453,9 +461,8 @@ class ReportViewSet(
     def _placeholder_period(self, assembly, start, end):
         due_report = AssemblyReport(assembly=assembly, period_start=start, period_end=end)
         due_at = get_due_at(due_report)
-        today = timezone.localdate()
         is_overdue = timezone.now() > due_at
-        can_start = start <= today.replace(day=1)
+        can_start = can_create_report(self.request.user, assembly=assembly, period_start=start)
         return {
             "id": None,
             "assembly": AssemblySerializer(assembly).data,
@@ -476,6 +483,7 @@ class ReportViewSet(
                 "is_locked": False,
                 "is_editable": can_start,
                 "can_start": can_start,
+                "backfill_active": can_start and is_backfill_period(start),
                 "can_submit": False,
                 "can_amend": False,
                 "can_request_reopen": False,
@@ -569,8 +577,10 @@ class ReportViewSet(
             assembly=assembly, period_start=start, period_end=end
         ).prefetch_related("sections", "versions").select_related("current_version").first()
         if request.method == "POST":
-            if start > timezone.localdate().replace(day=1):
-                raise DRFValidationError({"period": "Future reporting periods cannot be started."})
+            if not can_create_report(request.user, assembly=assembly, period_start=start):
+                raise DRFValidationError({"period": "You cannot start this reporting period."})
+            if report is not None and not can_complete_report(request.user, report):
+                raise PermissionDenied("This report is locked for editing.")
             report = ensure_report(
                 assembly=assembly, period_start=start, period_end=end, actor=request.user
             )

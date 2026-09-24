@@ -182,7 +182,9 @@ class Attendance(AuditLogMixin, models.Model):
         had_report = bool(self.report_id)
         self.assign_report()
 
-        if self.report and self.report.status != AssemblyReport.Status.DRAFT:
+        from apps.reports.services.lifecycle import report_is_open
+
+        if self.report and not report_is_open(self.report):
             from django.core.exceptions import ValidationError
             raise ValidationError("Start an amendment before changing source records in a submitted report.")
 

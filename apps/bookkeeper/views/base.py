@@ -4,7 +4,7 @@ from django.db import IntegrityError, transaction
 from django.db.models import Q
 from rest_framework.decorators import action
 from apps.reports.models.audit import AuditLog
-from apps.reports.services.lifecycle import get_report_state
+from apps.reports.services.lifecycle import can_complete_report, get_report_state
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.shortcuts import get_object_or_404
@@ -132,6 +132,9 @@ class FinancialViewSet(viewsets.ModelViewSet):
                 instances = [instances]
 
             for instance in instances:
+                report = getattr(instance, "report", None)
+                if report is not None and not can_complete_report(user, report):
+                    raise PermissionDenied("This report is locked for editing.")
                 # AuditLogMixin handles action / old_data / new_data
                 instance.log_audit(
                     user=user,

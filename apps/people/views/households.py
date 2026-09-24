@@ -117,6 +117,15 @@ class HouseholdViewSet(PeopleTableSchemaMixin, viewsets.ModelViewSet):
             )
         return queryset
 
+    @action(detail=False, methods=["get"], url_path="transfer-options")
+    def transfer_options(self, request):
+        from apps.churches.models import Church
+        return Response([
+            {"id": assembly.pk, "name": assembly.name}
+            for assembly in Church.objects.select_related("zone").all()
+            if can_access_assembly(request.user, assembly)
+        ])
+
     def perform_create(self, serializer):
         from apps.people.create_security import active_create_assembly
         if self.request.headers.get("X-Assembly-ID") is not None:

@@ -33,3 +33,19 @@ class IsRegionalStaff(permissions.BasePermission):
             return False
 
         return assigned_regions.filter(is_active=True).exists()
+
+
+def can_create_assembly(user):
+    if not user or not user.is_authenticated:
+        return False
+    return bool(
+        user.is_superuser
+        or user.roles.filter(name="Zone Admin").exists()
+        or user.zone_roles.filter(role="admin", is_active=True, zone__is_active=True).exists()
+        or user.region_roles.filter(role="regional_admin", is_active=True, region__is_active=True).exists()
+    )
+
+
+class CanCreateAssembly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return can_create_assembly(request.user)

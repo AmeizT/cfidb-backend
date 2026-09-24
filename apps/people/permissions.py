@@ -7,7 +7,7 @@ class IsAdminOrOverseer(permissions.BasePermission):
 
 
 class CanManageMembers(permissions.BasePermission):
-    """Allow authenticated creation; keep existing roles for other member writes."""
+    """Allow authenticated creation and deletion; retain roles for other writes."""
 
     def has_permission(self, request, view):
         user = request.user
@@ -15,7 +15,7 @@ class CanManageMembers(permissions.BasePermission):
             return False
         if request.method in permissions.SAFE_METHODS:
             return True
-        if getattr(view, "action", None) == "create":
+        if getattr(view, "action", None) in {"create", "destroy"}:
             return True
         return bool(
             getattr(user, "is_superuser", False)

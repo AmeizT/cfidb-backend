@@ -161,7 +161,7 @@ class SundaySchoolAttendance(AuditLogMixin, models.Model):
 
     def save(self, *args, **kwargs):
         from apps.reports.models import AssemblyReport
-        from apps.reports.services.lifecycle import ensure_report
+        from apps.reports.services.lifecycle import ensure_report, report_is_open
 
         self.full_clean()
         report = self.report
@@ -176,7 +176,7 @@ class SundaySchoolAttendance(AuditLogMixin, models.Model):
             report.period_start <= self.service_date <= report.period_end
         ):
             raise ValidationError("Sunday School report must match its assembly and service month.")
-        if report.status != AssemblyReport.Status.DRAFT:
+        if not report_is_open(report):
             raise ValidationError(
                 "Start an amendment before changing source records in a submitted report."
             )

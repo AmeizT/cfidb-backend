@@ -8,7 +8,7 @@ from rest_framework.exceptions import ValidationError
 
 from apps.bookkeeper.models import Expenditure, Overhead, Revenue, Tithe
 from apps.reports.models import AssemblyReport
-from apps.reports.services.lifecycle import ensure_report
+from apps.reports.services.lifecycle import can_complete_report, can_create_report, ensure_report
 
 
 class BatchEntryValidationError(Exception):
@@ -34,26 +34,31 @@ def _period_bounds(period):
     return date(year, month, 1), date(year, month, calendar.monthrange(year, month)[1])
 
 
-def resolve_report(*, assembly, period, report_id=None):
+def resolve_report(*, assembly, period, user, report_id=None):
     period_start, period_end = _period_bounds(period)
+    if not can_create_report(user, assembly=assembly, period_start=period_start):
+        raise BatchEntryValidationError({"report": ["You cannot start this reporting period."]})
     queryset = AssemblyReport.objects.filter(
         assembly=assembly,
         period_start=period_start,
         period_end=period_end,
-        status=AssemblyReport.Status.DRAFT,
     )
     if report_id is not None:
         report = queryset.filter(pk=report_id).first()
         if report is None:
             raise BatchEntryValidationError({"report": ["The selected draft report is outside the active assembly or reporting period."]})
+        if not can_complete_report(user, report):
+            raise BatchEntryValidationError({"report": ["This report is locked for editing."]})
         return report
     matches = list(queryset[:2])
     if len(matches) > 1:
         raise BatchEntryValidationError({"report": ["Multiple canonical draft reports exist for this period."]})
     if matches:
+        if not can_complete_report(user, matches[0]):
+            raise BatchEntryValidationError({"report": ["This report is locked for editing."]})
         return matches[0]
     try:
-        return ensure_report(assembly=assembly, period_start=period_start, period_end=period_end)
+        return ensure_report(assembly=assembly, period_start=period_start, period_end=period_end, actor=user)
     except DjangoValidationError as exc:
         raise BatchEntryValidationError(_error_detail(exc)) from exc
 
@@ -108,7 +113,7 @@ def _refresh_reports(instances):
 @transaction.atomic
 def create_tithes(*, assembly, user, period, entries, report_id=None):
     validate_dates(entries, period, "timestamp")
-    report = resolve_report(assembly=assembly, period=period, report_id=report_id)
+    report = resolve_report(assembly=assembly, period=period, user=user, report_id=report_id)
     errors = _duplicate_errors(
         entries, lambda row: row.get("member_id"), "member",
         "This member appears more than once in this submission.", allow_null=True,
@@ -135,7 +140,7 @@ def create_tithes(*, assembly, user, period, entries, report_id=None):
 @transaction.atomic
 def create_revenues(*, assembly, user, period, entries, report_id=None):
     validate_dates(entries, period, "timestamp")
-    report = resolve_report(assembly=assembly, period=period, report_id=report_id)
+    report = resolve_report(assembly=assembly, period=period, user=user, report_id=report_id)
     errors = _duplicate_errors(entries, lambda row: row["category_id"], "category", "Category is selected more than once.")
     for index, row in enumerate(entries):
         item = row["category"]
@@ -158,7 +163,7 @@ def create_revenues(*, assembly, user, period, entries, report_id=None):
 @transaction.atomic
 def create_overheads(*, assembly, user, period, entries, report_id=None):
     validate_dates(entries, period, "timestamp")
-    report = resolve_report(assembly=assembly, period=period, report_id=report_id)
+    report = resolve_report(assembly=assembly, period=period, user=user, report_id=report_id)
     errors = _duplicate_errors(entries, lambda row: row["overhead_type_id"], "overhead_type", "Overhead type is selected more than once.")
     for index, row in enumerate(entries):
         item = row["overhead_type"]
@@ -177,7 +182,7 @@ def create_overheads(*, assembly, user, period, entries, report_id=None):
 @transaction.atomic
 def create_expenditures(*, assembly, user, period, entries, report_id=None):
     validate_dates(entries, period, "invoice_date")
-    report = resolve_report(assembly=assembly, period=period, report_id=report_id)
+    report = resolve_report(assembly=assembly, period=period, user=user, report_id=report_id)
     errors = _duplicate_errors(
         entries,
         lambda row: (row["invoice_date"], row["category"], row["name"].strip().casefold(), row.get("invoice_number", "").strip().casefold()),

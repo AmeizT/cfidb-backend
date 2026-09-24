@@ -1,4 +1,5 @@
 from rest_framework import filters, generics
+from apps.churches.services.regional_scope import scope_regional_queryset
 
 from apps.churches.permissions import IsRegionalStaff
 from apps.churches.regional_serializers import (
@@ -72,7 +73,7 @@ class RegionalChurchesView(RegionalTableSchemaMixin, generics.ListAPIView):
     ordering = ["name"]
 
     def get_queryset(self):
-        return get_regional_churches_queryset(self.request.user)
+        return scope_regional_queryset(get_regional_churches_queryset(self.request.user), self.request.user)
 
     def get_table_schema(self):
         return get_regional_churches_table_schema(self.request.user)
@@ -103,7 +104,7 @@ class RegionalUsersView(RegionalTableSchemaMixin, generics.ListAPIView):
     ordering = ["last_name", "first_name"]
 
     def get_queryset(self):
-        return get_regional_users_queryset(self.request.user)
+        return scope_regional_queryset(get_regional_users_queryset(self.request.user), self.request.user, "church__zone_id")
 
     def get_table_schema(self):
         return get_regional_users_table_schema(self.request.user)

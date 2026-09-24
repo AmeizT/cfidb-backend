@@ -61,6 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         null=True,
         blank=True
     )
+    regional_zone = models.ForeignKey("churches.Zone", null=True, blank=True, on_delete=models.SET_NULL, related_name="+")
     assemblies = models.ManyToManyField(
         "churches.Church",
         related_name='branches', 

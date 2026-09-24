@@ -104,3 +104,19 @@ class MemberDataIntegrityTests(TestCase):
             {"first_name": "Outside"}, format="json",
         )
         self.assertEqual(outside_scope.status_code, 404)
+
+    def test_regular_user_can_delete_visible_member_but_not_edit_or_restore(self):
+        self.client.force_authenticate(self.regular_user)
+        url = f"/api/v1/people/members/{self.member.member_key}/"
+        self.assertEqual(self.client.patch(url, {"first_name": "Denied"}, format="json").status_code, 403)
+        self.assertEqual(self.client.delete(url).status_code, 204)
+        self.assertTrue(Member.all_objects.get(pk=self.member.pk).is_trash)
+        self.assertTrue(Tithe.objects.filter(member_id=self.member.pk).exists())
+        self.assertEqual(self.client.post(f"{url}restore/").status_code, 403)
+
+    def test_regular_user_cannot_delete_member_outside_visible_assembly(self):
+        self.regular_user.church = self.other_assembly
+        self.regular_user.save()
+        self.client.force_authenticate(self.regular_user)
+        self.assertEqual(self.client.delete(f"/api/v1/people/members/{self.member.member_key}/").status_code, 404)
+        self.assertTrue(Member.objects.filter(pk=self.member.pk).exists())
