@@ -9,12 +9,13 @@ from typing import Any
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from reportlab.platypus import (
+    Flowable,
     PageBreak,
     Paragraph,
     SimpleDocTemplate,
@@ -47,32 +48,49 @@ MONTH_NAMES = {
     12: "December",
 }
 
-SECTION_ORDER = [
-    "attendance",
-    "tithes",
-    "income",
-    "expenditure",
-    "remittance",
-    "junior_members",
-]
-
-SECTION_LABELS = {
-    "attendance": "AT",
-    "tithes": "TI",
-    "income": "IN",
-    "expenditure": "EX",
-    "remittance": "RM",
-    "junior_members": "JM",
-}
-
-SECTION_NAMES = {
-    "attendance": "Attendance",
-    "tithes": "Tithes",
-    "income": "Income",
-    "expenditure": "Expenditure",
-    "remittance": "Remittance",
+SECTION_ORDER = ["attendance", "sunday_school_attendance", "tithes", "income", "expenditure", "remittance"]
+SECTION_LABELS = dict(zip(SECTION_ORDER, ["AT", "SAT", "TI", "IN", "EX", "RM"]))
+SECTION_NAMES = dict(zip(SECTION_ORDER, ["Attendance", "Sunday School Attendance", "Tithes", "Income", "Expenses", "Remittance"]))
+SECTION_NAMES.update({
+    "general_attendance": "Attendance", "revenue": "Income",
+    "operating_expenses": "Operating Expenses", "activity_other_expenses": "Activity & Other Expenses",
     "junior_members": "Junior Members",
-}
+})
+
+
+def _section_state(section):
+    value = section.get("status") if isinstance(section, dict) else section
+    status = str(value or "MISSING").upper()
+    if status in {"SUBMITTED", "SUB", "COMPLETED", "NO_ACTIVITY", "PRESENT"}:
+        return "present"
+    if status in {"DRAFT", "IN_PROGRESS", "INCOMPLETE"}:
+        return "progress"
+    if status in {"SKIPPED", "SKP"}:
+        return "skipped"
+    return "missing"
+
+
+def _badge_entries(sections):
+    # Display aliases only. Never recalculate completion or report status here.
+    entries = []
+    aliases = {"attendance": "general_attendance", "income": "revenue"}
+    for key in SECTION_ORDER:
+        source_key = aliases.get(key, key)
+        if source_key in sections:
+            state = _section_state(sections[source_key])
+        elif key in sections:
+            state = _section_state(sections[key])
+        elif key == "expenditure" and any(k in sections for k in ("operating_expenses", "activity_other_expenses")):
+            states = [_section_state(sections.get(k)) for k in ("operating_expenses", "activity_other_expenses")]
+            state = states[0] if states[0] == states[1] else "skipped" if "skipped" in states else "progress"
+        elif key == "remittance":
+            # The current reporting schema has no remittance section. Absence
+            # of a tracked field is not evidence of a missing submission.
+            state = "unavailable"
+        else:
+            state = "missing"
+        entries.append((SECTION_LABELS[key], state))
+    return entries
 
 
 @dataclass
@@ -226,23 +244,6 @@ def _monthly_status_label(item: dict[str, Any]) -> str:
     return "Not submitted"
 
 
-def _section_marker(section: dict[str, Any] | None) -> str:
-    status = str((section or {}).get("status") or "MISSING").upper()
-    if status == "SUBMITTED":
-        return "SUB"
-    if status == "SKIPPED":
-        return "SKP"
-    return "MIS"
-
-
-def _section_status_text(sections: dict[str, Any]) -> str:
-    markers = [
-        f"{SECTION_LABELS[section]}: {_section_marker(sections.get(section))}"
-        for section in SECTION_ORDER
-    ]
-    return "   ".join(markers)
-
-
 def _submitted_on_text(item: dict[str, Any]) -> str:
     submitted_at = item.get("submitted_at")
     due_date = item.get("due_date")
@@ -255,9 +256,7 @@ def _submitted_on_text(item: dict[str, Any]) -> str:
             suffix = "day" if days_late == 1 else "days"
             lines.append(f"Late by {days_late} {suffix}")
     else:
-        lines.append("-")
-        if due_date:
-            lines.append(f"Due {_format_date(due_date)}")
+        lines.append(f"Due {_format_date(due_date)}" if due_date else "-")
 
     return "<br/>".join(escape(line) for line in lines)
 
@@ -525,90 +524,135 @@ def _html_p(text: str, style: ParagraphStyle) -> Paragraph:
     return Paragraph(text, style)
 
 
+# Keep the renderer's existing sans-serif family (also the application's fallback).
+CONTENT_WIDTH = 268 * mm
+INK = colors.HexColor("#10213D")
+MUTED = colors.HexColor("#64748B")
+BORDER = colors.HexColor("#DFE7F1")
+STATE_COLORS = {
+    "present": (colors.HexColor("#DCF5E6"), colors.HexColor("#087443")),
+    "progress": (colors.HexColor("#FFF0C4"), colors.HexColor("#9B6200")),
+    "missing": (colors.HexColor("#FDE2E7"), colors.HexColor("#BC243C")),
+    "skipped": (colors.HexColor("#EDF0F5"), colors.HexColor("#64748B")),
+    "unavailable": (colors.HexColor("#EDF0F5"), colors.HexColor("#64748B")),
+    "legend": (colors.HexColor("#EAF2FF"), colors.HexColor("#284C83")),
+}
+
+
 def _build_styles():
     styles = getSampleStyleSheet()
-    styles.add(
-        ParagraphStyle(
-            name="ReportTitle",
-            parent=styles["Title"],
-            fontName="Helvetica-Bold",
-            fontSize=18,
-            leading=22,
-            textColor=colors.HexColor("#0F172A"),
-            spaceAfter=8,
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="SectionTitle",
-            parent=styles["Heading2"],
-            fontName="Helvetica-Bold",
-            fontSize=12,
-            leading=15,
-            textColor=colors.HexColor("#0F172A"),
-            spaceBefore=8,
-            spaceAfter=5,
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="BodySmall",
-            parent=styles["BodyText"],
-            fontName="Helvetica",
-            fontSize=8,
-            leading=10,
-            textColor=colors.HexColor("#1E293B"),
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="BodySmallBold",
-            parent=styles["BodySmall"],
-            fontName="Helvetica-Bold",
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="TableHeader",
-            parent=styles["BodySmallBold"],
-            alignment=TA_CENTER,
-            textColor=colors.white,
-        )
-    )
-    styles.add(
-        ParagraphStyle(
-            name="RightSmall",
-            parent=styles["BodySmall"],
-            alignment=TA_RIGHT,
-        )
-    )
+    specs = {
+        "ReportTitle": dict(fontName="Helvetica-Bold", fontSize=25, leading=30, textColor=INK, alignment=TA_LEFT, spaceAfter=0),
+        "SectionTitle": dict(fontName="Helvetica-Bold", fontSize=16, leading=20, textColor=INK, spaceAfter=8),
+        "BodySmall": dict(fontName="Helvetica", fontSize=8.5, leading=11.5, textColor=INK),
+        "BodySmallBold": dict(fontName="Helvetica-Bold", fontSize=8.5, leading=11.5, textColor=INK),
+        "TableHeader": dict(fontName="Helvetica-Bold", fontSize=8.5, leading=11, textColor=colors.white),
+        "RightSmall": dict(fontName="Helvetica", fontSize=10, leading=13, textColor=INK, alignment=TA_RIGHT),
+        "Muted": dict(fontName="Helvetica", fontSize=8, leading=11, textColor=MUTED),
+        "Subtitle": dict(fontName="Helvetica", fontSize=11, leading=15, textColor=MUTED),
+        "MetricValue": dict(fontName="Helvetica-Bold", fontSize=25, leading=30, textColor=INK),
+        "Legend": dict(fontName="Helvetica", fontSize=7.5, leading=10, textColor=INK),
+    }
+    for name, values in specs.items():
+        styles.add(ParagraphStyle(name=name, **values))
     return styles
 
 
-def _add_summary_table(elements, styles, summary: dict[str, Any]):
-    data = []
-    entries = list(summary.items())
-    for index in range(0, len(entries), 2):
-        left_key, left_value = entries[index]
-        right_key, right_value = entries[index + 1] if index + 1 < len(entries) else ("", "")
-        data.append([
-            _p(left_key, styles["BodySmallBold"]),
-            _p(left_value, styles["RightSmall"]),
-            _p(right_key, styles["BodySmallBold"]),
-            _p(right_value, styles["RightSmall"]),
-        ])
+class SectionBadges(Flowable):
+    """Vector chips with fixed dimensions, wrapping as a group if needed."""
+    badge_width = 25
+    badge_height = 18
+    gap = 3
 
-    table = Table(data, colWidths=[68 * mm, 26 * mm, 68 * mm, 26 * mm])
-    table.setStyle(TableStyle([
-        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#CBD5E1")),
-        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 5),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    def __init__(self, entries):
+        super().__init__()
+        self.entries = entries
+        self.columns = len(entries)
+
+    def wrap(self, available_width, available_height):
+        self.columns = max(1, min(len(self.entries), int((available_width + self.gap) // (self.badge_width + self.gap))))
+        self.width = self.columns * (self.badge_width + self.gap) - self.gap
+        rows = (len(self.entries) + self.columns - 1) // self.columns
+        self.height = rows * (self.badge_height + self.gap) - self.gap
+        return self.width, self.height
+
+    def draw(self):
+        c = self.canv
+        for index, (label, state) in enumerate(self.entries):
+            x = (index % self.columns) * (self.badge_width + self.gap)
+            y = self.height - self.badge_height - (index // self.columns) * (self.badge_height + self.gap)
+            background, foreground = STATE_COLORS[state]
+            c.setFillColor(background)
+            c.roundRect(x, y, self.badge_width, self.badge_height, 4, stroke=0, fill=1)
+            c.setFillColor(foreground)
+            c.setFont("Helvetica-Bold", 7)
+            c.drawCentredString(x + self.badge_width / 2, y + (9 if state == "unavailable" else 6), label)
+            if state == "unavailable":
+                c.setFont("Helvetica", 5)
+                c.drawCentredString(x + self.badge_width / 2, y + 3, "N/A")
+            if state == "skipped":
+                c.setLineWidth(0.5)
+                c.line(x + 5, y + 4, x + self.badge_width - 5, y + 4)
+
+
+def _add_report_header(elements, styles, title, period):
+    heading = Table([[_p(title, styles["ReportTitle"]), _p(period, styles["RightSmall"])]], colWidths=[CONTENT_WIDTH - 145, 145])
+    heading.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
     ]))
-    elements.append(table)
+    elements.extend([heading, _p("Track report submission status for all assemblies in the region.", styles["Subtitle"]), Spacer(1, 18)])
+
+
+def _add_report_details(elements, styles, details):
+    cells = []
+    for label, value in details:
+        cells.append([_p(label, styles["Muted"]), Spacer(1, 6), _p(value, styles["BodySmallBold"])])
+    table = Table([[ _p("Report details", styles["SectionTitle"]), "", "", "", "" ], cells], colWidths=[CONTENT_WIDTH * n for n in [.23, .22, .18, .20, .17]])
+    table.setStyle(TableStyle([
+        ("SPAN", (0, 0), (-1, 0)), ("BOX", (0, 0), (-1, -1), .6, BORDER),
+        ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 14), ("RIGHTPADDING", (0, 0), (-1, -1), 14),
+        ("TOPPADDING", (0, 0), (-1, -1), 12), ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
+        ("LINEAFTER", (0, 1), (3, 1), .5, BORDER),
+    ]))
+    elements.extend([table, Spacer(1, 24)])
+
+
+def _add_summary_table(elements, styles, summary):
+    entries = list(summary.items())
+    rows = []
+    card_width = (CONTENT_WIDTH - 30) / 4
+    for start in range(0, len(entries), 4):
+        cards = []
+        for label, value in entries[start:start + 4]:
+            card = Table([
+                [_p(label, styles["Muted"])],
+                [_p(value, styles["MetricValue"])],
+            ], colWidths=[card_width], minRowHeights=[36, 42])
+            card.setStyle(TableStyle([
+                ("BOX", (0, 0), (-1, -1), .6, BORDER),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#FAFCFF")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 14),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 0), (-1, -1), 7),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+            ]))
+            if cards:
+                cards.append("")
+            cards.append(card)
+        rows.append(cards)
+        if start == 0:
+            rows.append([""] * 7)
+    grid = Table(rows, colWidths=[card_width, 10, card_width, 10, card_width, 10, card_width], rowHeights=[None, 12, None])
+    grid.setStyle(TableStyle([
+        ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+        ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+    ]))
+    elements.append(grid)
 
 
 def _month_summary(records: list[tuple[dict[str, Any], dict[str, Any]]]) -> dict[str, Any]:
@@ -640,80 +684,72 @@ def _month_summary(records: list[tuple[dict[str, Any], dict[str, Any]]]) -> dict
     }
 
 
-def _add_month_section(
-    elements,
-    styles,
-    *,
-    month: int,
-    year: int,
-    records: list[tuple[dict[str, Any], dict[str, Any]]],
-):
-    elements.append(_p(f"{MONTH_NAMES[month]} {year}", styles["SectionTitle"]))
+def _add_section_legend(elements, styles):
+    sections = []
+    for key in SECTION_ORDER:
+        sections.append([SectionBadges([(SECTION_LABELS[key], "legend")]), _p("Expenses (combined)" if key == "expenditure" else SECTION_NAMES[key], styles["Legend"])])
+    legend = Table([sum(sections[:3], []), sum(sections[3:], [])], colWidths=[31, 112, 31, 112, 31, 112])
+    legend.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 4), ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    status_lines = []
+    for label, state in [("Submitted / Present", "present"), ("Draft / In progress", "progress"), ("Missing", "missing")]:
+        foreground = STATE_COLORS[state][1].hexval().replace("0x", "#")
+        status_lines.append(_html_p(f'<font size="12" color="{foreground}"><b>•</b></font>  {label}', styles["Legend"]))
+    status_lines.append(Spacer(1, 4))
+    status_lines.append(_p("Grey N/A = not tracked; underlined = skipped", styles["Legend"]))
+    outer = Table([
+        [_p("Report Sections", styles["BodySmallBold"]), _p("Status key", styles["BodySmallBold"])],
+        [legend, status_lines],
+    ], colWidths=[CONTENT_WIDTH * .65, CONTENT_WIDTH * .35])
+    outer.setStyle(TableStyle([
+        ("BOX", (0, 0), (-1, -1), .6, BORDER),
+        ("BACKGROUND", (0, 0), (-1, -1), colors.white),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 12), ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 7), ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
+        ("LINEBEFORE", (1, 0), (1, -1), .5, BORDER),
+    ]))
+    elements.extend([outer, Spacer(1, 13)])
 
+
+def _add_month_section(elements, styles, *, month, year, records):
+    _add_report_header(elements, styles, "Compliance Reports", f"{MONTH_NAMES[month]} {year}")
     summary = _month_summary(records)
-    summary_text = "   ".join(f"{key}: {value}" for key, value in summary.items())
-    elements.append(_p(summary_text, styles["BodySmall"]))
-    elements.append(_p("SUB = Submitted   MIS = Missing   SKP = Skipped", styles["BodySmall"]))
-    elements.append(Spacer(1, 4))
-
-    header = [
-        _p("Assembly", styles["TableHeader"]),
-        _p("Zone", styles["TableHeader"]),
-        _p("Country", styles["TableHeader"]),
-        _p("Report fields", styles["TableHeader"]),
-        _p("Completion", styles["TableHeader"]),
-        _p("Report status", styles["TableHeader"]),
-        _p("Submitted on", styles["TableHeader"]),
-    ]
+    elements.extend([_p("   |   ".join(f"{key}: {value}" for key, value in summary.items()), styles["Muted"]), Spacer(1, 12)])
+    _add_section_legend(elements, styles)
+    header = [_p(label, styles["TableHeader"]) for label in ["Assembly", "Zone", "Country", "Sections", "Completion", "Report status", "Submitted on"]]
     data = [header]
-
     for row, item in records:
-        completion = item.get("completion") or 0
+        completion = float(item.get("completion") or 0)
+        state = "present" if completion >= 100 else "progress" if completion > 0 else "missing"
+        band = "Complete" if completion >= 100 else "In progress" if completion > 0 else "Needs attention"
+        foreground = STATE_COLORS[state][1].hexval().replace("0x", "#")
         data.append([
-            _p(row.get("name", ""), styles["BodySmall"]),
+            _p(row.get("name", ""), styles["BodySmallBold"]),
             _p(row.get("zone", ""), styles["BodySmall"]),
             _p(row.get("country", ""), styles["BodySmall"]),
-            _p(_section_status_text(item.get("sections") or {}), styles["BodySmall"]),
-            _html_p(
-                f"{escape(_format_percent(completion))}<br/>{escape(_completion_band(completion))}",
-                styles["BodySmall"],
-            ),
+            SectionBadges(_badge_entries(item.get("sections") or {})),
+            _html_p(f'<font color="{foreground}"><b>{escape(_format_percent(completion))}</b></font><br/><font color="#64748B">{band}</font>', styles["BodySmall"]),
             _p(_monthly_status_label(item), styles["BodySmall"]),
             _html_p(_submitted_on_text(item), styles["BodySmall"]),
         ])
-
-    table = Table(
-        data,
-        colWidths=[33 * mm, 22 * mm, 24 * mm, 76 * mm, 24 * mm, 28 * mm, 30 * mm],
-        repeatRows=1,
-        splitByRow=True,
-    )
-    table_style = [
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#334155")),
-        ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#CBD5E1")),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("LEFTPADDING", (0, 0), (-1, -1), 3),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 3),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    table = Table(data, colWidths=[n * mm for n in [42, 24, 28, 67, 32, 36, 39]], repeatRows=1, splitByRow=True, splitInRow=False, minRowHeights=[29] + [35] * len(records))
+    commands = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#3C4D65")),
+        ("GRID", (0, 0), (-1, -1), .35, BORDER),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 8), ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 7), ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
     ]
-
-    for row_index, (_, item) in enumerate(records, start=1):
-        if row_index % 2 == 0:
-            table_style.append(
-                ("BACKGROUND", (0, row_index), (-1, row_index), colors.HexColor("#F8FAFC"))
-            )
-
+    for index, (_, item) in enumerate(records, 1):
+        commands.append(("BACKGROUND", (0, index), (-1, index), colors.white if index % 2 else colors.HexColor("#F7F9FC")))
         status = _normalize_report_status(item.get("report_status"))
-        if status == "SUBMITTED":
-            status_color = colors.HexColor("#DCFCE7")
-        elif status == "DRAFT":
-            status_color = colors.HexColor("#FEF3C7")
-        else:
-            status_color = colors.HexColor("#FEE2E2")
-        table_style.append(("BACKGROUND", (5, row_index), (5, row_index), status_color))
-
-    table.setStyle(TableStyle(table_style))
+        state = "present" if status == "SUBMITTED" else "progress" if status == "DRAFT" else "missing"
+        commands.append(("BACKGROUND", (5, index), (5, index), STATE_COLORS[state][0]))
+    table.setStyle(TableStyle(commands))
     elements.append(table)
 
 
@@ -726,8 +762,8 @@ def _skipped_appendix_rows(
     for month, month_records in records.items():
         for assembly, item in month_records:
             sections = item.get("sections") or {}
-            for section_code in SECTION_ORDER:
-                section = sections.get(section_code) or {}
+            for section_code, section in sections.items():
+                section = section or {}
                 if str(section.get("status") or "").upper() != "SKIPPED":
                     continue
 
@@ -738,7 +774,7 @@ def _skipped_appendix_rows(
                 rows.append([
                     f"{MONTH_NAMES[month]} {year}",
                     assembly.get("name", ""),
-                    SECTION_NAMES[section_code],
+                    SECTION_NAMES.get(section_code, section_code.replace("_", " ").title()),
                     str(reason).replace("_", " ").title(),
                 ])
 
@@ -763,12 +799,13 @@ def _add_skipped_appendix(elements, styles, skipped_rows: list[list[Any]]):
 
     table = Table(
         data,
-        colWidths=[34 * mm, 58 * mm, 40 * mm, 92 * mm],
+        colWidths=[40 * mm, 78 * mm, 62 * mm, 88 * mm],
+        minRowHeights=[29] + [30] * len(skipped_rows),
         repeatRows=1,
         splitByRow=True,
     )
     table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#334155")),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#3C4D65")),
         ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#CBD5E1")),
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ("LEFTPADDING", (0, 0), (-1, -1), 4),
@@ -865,17 +902,17 @@ def build_regional_monthly_compliance_pdf(
         assembly_count=len(rows),
     )
 
-    elements = [
-        _p("CFI Database", styles["BodySmallBold"]),
-        _p("Regional Monthly Compliance Report", styles["ReportTitle"]),
-        _p(f"Region: {region.name}", styles["BodySmall"]),
-        _p(f"Scope: {scope}", styles["BodySmall"]),
-        _p(f"Reporting period: {_period_label(year, from_month, to_month)}", styles["BodySmall"]),
-        _p(f"Generated: {_format_date(generated_at, include_time=True)}", styles["BodySmall"]),
-        _p(f"Generated by: {generated_by}", styles["BodySmall"]),
-        Spacer(1, 8),
-        _p("Report Summary", styles["SectionTitle"]),
-    ]
+    elements = [_p("CFI Database", styles["BodySmallBold"]), Spacer(1, 22)]
+    _add_report_header(elements, styles, "Regional Monthly Compliance Report", _period_label(year, from_month, to_month))
+    elements.append(Spacer(1, 10))
+    _add_report_details(elements, styles, [
+        ("Region", region.name), ("Scope", scope),
+        ("Reporting period", _period_label(year, from_month, to_month)),
+        ("Generated", _format_date(generated_at, include_time=True)),
+        ("Generated by", generated_by),
+    ])
+    elements.append(_p("Report Summary", styles["SectionTitle"]))
+    elements.append(Spacer(1, 6))
 
     _add_summary_table(
         elements,
@@ -899,7 +936,13 @@ def build_regional_monthly_compliance_pdf(
         _skipped_appendix_rows(records, year=year),
     )
 
-    doc.build(elements, canvasmaker=NumberedCanvas)
+    def page_background(c, _doc):
+        c.saveState()
+        c.setFillColor(colors.HexColor("#F8FAFD"))
+        c.rect(0, 0, *_doc.pagesize, fill=1, stroke=0)
+        c.restoreState()
+
+    doc.build(elements, canvasmaker=NumberedCanvas, onFirstPage=page_background, onLaterPages=page_background)
     buffer.seek(0)
 
     _record_audit_event(
