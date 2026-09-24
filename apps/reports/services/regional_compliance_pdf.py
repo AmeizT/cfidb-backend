@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from html import escape
 from io import BytesIO
 import re
@@ -27,9 +28,14 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from apps.churches.models import Region, Zone
 from apps.reports.models import AuditLog
+from apps.reports.models.section_status import ReportSectionStatus
 from apps.reports.services.metrics.region_dashboard_service import get_region_reports
 from apps.reports.services.regional_dashboard.compliance import (
     build_assembly_compliance_row,
+)
+
+from apps.reports.services.pdf_section_states import (
+    PDF_SECTION_MAP, resolve_section_display, resolved_report_sections, missing_report_sections,
 )
 
 
@@ -48,49 +54,16 @@ MONTH_NAMES = {
     12: "December",
 }
 
-SECTION_ORDER = ["attendance", "sunday_school_attendance", "tithes", "income", "expenditure", "remittance"]
-SECTION_LABELS = dict(zip(SECTION_ORDER, ["AT", "SAT", "TI", "IN", "EX", "RM"]))
-SECTION_NAMES = dict(zip(SECTION_ORDER, ["Attendance", "Sunday School Attendance", "Tithes", "Income", "Expenses", "Remittance"]))
+SECTION_ORDER = [label for label, _name, _keys in PDF_SECTION_MAP]
+SECTION_LABELS = {label: label for label in SECTION_ORDER}
+SECTION_NAMES = {label: name for label, name, _keys in PDF_SECTION_MAP}
 SECTION_NAMES.update({
-    "general_attendance": "Attendance", "revenue": "Income",
-    "operating_expenses": "Operating Expenses", "activity_other_expenses": "Activity & Other Expenses",
-    "junior_members": "Junior Members",
+    key: str(label) for key, label in ReportSectionStatus.Section.choices
 })
 
 
-def _section_state(section):
-    value = section.get("status") if isinstance(section, dict) else section
-    status = str(value or "MISSING").upper()
-    if status in {"SUBMITTED", "SUB", "COMPLETED", "NO_ACTIVITY", "PRESENT"}:
-        return "present"
-    if status in {"DRAFT", "IN_PROGRESS", "INCOMPLETE"}:
-        return "progress"
-    if status in {"SKIPPED", "SKP"}:
-        return "skipped"
-    return "missing"
-
-
 def _badge_entries(sections):
-    # Display aliases only. Never recalculate completion or report status here.
-    entries = []
-    aliases = {"attendance": "general_attendance", "income": "revenue"}
-    for key in SECTION_ORDER:
-        source_key = aliases.get(key, key)
-        if source_key in sections:
-            state = _section_state(sections[source_key])
-        elif key in sections:
-            state = _section_state(sections[key])
-        elif key == "expenditure" and any(k in sections for k in ("operating_expenses", "activity_other_expenses")):
-            states = [_section_state(sections.get(k)) for k in ("operating_expenses", "activity_other_expenses")]
-            state = states[0] if states[0] == states[1] else "skipped" if "skipped" in states else "progress"
-        elif key == "remittance":
-            # The current reporting schema has no remittance section. Absence
-            # of a tracked field is not evidence of a missing submission.
-            state = "unavailable"
-        else:
-            state = "missing"
-        entries.append((SECTION_LABELS[key], state))
-    return entries
+    return resolve_section_display(sections)[0]
 
 
 @dataclass
@@ -346,6 +319,8 @@ def _scope_rows(
     year: int,
     zone_id: int | None,
     country: str | None,
+    from_month: int = 1,
+    to_month: int = 12,
 ) -> tuple[list[dict[str, Any]], Zone | None]:
     visible_zone_ids = _visible_zone_ids(user, region)
     selected_zone = None
@@ -371,14 +346,22 @@ def _scope_rows(
         if country and assembly_country.lower() != country.strip().lower():
             continue
 
-        rows.append(
-            build_assembly_compliance_row(
-                assembly,
-                reports,
-                country=assembly_country,
-                year=year,
-            )
+        row = build_assembly_compliance_row(
+            assembly, reports, country=assembly_country, year=year,
         )
+        reports_by_month = {report.period_start.month: report for report in reports}
+        for item in row["monthly_compliance"]:
+            month = _parse_period_month(item)
+            if month is None or not from_month <= month <= to_month:
+                continue
+            report = reports_by_month.get(month)
+            if report is not None:
+                item["sections"] = resolved_report_sections(report)
+            else:
+                item["sections"] = missing_report_sections(date(year, month, 1))
+            # Both badges and completion consume exactly these effective states.
+            item["completion"] = resolve_section_display(item["sections"])[1]
+        rows.append(row)
 
     rows.sort(
         key=lambda row: (
@@ -687,7 +670,7 @@ def _month_summary(records: list[tuple[dict[str, Any], dict[str, Any]]]) -> dict
 def _add_section_legend(elements, styles):
     sections = []
     for key in SECTION_ORDER:
-        sections.append([SectionBadges([(SECTION_LABELS[key], "legend")]), _p("Expenses (combined)" if key == "expenditure" else SECTION_NAMES[key], styles["Legend"])])
+        sections.append([SectionBadges([(SECTION_LABELS[key], "legend")]), _p("Expenses (combined)" if key == "EX" else SECTION_NAMES[key], styles["Legend"])])
     legend = Table([sum(sections[:3], []), sum(sections[3:], [])], colWidths=[31, 112, 31, 112, 31, 112])
     legend.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
@@ -868,6 +851,8 @@ def build_regional_monthly_compliance_pdf(
         year=year,
         zone_id=zone_id,
         country=country,
+        from_month=from_month,
+        to_month=to_month,
     )
 
     if not rows:
