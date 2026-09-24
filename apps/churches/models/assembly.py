@@ -160,6 +160,7 @@ class Church(models.Model):
             self.locale = self.locale.strip()
 
         super().save(*args, **kwargs)
+    zone_id = None
 
 
 

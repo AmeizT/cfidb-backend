@@ -50,7 +50,7 @@ class Zone(models.Model):
 
     def __str__(self):
         if self.code and self.name:
-            return f"{self.name} ({self.code}) - {self.id}"
+            return f"{self.name} ({self.code}) - {self.id}" # type: ignore
         return self.name or self.code or "Zone"
     
 
