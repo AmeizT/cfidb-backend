@@ -8,6 +8,7 @@ from apps.users.utils.nanoid import generate_nanoid
 from apps.users.utils.base_urls import user_avatar_url
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from apps.shared.utils import generate_oklch_color
 
 class Role(models.Model):
     name = models.CharField(max_length=50, choices=UserRoles.choices, unique=True)
@@ -107,16 +108,27 @@ class User(AbstractBaseUser, PermissionsMixin):
         return True
     
     def save(self, *args, **kwargs):
+        if self.email:
+            self.email = self.email.strip().lower()
+
         if not self.username and self.email:
-            base_username = self.email.split('@')[0]
+            base_username = self.email.split("@", 1)[0].strip().lower()
             username = base_username
             counter = 1
 
-            while User.objects.filter(username=username).exclude(pk=self.pk).exists():
+            while (
+                User.objects
+                .filter(username__iexact=username)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
                 username = f"{base_username}{counter}"
                 counter += 1
 
             self.username = username
+
+        if not self.avatar_fallback:
+            self.avatar_fallback = generate_oklch_color()
 
         super().save(*args, **kwargs)
 

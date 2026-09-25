@@ -24,3 +24,4 @@ def generate_oklch_color():
     
     # Return as a string in oklch() format
     return f'oklch({L} {C} {H})'
+
