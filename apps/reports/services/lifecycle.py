@@ -592,7 +592,8 @@ def set_section_status(
 
 @transaction.atomic
 def submit_report(*, report: AssemblyReport, actor, declaration_confirmed: bool) -> ReportVersion:
-    locked = AssemblyReport.objects.select_for_update().select_related("current_version").get(pk=report.pk)
+    # Lock the report only; current_version is nullable and must load separately.
+    locked = AssemblyReport.objects.select_for_update().get(pk=report.pk)
     if locked.current_version_id and not locked.amendment_started_at:
         return locked.current_version
     if not can_edit_report(actor, locked):
@@ -678,7 +679,7 @@ def submit_report(*, report: AssemblyReport, actor, declaration_confirmed: bool)
 
 @transaction.atomic
 def start_amendment(*, report: AssemblyReport, actor, reason: str, authorised=False) -> AssemblyReport:
-    locked = AssemblyReport.objects.select_for_update().select_related("current_version").get(pk=report.pk)
+    locked = AssemblyReport.objects.select_for_update().get(pk=report.pk)
     if not locked.current_version_id:
         raise ValidationError({"report": "Only submitted reports can be amended."})
     if locked.amendment_started_at:
@@ -711,7 +712,7 @@ def start_amendment(*, report: AssemblyReport, actor, reason: str, authorised=Fa
 
 @transaction.atomic
 def request_reopening(*, report: AssemblyReport, actor, reason: str) -> ReportReopeningRequest:
-    locked = AssemblyReport.objects.select_for_update().select_related("current_version").get(pk=report.pk)
+    locked = AssemblyReport.objects.select_for_update().get(pk=report.pk)
     state = get_report_state(locked, actor)
     if not state.can_request_reopen:
         raise PermissionDenied("This report cannot be requested for reopening.")
@@ -727,7 +728,7 @@ def request_reopening(*, report: AssemblyReport, actor, reason: str) -> ReportRe
 @transaction.atomic
 def review_reopening(*, request_obj: ReportReopeningRequest, actor, approve: bool, decision_note: str):
     reopening = ReportReopeningRequest.objects.select_for_update().select_related(
-        "report__current_version"
+        "report"
     ).get(pk=request_obj.pk)
     if reopening.status != ReportReopeningRequest.Status.REQUESTED:
         raise ValidationError({"request": "This reopening request has already been reviewed."})

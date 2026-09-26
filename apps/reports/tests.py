@@ -4,6 +4,8 @@ from decimal import Decimal
 from unittest.mock import patch
 
 from django.core.exceptions import ValidationError
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -19,6 +21,8 @@ from apps.reports.services.lifecycle import (
     get_report_state,
     get_section_source,
     set_section_status,
+    request_reopening,
+    review_reopening,
     start_amendment,
     submit_report,
     validate_report,
@@ -440,6 +444,52 @@ class ReportLifecycleTests(APITestCase):
         self.assertTrue(get_report_state(self.report, self.user).can_submit)
         version = submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
         self.assertEqual(version.section_snapshots.get(section=section.section).status, "no_activity")
+
+    def test_submission_locks_report_without_nullable_version_join(self):
+        self.resolve_all_sections()
+        self.assertIsNone(self.report.current_version_id)
+        with CaptureQueriesContext(connection) as queries:
+            version = submit_report(
+                report=self.report, actor=self.user, declaration_confirmed=True,
+            )
+        report_reads = [
+            query["sql"] for query in queries.captured_queries
+            if query["sql"].lstrip().upper().startswith("SELECT")
+            and f'FROM "{AssemblyReport._meta.db_table}"' in query["sql"]
+        ]
+        self.assertTrue(report_reads)
+        # Also catches the regression on SQLite, which silently ignores row locks.
+        self.assertNotIn(" JOIN ", report_reads[0].upper())
+        if connection.features.has_select_for_update:
+            self.assertIn("FOR UPDATE", report_reads[0].upper())
+        self.report.refresh_from_db()
+        self.assertEqual(self.report.current_version_id, version.pk)
+        self.assertEqual(version.section_snapshots.count(), len(REQUIRED_SECTIONS))
+        repeated = submit_report(
+            report=self.report, actor=self.user, declaration_confirmed=True,
+        )
+        self.assertEqual(repeated.pk, version.pk)
+        self.assertEqual(self.report.versions.count(), 1)
+
+    def test_reopening_review_can_lock_report_with_nullable_version_relationship(self):
+        self.resolve_all_sections()
+        version = submit_report(
+            report=self.report, actor=self.user, declaration_confirmed=True,
+        )
+        self.user.is_admin = True
+        with patch("apps.reports.services.lifecycle.timezone.now", return_value=version.editable_until + timedelta(days=1)):
+            reopening = request_reopening(
+                report=self.report, actor=self.user, reason="Correct monthly records",
+            )
+            review_reopening(
+                request_obj=reopening, actor=self.user, approve=True, decision_note="Approved correction",
+            )
+        self.report.refresh_from_db()
+        reopening.refresh_from_db()
+        self.assertEqual(reopening.status, "approved")
+        self.assertEqual(self.report.current_version_id, version.pk)
+        self.assertEqual(self.report.amendment_base_version_id, version.pk)
+        self.assertIsNotNone(self.report.amendment_started_at)
 
     def test_submission_is_versioned_and_boundary_lock_is_derived(self):
         self.resolve_all_sections()
