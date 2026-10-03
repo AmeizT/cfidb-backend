@@ -508,6 +508,82 @@ class ReportLifecycleTests(APITestCase):
             "locked",
         )
 
+    def test_grace_reopen_endpoint_preserves_data_and_allows_edit_and_resubmit(self):
+        self.resolve_all_sections()
+        member = Member.objects.create(
+            assembly=self.assembly, first_name="Grace", last_name="Member",
+            member_key="grace-member", date_of_birth=date(1990, 1, 1),
+            gender="Male", country="Botswana", phone_number="",
+        )
+        tithe = Tithe.objects.create(
+            assembly=self.assembly, report=self.report, member=member,
+            amount=Decimal("25.00"), timestamp=self.report.period_start,
+        )
+        set_section_status(report=self.report, section_key="tithes", status="completed", actor=self.user)
+        version = submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        snapshots = list(version.section_snapshots.values("section", "status", "total"))
+        section_ids = list(self.report.sections.values_list("pk", flat=True))
+        self.client.force_authenticate(self.user)
+        url = f"/api/v1/reports/{self.report.pk}/amend/"
+        with patch("apps.reports.services.lifecycle.timezone.now", return_value=version.editable_until):
+            response = self.client.post(url, {"reason": "Correct the declaration"}, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["status"], "reopened")
+        self.assertTrue(response.data["capabilities"]["is_editable"])
+        self.assertFalse(response.data["capabilities"]["can_amend"])
+        tithe.refresh_from_db()
+        self.assertEqual(tithe.report_id, self.report.pk)
+        self.assertEqual(tithe.amount, Decimal("25.00"))
+        self.assertEqual(list(self.report.sections.values_list("pk", flat=True)), section_ids)
+        self.assertEqual(list(version.section_snapshots.values("section", "status", "total")), snapshots)
+        response = self.client.post(
+            f"/api/v1/reports/{self.report.pk}/sections/revenue/",
+            {"status": "no_activity", "no_activity_note": "Checked and corrected declaration"}, format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        response = self.client.post(f"/api/v1/reports/{self.report.pk}/submit/", {"declaration_confirmed": True}, format="json")
+        self.assertEqual(response.status_code, 201, response.data)
+        self.report.refresh_from_db()
+        self.assertFalse(get_report_state(self.report, self.user).is_editable)
+        self.assertEqual(self.report.current_version.version_number, 2)
+        self.assertEqual(list(version.section_snapshots.values("section", "status", "total")), snapshots)
+
+    def test_direct_grace_reopen_rejects_expired_even_for_admin(self):
+        self.resolve_all_sections()
+        version = submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        self.user.is_admin = True
+        self.client.force_authenticate(self.user)
+        with patch("apps.reports.services.lifecycle.timezone.now", return_value=version.editable_until + timedelta(microseconds=1)):
+            self.report.refresh_from_db()
+            self.assertFalse(get_report_state(self.report, self.user).can_amend)
+            response = self.client.post(f"/api/v1/reports/{self.report.pk}/amend/", {"reason": "Late correction", "authorised": True}, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.report.refresh_from_db()
+        self.assertIsNone(self.report.amendment_started_at)
+
+    def test_direct_grace_reopen_rejects_draft_empty_reason_and_repeated_transition(self):
+        self.client.force_authenticate(self.user)
+        url = f"/api/v1/reports/{self.report.pk}/amend/"
+        response = self.client.post(url, {"reason": "Draft"}, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.resolve_all_sections()
+        submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        response = self.client.post(url, {"reason": " "}, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(self.client.post(url, {"reason": "Correction"}, format="json").status_code, 200)
+        self.assertEqual(self.client.post(url, {"reason": "Again"}, format="json").status_code, 400)
+
+    def test_direct_grace_reopen_rejects_user_from_another_assembly(self):
+        self.resolve_all_sections()
+        submit_report(report=self.report, actor=self.user, declaration_confirmed=True)
+        other = Church.objects.create(name="Other assembly", country="Botswana", currency="BWP")
+        outsider = User.objects.create_user(first_name="Outside", last_name="User", username="outsider", email="outsider@example.com", password="password123", church=other)
+        self.client.force_authenticate(outsider)
+        response = self.client.post(f"/api/v1/reports/{self.report.pk}/amend/", {"reason": "Unauthorized correction"}, format="json")
+        self.assertIn(response.status_code, (403, 404), response.data)
+        self.report.refresh_from_db()
+        self.assertIsNone(self.report.amendment_started_at)
+
     def test_amendment_creates_version_two_without_changing_version_one(self):
         self.resolve_all_sections()
         version_one = submit_report(

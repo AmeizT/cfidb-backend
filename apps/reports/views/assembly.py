@@ -4,6 +4,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db.models import Avg, Min, Q, Sum
 from django.http import FileResponse
 from django.utils import timezone
@@ -638,9 +639,12 @@ class ReportViewSet(
 
     @action(detail=True, methods=["post"])
     def amend(self, request, pk=None):
-        report = start_amendment(
-            report=self.get_object(), actor=request.user, reason=request.data.get("reason", "")
-        )
+        try:
+            report = start_amendment(
+                report=self.get_object(), actor=request.user, reason=request.data.get("reason", "")
+            )
+        except DjangoValidationError as error:
+            raise DRFValidationError(error.message_dict if hasattr(error, "message_dict") else error.messages) from error
         return Response(self.get_serializer(report).data)
 
     @action(detail=True, methods=["post"], url_path="request-reopening")
