@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import IntegrityError, transaction
-from django.db.models import F, Sum
+from django.db.models import Case, F, Sum, When
 from django.utils import timezone
 
 from apps.people.constants import SUNDAY_SCHOOL_START_DATE
@@ -158,7 +158,9 @@ def _rows(queryset, fields):
     ]
 
 
-def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, Any]:
+def get_section_source(
+    report: AssemblyReport, section_key: str, *, include_breakdown: bool = True,
+) -> dict[str, Any]:
     """Return a permission-neutral aggregate used by current views and snapshots."""
     start, end = report.period_start, report.period_end
     assembly_id = report.assembly_id
@@ -171,13 +173,22 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
             timestamp__range=(start, end),
             is_deleted=False,
         ).order_by("timestamp", "id")
-        rows = _rows(qs, [
-            "id", "timestamp", "service_type", "total_adults", "children",
-            "total_visitors", "online_viewers", "total_new_converts",
-            "collection_schema",
-        ])
-        from apps.people.services.attendance_totals import attendance_headcount
-        total = sum(attendance_headcount(record) for record in qs)
+        if include_breakdown:
+            rows = _rows(qs, [
+                "id", "timestamp", "service_type", "homecell_id", "total_adults", "children",
+                "total_visitors", "online_viewers", "total_new_converts",
+                "collection_schema",
+            ])
+            from apps.people.services.attendance_totals import attendance_headcount
+            total = sum(attendance_headcount(record) for record in qs)
+        else:
+            rows = _rows(qs.annotate(headcount=(
+                F("total_adults") + F("online_viewers") + Case(
+                    When(collection_schema=Attendance.CollectionSchema.LEGACY, then=F("children")),
+                    default=F("total_visitors"),
+                )
+            )), ["id", "timestamp", "service_type", "homecell_id", "headcount"])
+            total = sum(row["headcount"] for row in rows)
         route = "/engagement/attendance"
 
     elif section_key == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE:
@@ -188,15 +199,22 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
             service_date__range=(start, end),
             is_deleted=False,
         ).order_by("service_date", "id")
-        rows = _rows(qs, [
-            "id", "service_date", "class_name", "boys", "girls", "male_visitors",
-            "female_visitors", "male_first_timers", "female_first_timers", "status",
-        ])
-        total = sum(
-            row["boys"] + row["girls"] + row["male_visitors"] + row["female_visitors"]
-            + row["male_first_timers"] + row["female_first_timers"]
-            for row in rows
-        )
+        if include_breakdown:
+            rows = _rows(qs, [
+                "id", "service_date", "class_name", "boys", "girls", "male_visitors",
+                "female_visitors", "male_first_timers", "female_first_timers", "status",
+            ])
+            total = sum(
+                row["boys"] + row["girls"] + row["male_visitors"] + row["female_visitors"]
+                + row["male_first_timers"] + row["female_first_timers"]
+                for row in rows
+            )
+        else:
+            rows = _rows(qs.annotate(headcount=(
+                F("boys") + F("girls") + F("male_visitors") + F("female_visitors")
+                + F("male_first_timers") + F("female_first_timers")
+            )), ["id", "status", "headcount"])
+            total = sum(row["headcount"] for row in rows)
         route = "/engagement/attendance/sunday-school"
 
     elif section_key == ReportSectionStatus.Section.TITHES:
@@ -206,7 +224,7 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
             assembly_id=assembly_id,
             timestamp__range=(start, end),
         ).order_by("timestamp", "id")
-        rows = _rows(qs, ["id", "timestamp", "amount", "payment_method"])
+        rows = _rows(qs, ["id", "timestamp", "amount", "payment_method"] if include_breakdown else ["id"])
         total = qs.aggregate(total=Sum("amount"))["total"] or Decimal("0")
         route = "/finance/tithes"
 
@@ -221,14 +239,15 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
             "id", "timestamp", "amount", "category_id", "category__name",
             "category__standard_category__id", "category__standard_category__name",
             "category__needs_review", "notes",
-        ])
-        for row in rows:
-            row["reporting_category_id"] = (
-                row["category__standard_category__id"] or row["category_id"]
-            )
-            row["reporting_category"] = (
-                row["category__standard_category__name"] or row["category__name"]
-            )
+        ] if include_breakdown else ["id"])
+        if include_breakdown:
+            for row in rows:
+                row["reporting_category_id"] = (
+                    row["category__standard_category__id"] or row["category_id"]
+                )
+                row["reporting_category"] = (
+                    row["category__standard_category__name"] or row["category__name"]
+                )
         total = qs.aggregate(total=Sum("amount"))["total"] or Decimal("0")
         route = "/finance/revenue"
 
@@ -243,14 +262,15 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
             "id", "timestamp", "amount", "overhead_type_id", "overhead_type__name",
             "overhead_type__standard_category__id",
             "overhead_type__standard_category__name", "overhead_type__needs_review", "notes",
-        ])
-        for row in rows:
-            row["reporting_category_id"] = (
-                row["overhead_type__standard_category__id"] or row["overhead_type_id"]
-            )
-            row["reporting_category"] = (
-                row["overhead_type__standard_category__name"] or row["overhead_type__name"]
-            )
+        ] if include_breakdown else ["id"])
+        if include_breakdown:
+            for row in rows:
+                row["reporting_category_id"] = (
+                    row["overhead_type__standard_category__id"] or row["overhead_type_id"]
+                )
+                row["reporting_category"] = (
+                    row["overhead_type__standard_category__name"] or row["overhead_type__name"]
+                )
         total = qs.aggregate(total=Sum("amount"))["total"] or Decimal("0")
         route = "/finance/expenses?type=operating"
 
@@ -263,7 +283,7 @@ def get_section_source(report: AssemblyReport, section_key: str) -> dict[str, An
         ).order_by("timestamp", "id")
         rows = _rows(qs, [
             "id", "timestamp", "invoice_date", "name", "category", "quantity", "price", "total",
-        ])
+        ] if include_breakdown else ["id"])
         total = qs.aggregate(total=Sum(F("price") * F("quantity")))["total"] or Decimal("0")
         route = "/finance/expenses?type=activity-other"
 
@@ -304,6 +324,24 @@ def get_effective_section_status(
     if not is_section_required(report, section.section):
         return "not_required"
     if source["record_count"]:
+        if section.section == ReportSectionStatus.Section.GENERAL_ATTENDANCE:
+            first_sunday = report.period_start + timedelta(days=(6 - report.period_start.weekday()) % 7)
+            expected_sundays = set()
+            sunday = first_sunday
+            while sunday <= report.period_end:
+                expected_sundays.add(sunday.isoformat())
+                sunday += timedelta(days=7)
+            # Saved zero attendance is valid; other services and duplicate rows
+            # cannot account for a missing assembly Sunday.
+            recorded_sundays = {
+                row["timestamp"] for row in source["breakdown"]
+                if row["service_type"] == "sunday" and row["homecell_id"] is None
+            }
+            return (
+                ReportSectionStatus.Status.COMPLETED
+                if expected_sundays and expected_sundays <= recorded_sundays
+                else ReportSectionStatus.Status.IN_PROGRESS
+            )
         if section.section == ReportSectionStatus.Section.SUNDAY_SCHOOL_ATTENDANCE:
             has_drafts = any(row.get("status") == "draft" for row in source["breakdown"])
             return ReportSectionStatus.Status.IN_PROGRESS if has_drafts else ReportSectionStatus.Status.COMPLETED
@@ -313,14 +351,20 @@ def get_effective_section_status(
     return ReportSectionStatus.Status.NOT_STARTED
 
 
-def get_report_sections(report: AssemblyReport) -> list[dict[str, Any]]:
+def get_report_sections(
+    report: AssemblyReport, *, include_breakdown: bool = True,
+) -> list[dict[str, Any]]:
     existing = {section.section: section for section in report.sections.all()}
     payload = []
     for key, label in ReportSectionStatus.Section.choices:
         section = existing.get(key)
         if section is None:
             section = ReportSectionStatus(report=report, section=key)
-        source = get_section_source(report, key)
+        # Status reads retain source IDs and coverage; snapshots still use full rows.
+        source = (
+            get_section_source(report, key) if include_breakdown
+            else get_section_source(report, key, include_breakdown=False)
+        )
         status = get_effective_section_status(report, section, source)
         payload.append({
             "object": section,
@@ -575,6 +619,11 @@ def set_section_status(
         if status == ReportSectionStatus.Status.COMPLETED:
             if not source["record_count"]:
                 raise ValidationError({"status": "Source records are required before completion."})
+            if (
+                section_key == ReportSectionStatus.Section.GENERAL_ATTENDANCE
+                and get_effective_section_status(report, section, source) != ReportSectionStatus.Status.COMPLETED
+            ):
+                raise ValidationError({"status": "Record attendance for every expected Sunday before completion."})
             section.completed_by = actor
             section.completed_at = now
         elif status not in {ReportSectionStatus.Status.SKIPPED, ReportSectionStatus.Status.NO_ACTIVITY}:

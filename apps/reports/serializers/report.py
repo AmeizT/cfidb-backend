@@ -89,7 +89,7 @@ class AssemblyReportSerializer(HyperlinkedModelSerializer):
         cache = getattr(self, "_section_cache", {})
         key = obj.pk or id(obj)
         if key not in cache:
-            cache[key] = get_report_sections(obj)
+            cache[key] = get_report_sections(obj, include_breakdown=False)
             self._section_cache = cache
         return cache[key]
 

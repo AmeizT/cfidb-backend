@@ -306,6 +306,63 @@ class ReportLifecycleTests(APITestCase):
                 no_activity_note="Confirmed no activity for this period.",
             )
 
+    def test_attendance_completion_requires_every_expected_sunday(self):
+        from apps.people.models import Attendance
+
+        cases = [(6, 0, 4), (6, 1, 4), (6, 3, 4), (6, 4, 4), (3, 4, 5), (3, 5, 5)]
+        for month, recorded, expected in cases:
+            with self.subTest(month=month, recorded=recorded, expected=expected):
+                report = ensure_report(assembly=self.assembly, period_start=date(2026, month, 1))
+                Attendance.all_objects.filter(report=report).delete()
+                sunday = report.period_start + timedelta(days=(6 - report.period_start.weekday()) % 7)
+                for index in range(recorded):
+                    Attendance.objects.create(
+                        assembly=self.assembly, report=report, service_type="sunday",
+                        timestamp=sunday + timedelta(days=7 * index),
+                    )
+                sections = get_report_sections(report)
+                attendance = next(item for item in sections if item["key"] == "general_attendance")
+                complete = recorded == expected
+                self.assertEqual(attendance["status"], "completed" if complete else "in_progress" if recorded else "not_started")
+                self.assertEqual(attendance["resolved"], complete)
+                self.assertEqual(get_report_state(report, self.user, sections=sections).resolved_section_count, 2 if complete else 1)
+                self.assertEqual(
+                    any(item["section"] == "general_attendance" and item["blocking"] for item in validate_report(report, sections)),
+                    not complete,
+                )
+                self.client.force_authenticate(self.user)
+                response = self.client.get(f"/api/v1/reports/{report.pk}/")
+                self.assertEqual(response.status_code, 200, response.data)
+                payload = next(item for item in response.data["sections"] if item["key"] == "general_attendance")
+                self.assertEqual(payload["status"], attendance["status"])
+                self.assertEqual(payload["resolved"], complete)
+                if not complete:
+                    with self.assertRaises(ValidationError):
+                        set_section_status(report=report, section_key="general_attendance", status="completed", actor=self.user)
+                    with self.assertRaises(ValidationError):
+                        submit_report(report=report, actor=self.user, declaration_confirmed=True)
+
+    def test_attendance_other_services_and_deleted_records_do_not_complete_sundays(self):
+        from apps.people.models import Attendance
+
+        sunday = date(2026, 9, 6)
+        for index in range(4):
+            Attendance.objects.create(
+                assembly=self.assembly, report=self.report, service_type="sunday",
+                timestamp=sunday + timedelta(days=7 * index), is_deleted=index == 3,
+            )
+        Attendance.objects.create(
+            assembly=self.assembly, report=self.report, service_type="friday",
+            timestamp=date(2026, 9, 27),
+        )
+        Attendance.objects.create(
+            assembly=self.assembly, report=self.report, service_type="sunday",
+            timestamp=date(2026, 9, 7),
+        )
+        section = next(item for item in get_report_sections(self.report) if item["key"] == "general_attendance")
+        self.assertEqual(section["status"], "in_progress")
+        self.assertFalse(section["resolved"])
+
     def test_canonical_section_states_make_report_ready(self):
         self.assertEqual(get_report_state(self.report, self.user).status, "not_started")
         first = REQUIRED_SECTIONS[0]
@@ -534,6 +591,12 @@ class ReportLifecycleTests(APITestCase):
         tithe.refresh_from_db()
         self.assertEqual(tithe.report_id, self.report.pk)
         self.assertEqual(tithe.amount, Decimal("25.00"))
+        self.report.refresh_from_db()
+        tithe.report = self.report
+        tithe.amount = Decimal("30.00")
+        tithe.save()
+        tithe.refresh_from_db()
+        self.assertEqual(tithe.amount, Decimal("30.00"))
         self.assertEqual(list(self.report.sections.values_list("pk", flat=True)), section_ids)
         self.assertEqual(list(version.section_snapshots.values("section", "status", "total")), snapshots)
         response = self.client.post(
@@ -546,6 +609,7 @@ class ReportLifecycleTests(APITestCase):
         self.report.refresh_from_db()
         self.assertFalse(get_report_state(self.report, self.user).is_editable)
         self.assertEqual(self.report.current_version.version_number, 2)
+        self.assertEqual(self.report.current_version.tithe_total, Decimal("30.00"))
         self.assertEqual(list(version.section_snapshots.values("section", "status", "total")), snapshots)
 
     def test_direct_grace_reopen_rejects_expired_even_for_admin(self):

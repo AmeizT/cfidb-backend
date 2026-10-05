@@ -1,5 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db import IntegrityError
+from django.db.models import Prefetch
 from django.utils import timezone
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -46,7 +47,17 @@ class MemberView(PeopleTableSchemaMixin, viewsets.ModelViewSet):
             except ValueError:
                 cutoff = today.replace(year=today.year - 18, day=28)
             queryset = queryset.filter(date_of_birth__lte=cutoff)
-        return queryset
+        return queryset.select_related("spouse").prefetch_related(
+            "ministries",
+            "positions",
+            Prefetch(
+                "transfer_requests",
+                queryset=MemberTransferRequest.objects.filter(
+                    status=MemberTransferRequest.Status.PENDING,
+                ),
+                to_attr="pending_transfers",
+            ),
+        )
 
     def perform_create(self, serializer):
         from apps.people.create_security import active_create_assembly

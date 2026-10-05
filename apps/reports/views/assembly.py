@@ -550,8 +550,8 @@ class ReportViewSet(
         for report in reports.values():
             if report.current_version_id and not report.amendment_started_at:
                 continue
-            for section in get_report_sections(report):
-                provisional[section["key"]] += section["source"]["total"]
+            for section in months[report.period_start.month - 1]["sections"]:
+                provisional[section["key"]] += section["total"]
         return Response({
             "assembly": {"id": assembly.id, "name": assembly.name, "currency": assembly.currency},
             "year": year,

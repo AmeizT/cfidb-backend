@@ -77,9 +77,13 @@ class MemberSerializer(serializers.ModelSerializer):
         return None
 
     def get_has_pending_transfer(self, obj):
+        if hasattr(obj, "pending_transfers"):
+            return bool(obj.pending_transfers)
         return obj.transfer_requests.filter(status="pending_acceptance").exists()
 
     def get_pending_transfer_id(self, obj):
+        if hasattr(obj, "pending_transfers"):
+            return obj.pending_transfers[0].id if obj.pending_transfers else None
         pending_transfer = obj.transfer_requests.filter(status="pending_acceptance").first()
         return pending_transfer.id if pending_transfer else None
     
