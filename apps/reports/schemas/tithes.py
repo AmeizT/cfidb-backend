@@ -54,6 +54,7 @@ TITHES_TABLE_SCHEMA = {
             }
         },
         {"id": "reference_code", "label": "Reference"},
+        {"id": "receipt_status", "label": "Receipt status"},
     ],
     "footer": {
         "enabled": True,
@@ -174,7 +175,7 @@ TITHES_PERFORMANCE_TABLE_SCHEMA = {
 TITHES_RECEIPTS_TABLE_SCHEMA = {
     "intent": "finance",
     "columns": [
-        {"id": "reference_code", "label": "Receipt Number"},
+        {"id": "receipt_number", "label": "Receipt Number"},
         {
             "id": "member_name",
             "label": "Contributor",
@@ -187,7 +188,7 @@ TITHES_RECEIPTS_TABLE_SCHEMA = {
         {"id": "amount", "label": "Amount", "formatter": "currency", "isNumeric": True},
         {"id": "timestamp", "label": "Tithe Date", "formatter": "date"},
         {"id": "payment_method", "label": "Payment Method"},
-        {"id": "receipt", "label": "Receipt"},
+        {"id": "printed_at", "label": "Printed", "formatter": "date"},
     ],
     "footer": {
         "enabled": True,

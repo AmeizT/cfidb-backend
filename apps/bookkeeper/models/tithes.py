@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 from django.db import models
 from apps.people.models import Member
@@ -73,3 +74,14 @@ class Tithe(AuditLogMixin, FinancialBase):
                     "CREATE" if is_create else "UPDATE"
                 )
             )
+
+
+class GeneratedTitheReceipt(models.Model):
+    tithe = models.OneToOneField(Tithe, on_delete=models.PROTECT, related_name="generated_receipt")
+    receipt_number = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    receipt_data = models.JSONField(default=dict)
+    issued_at = models.DateTimeField(auto_now_add=True)
+    issued_by = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, related_name='issued_tithe_receipts')
+    printed_at = models.DateTimeField(null=True, blank=True)
+    printed_by = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True, related_name='printed_tithe_receipts')
+    last_printed_at = models.DateTimeField(null=True, blank=True)

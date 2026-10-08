@@ -1,10 +1,27 @@
 from django.db import transaction
-from apps.bookkeeper.models import Tithe
+from apps.bookkeeper.models import Tithe, GeneratedTitheReceipt
 from apps.people.serializers import MemberMinifiedSerializer
 from rest_framework import serializers
 
 
+class GeneratedTitheReceiptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GeneratedTitheReceipt
+        fields = ["id", "tithe", "receipt_number", "receipt_data", "issued_at", "issued_by", "printed_at", "printed_by", "last_printed_at"]
+        read_only_fields = fields
+
+
 class TitheSerializer(serializers.ModelSerializer):
+    receipt_status = serializers.SerializerMethodField()
+
+    def get_receipt_status(self, obj):
+        receipt = getattr(obj, "generated_receipt", None)
+        return "Printed" if receipt and receipt.printed_at else "Not printed"
+
+    generated_receipt = GeneratedTitheReceiptSerializer(read_only=True)
+    receipt_number = serializers.CharField(source="generated_receipt.receipt_number", read_only=True, default=None)
+    printed_at = serializers.DateTimeField(source="generated_receipt.printed_at", read_only=True, default=None)
+
     class Meta:
         model = Tithe
         fields = "__all__"

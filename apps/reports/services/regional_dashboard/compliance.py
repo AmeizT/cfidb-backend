@@ -5,10 +5,7 @@ from typing import Any
 
 from apps.reports.models import AssemblyReport
 from apps.reports.models.section_status import ReportSectionStatus
-from apps.reports.services.compliance_calculator import (
-    ReportStatus,
-    derive_report_status,
-)
+from apps.reports.services.compliance_calculator import ReportStatus
 from apps.reports.services.regional_dashboard.schemas import get_compliance_table_schema
 from apps.reports.services.regional_dashboard.utils import (
     AssembliesWithReports,
@@ -51,13 +48,14 @@ def _report_status(report: AssemblyReport | None) -> str:
     if report is None:
         return ReportStatus.NOT_SUBMITTED
 
-    sections = list(report.sections.all())
-    derived_status = derive_report_status(sections)
+    # Completion reflects section data; submission is a separate workflow event.
+    if report.submitted_at or report.status in SUBMITTED_WORKFLOW_STATUSES:
+        return ReportStatus.SUBMITTED
 
-    if report.status == AssemblyReport.Status.DRAFT and derived_status == ReportStatus.NOT_SUBMITTED:
+    if report.status in {AssemblyReport.Status.DRAFT, AssemblyReport.Status.IN_PROGRESS}:
         return "DRAFT"
 
-    return derived_status
+    return ReportStatus.NOT_SUBMITTED
 
 
 def _current_status(
@@ -172,6 +170,7 @@ def build_assembly_compliance_row(
             "is_submitted": status in {ReportStatus.SUBMITTED, ReportStatus.SKIPPED},
             "is_late": bool(getattr(report, "is_late", False)) if report else False,
             "submitted_at": report.submitted_at if report else None,
+            "submitted_by_name": (report.submitted_by.full_name or report.submitted_by.username) if report and report.submitted_by_id else None,
             "due_date": getattr(report, "due_date", None) if report else None,
             "days_late": getattr(report, "days_late", 0) or 0 if report else 0,
             "completion": completion,

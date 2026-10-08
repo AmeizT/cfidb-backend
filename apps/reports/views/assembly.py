@@ -174,6 +174,7 @@ class ReportViewSet(
             "member",
             "assembly",
             "report",
+            "generated_receipt",
         )
 
     def _filter_report_tithes(self, request, report, queryset, *, apply_status=True):
@@ -1229,7 +1230,7 @@ class ReportViewSet(
         )
         queryset = queryset.filter(self._get_deleted_filter(False)).exclude(
             self._get_voided_filter()
-        ).filter(receipt__isnull=False).exclude(receipt="")
+        ).filter(generated_receipt__printed_at__isnull=False)
 
         return self._paginated_tithe_response(
             queryset,

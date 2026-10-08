@@ -915,7 +915,7 @@ def get_region_reports(
             assembly__zone__region=region,
             period_start__year=year,
         )
-        .select_related("assembly", "assembly__zone")
+        .select_related("assembly", "assembly__zone", "submitted_by")
         .prefetch_related("sections")
         .order_by("assembly_id", "period_start")
     )
@@ -955,7 +955,7 @@ def get_country_reports(
             assembly__country__iexact=country,
             period_start__year=year,
         )
-        .select_related("assembly", "assembly__zone")
+        .select_related("assembly", "assembly__zone", "submitted_by")
         .prefetch_related("sections")
         .order_by("assembly_id", "period_start")
     )

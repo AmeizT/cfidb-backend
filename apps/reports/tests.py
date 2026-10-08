@@ -258,7 +258,7 @@ class ReportTithesAPITests(APITestCase):
             ),
             (
                 f"/api/v1/reports/{self.january_report.id}/tithes/receipts/",
-                "reference_code",
+                "receipt_number",
             ),
             (
                 f"/api/v1/reports/{self.january_report.id}/tithes/audit-log/",

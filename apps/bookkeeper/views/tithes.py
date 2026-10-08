@@ -1,14 +1,18 @@
 import calendar
 from decimal import Decimal
 
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
 from django.db.models import Avg, Max, Q, Sum
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from apps.bookkeeper.models import Tithe
+from apps.bookkeeper.models import Tithe, GeneratedTitheReceipt
 from apps.bookkeeper.pagination import StandardPagination
+from apps.bookkeeper.serializers.tithes import GeneratedTitheReceiptSerializer
 from apps.bookkeeper.serializers import TitheSerializer
 from apps.bookkeeper.views.base import FinancialViewSet
 from apps.churches.models import Forecast
@@ -32,6 +36,41 @@ class TitheViewSet(
     upload_service_class = TitheUploadService
     pagination_class = StandardPagination
 
+    @action(detail=True, methods=["post"], url_path="issue-receipt")
+    def issue_receipt(self, request, pk=None):
+        with transaction.atomic():
+            # Lock the tithe and enforce its unique receipt relation for concurrent requests.
+            tithe = get_object_or_404(self.get_queryset().select_for_update(of=("self",)), pk=pk, is_trash=False)
+            receipt, created = GeneratedTitheReceipt.objects.get_or_create(
+                tithe=tithe, defaults={"issued_by": request.user},
+            )
+            if created:
+                receipt.receipt_data = {
+                    "assemblyName": tithe.assembly.name,
+                    "receiptNumber": str(receipt.receipt_number),
+                    "dateLabel": str(tithe.timestamp),
+                    "memberName": tithe.member.full_name if tithe.member else "Anonymous",
+                    "paymentMethod": tithe.payment_method,
+                    "amountLabel": f"{tithe.assembly.currency} {tithe.amount:,.2f}",
+                }
+                receipt.save(update_fields=["receipt_data"])
+        return Response(GeneratedTitheReceiptSerializer(receipt).data, status=201 if created else 200)
+
+    @action(detail=True, methods=["post"], url_path="receipt-printed")
+    def receipt_printed(self, request, pk=None):
+        tithe = self.get_object()
+        with transaction.atomic():
+            receipt = get_object_or_404(GeneratedTitheReceipt.objects.select_for_update(), tithe=tithe)
+            if str(request.data.get("receipt_id")) != str(receipt.pk):
+                raise ValidationError({"receipt_id": "The issued receipt is required."})
+            now = timezone.now()
+            if receipt.printed_at is None:
+                receipt.printed_at = now
+                receipt.printed_by = request.user
+            receipt.last_printed_at = now
+            receipt.save(update_fields=["printed_at", "printed_by", "last_printed_at"])
+        return Response(GeneratedTitheReceiptSerializer(receipt).data)
+
     @action(detail=False, methods=["post"], url_path="batch")
     def batch(self, request):
         assembly, error = active_assembly_or_error(request)
@@ -54,13 +93,13 @@ class TitheViewSet(
         return Response({"count": len(created), "records": self.get_serializer(created, many=True).data, "report_totals": totals}, status=201)
 
     def get_queryset(self):
-        return super().get_queryset().select_related("member", "assembly", "report")
+        return super().get_queryset().select_related("member", "assembly", "report", "generated_receipt")
 
     def _filtered_active_queryset(self):
         queryset = Tithe.all_objects.filter(
             assembly=self.request.user.church, # type: ignore
             is_trash=False,
-        ).select_related("member", "assembly", "report")
+        ).select_related("member", "assembly", "report", "generated_receipt")
 
         year = self.request.query_params.get("year") # type: ignore
         month = self.request.query_params.get("month") # type: ignore
@@ -88,7 +127,7 @@ class TitheViewSet(
         queryset = Tithe.all_objects.filter(
             assembly=request.user.church, # type: ignore
             is_trash=True,
-        ).select_related("member", "assembly", "report")
+        ).select_related("member", "assembly", "report", "generated_receipt")
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -159,8 +198,8 @@ class TitheViewSet(
     @action(detail=False, methods=["get"], url_path="receipts")
     def receipts(self, request):
         queryset = self._filtered_active_queryset().filter(
-            receipt__isnull=False,
-        ).exclude(receipt="")
+            generated_receipt__printed_at__isnull=False,
+        )
         page = self.paginate_queryset(queryset)
 
         if page is not None:

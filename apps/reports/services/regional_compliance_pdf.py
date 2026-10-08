@@ -27,6 +27,7 @@ from reportlab.platypus import (
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from apps.churches.models import Region, Zone
+from apps.churches.services.regional_scope import permitted_zones, uses_regional_shell
 from apps.reports.models import AuditLog
 from apps.reports.models.section_status import ReportSectionStatus
 from apps.reports.services.metrics.region_dashboard_service import get_region_reports
@@ -206,12 +207,8 @@ def _normalize_report_status(status: Any) -> str:
 
 def _monthly_status_label(item: dict[str, Any]) -> str:
     status = _normalize_report_status(item.get("report_status"))
-    completion = float(item.get("completion") or 0)
-
-    if status == "SUBMITTED" and completion >= 100:
-        return "Submitted"
     if status == "SUBMITTED":
-        return "Partial submission"
+        return "Submitted"
     if status == "DRAFT":
         return "Draft"
     return "Not submitted"
@@ -223,15 +220,17 @@ def _submitted_on_text(item: dict[str, Any]) -> str:
     lines = []
 
     if submitted_at:
-        lines.append(_format_date(submitted_at))
+        lines.append(escape(_format_date(submitted_at)))
+        if item.get("submitted_by_name"):
+            lines.append(f'<font size="7.5" color="#64748B">{escape(str(item["submitted_by_name"]))}</font>')
         if item.get("is_late"):
             days_late = int(item.get("days_late") or 0)
             suffix = "day" if days_late == 1 else "days"
-            lines.append(f"Late by {days_late} {suffix}")
+            lines.append(escape(f"Late by {days_late} {suffix}"))
     else:
-        lines.append(f"Due {_format_date(due_date)}" if due_date else "-")
+        lines.append(escape(f"Due {_format_date(due_date)}") if due_date else "-")
 
-    return "<br/>".join(escape(line) for line in lines)
+    return "<br/>".join(lines)
 
 
 def _period_label(year: int, from_month: int, to_month: int) -> str:
@@ -289,6 +288,9 @@ def _user_can_access_region(user, region: Region) -> bool:
 
 
 def _visible_zone_ids(user, region: Region) -> set[int] | None:
+    if uses_regional_shell(user):
+        return set(permitted_zones(user).filter(region=region).values_list("pk", flat=True))
+
     assigned_regions = getattr(user, "assigned_regions", None)
     has_region_access = (
         assigned_regions is not None
@@ -349,6 +351,7 @@ def _scope_rows(
         row = build_assembly_compliance_row(
             assembly, reports, country=assembly_country, year=year,
         )
+        row["zone_id"] = assembly_zone_id
         reports_by_month = {report.period_start.month: report for report in reports}
         for item in row["monthly_compliance"]:
             month = _parse_period_month(item)
@@ -698,8 +701,9 @@ def _add_section_legend(elements, styles):
     elements.extend([outer, Spacer(1, 13)])
 
 
-def _add_month_section(elements, styles, *, month, year, records):
-    _add_report_header(elements, styles, "Compliance Reports", f"{MONTH_NAMES[month]} {year}")
+def _add_month_section(elements, styles, *, month, year, records, title="Compliance Reports"):
+    section_start = len(elements)
+    _add_report_header(elements, styles, title, f"{MONTH_NAMES[month]} {year}")
     summary = _month_summary(records)
     elements.extend([_p("   |   ".join(f"{key}: {value}" for key, value in summary.items()), styles["Muted"]), Spacer(1, 12)])
     _add_section_legend(elements, styles)
@@ -733,6 +737,8 @@ def _add_month_section(elements, styles, *, month, year, records):
         state = "present" if status == "SUBMITTED" else "progress" if status == "DRAFT" else "missing"
         commands.append(("BACKGROUND", (5, index), (5, index), STATE_COLORS[state][0]))
     table.setStyle(TableStyle(commands))
+    for element in elements[section_start:]:
+        element.keepWithNext = True
     elements.append(table)
 
 
@@ -832,6 +838,22 @@ def _record_audit_event(
     )
 
 
+def _master_zones(region, user):
+    visible_ids = _visible_zone_ids(user, region)
+    zones = region.zones.all()
+    if visible_ids is not None:
+        zones = zones.filter(pk__in=visible_ids)
+    if getattr(region, "_summary_zone_id", None):
+        zones = zones.filter(pk=region._summary_zone_id)
+    # Natural ordering keeps Zone 2 before Zone 10; names and IDs break ties.
+    def zone_order(zone):
+        parts = re.split(r"(\d+)", zone.name)
+        name_order = tuple((0, int(part)) if part.isdigit() else (1, part.casefold()) for part in parts)
+        return name_order, zone.pk
+
+    return sorted(zones, key=zone_order)
+
+
 def build_regional_monthly_compliance_pdf(
     *,
     region: Region,
@@ -842,7 +864,12 @@ def build_regional_monthly_compliance_pdf(
         raise PermissionDenied("You do not have access to this region.")
 
     year, from_month, to_month = _validate_period(query_params)
-    zone_id = _int_param(query_params, "zone_id")
+    layout = query_params.get("layout", "monthly")
+    if layout not in {"monthly", "master"}:
+        raise ValidationError({"layout": "Select monthly or master layout."})
+    is_master = layout == "master"
+    # A master request expands the selected zone filter, never the user's authorization.
+    zone_id = None if is_master else _int_param(query_params, "zone_id")
     country = query_params.get("country") or None
 
     rows, selected_zone = _scope_rows(
@@ -855,14 +882,15 @@ def build_regional_monthly_compliance_pdf(
         to_month=to_month,
     )
 
-    if not rows:
+    zones = _master_zones(region, user) if is_master else []
+    if not rows and not zones:
         raise ValidationError("No assemblies are available for the selected report scope.")
 
     records = _records_by_month(rows, from_month=from_month, to_month=to_month)
     month_count = to_month - from_month + 1
     total_records = sum(len(month_records) for month_records in records.values())
 
-    if total_records == 0:
+    if total_records == 0 and not is_master:
         raise ValidationError(
             "No monthly compliance data is available for the selected reporting period."
         )
@@ -877,7 +905,7 @@ def build_regional_monthly_compliance_pdf(
         rightMargin=12 * mm,
         topMargin=12 * mm,
         bottomMargin=20 * mm,
-        title="Regional Monthly Compliance Report",
+        title="Master Regional Compliance Report" if is_master else "Regional Monthly Compliance Report",
     )
 
     generated_by = getattr(user, "full_name", None) or str(user)
@@ -888,7 +916,7 @@ def build_regional_monthly_compliance_pdf(
     )
 
     elements = [_p("CFI Database", styles["BodySmallBold"]), Spacer(1, 22)]
-    _add_report_header(elements, styles, "Regional Monthly Compliance Report", _period_label(year, from_month, to_month))
+    _add_report_header(elements, styles, "Master Regional Compliance Report" if is_master else "Regional Monthly Compliance Report", _period_label(year, from_month, to_month))
     elements.append(Spacer(1, 10))
     _add_report_details(elements, styles, [
         ("Region", region.name), ("Scope", scope),
@@ -899,21 +927,40 @@ def build_regional_monthly_compliance_pdf(
     elements.append(_p("Report Summary", styles["SectionTitle"]))
     elements.append(Spacer(1, 6))
 
-    _add_summary_table(
-        elements,
-        styles,
-        _summary_metrics(rows=rows, records=records, month_count=month_count),
-    )
+    summary = _summary_metrics(rows=rows, records=records, month_count=month_count)
+    if is_master:
+        summary = {
+            "Total zones": len(zones),
+            "Total assemblies": summary["Assemblies included"],
+            "Submitted reports": summary["Submitted reports"],
+            "Outstanding reports": summary["Not submitted reports"] + summary["Draft reports"],
+            "On-time submissions": summary["Submitted reports"] - summary["Late submissions"],
+            "Late submissions": summary["Late submissions"],
+            "Average completion": summary["Average completion"],
+            "Fully compliant assembly-months": summary["Fully compliant assembly-months"],
+        }
+    _add_summary_table(elements, styles, summary)
 
-    for month in range(from_month, to_month + 1):
-        elements.append(PageBreak())
-        _add_month_section(
-            elements,
-            styles,
-            month=month,
-            year=year,
-            records=records[month],
-        )
+    if is_master:
+        for zone in zones:
+            zone_rows = sorted(
+                (row for row in rows if row.get("zone_id") == zone.pk),
+                key=lambda row: (str(row.get("name", "")).casefold(), row["id"]),
+            )
+            elements.append(PageBreak())
+            if not zone_rows:
+                _add_report_header(elements, styles, zone.name, _period_label(year, from_month, to_month))
+                elements.append(_p("No assemblies match the selected scope in this zone.", styles["Muted"]))
+                continue
+            zone_records = _records_by_month(zone_rows, from_month=from_month, to_month=to_month)
+            for month in range(from_month, to_month + 1):
+                if month != from_month:
+                    elements.append(PageBreak())
+                _add_month_section(elements, styles, month=month, year=year, records=zone_records[month], title=zone.name if month == from_month else "Compliance Reports")
+    else:
+        for month in range(from_month, to_month + 1):
+            elements.append(PageBreak())
+            _add_month_section(elements, styles, month=month, year=year, records=records[month])
 
     _add_skipped_appendix(
         elements,
@@ -943,7 +990,7 @@ def build_regional_monthly_compliance_pdf(
 
     return RegionalCompliancePdfResult(
         buffer=buffer,
-        filename=_filename(
+        filename=("master-" if is_master else "") + _filename(
             region=region,
             year=year,
             from_month=from_month,

@@ -297,7 +297,11 @@ class RegionViewSet(RegionalReportAccessMixin, ViewSet):
 
     @action(detail=True, methods=["get"], url_path="compliance/monthly-report.pdf")
     def monthly_compliance_report_pdf(self, request, pk=None):
-        region = self._scoped_region(pk)
+        # The master export uses all permitted zones, rather than the active navigation zone.
+        if request.query_params.get("layout") == "master":
+            region = get_object_or_404(Region, pk=pk)
+        else:
+            region = self._scoped_region(pk)
         params = request.query_params.copy()
         if getattr(region, "_summary_zone_id", None):
             params["zone_id"] = str(region._summary_zone_id)

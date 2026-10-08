@@ -8,7 +8,7 @@ from django.test import TestCase
 from openpyxl import load_workbook
 from rest_framework.test import APIClient
 
-from apps.bookkeeper.models import Expenditure, Overhead, OverheadType, Revenue, RevenueCategory, Tithe
+from apps.bookkeeper.models import Expenditure, Overhead, OverheadType, Revenue, RevenueCategory, Tithe, GeneratedTitheReceipt
 from apps.churches.models import Church
 from apps.people.models import Attendance, Member
 from apps.reports.models import AssemblyReport
@@ -43,6 +43,48 @@ class ManualEntryBatchApiTests(TestCase):
         )
         self.client = APIClient()
         self.client.force_authenticate(self.user)
+
+    def test_generated_receipt_is_idempotent_and_only_listed_after_printing(self):
+        tithe = Tithe.objects.create(assembly=self.assembly, report=self.report, member=self.member,
+                                     amount="100.00", timestamp=date(2026, 7, 5), receipt="supporting.pdf")
+        issue_url = f"/api/v1/bookkeeper/tithes/{tithe.pk}/issue-receipt/"
+        printed_url = f"/api/v1/bookkeeper/tithes/{tithe.pk}/receipt-printed/"
+        report_url = f"/api/v1/reports/{self.report.pk}/tithes/receipts/"
+        self.assertEqual(self.client.get(report_url).data["count"], 0)
+        first = self.client.post(issue_url, {}, format="json")
+        self.assertEqual(first.status_code, 201, first.data)
+        second = self.client.post(issue_url, {}, format="json")
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(first.data, second.data)
+        self.assertEqual(GeneratedTitheReceipt.objects.count(), 1)
+        self.assertIsNone(first.data["printed_at"])
+        self.assertEqual(self.client.get(report_url).data["count"], 0)
+        self.assertEqual(self.client.post(printed_url, {"receipt_id": -1}, format="json").status_code, 400)
+        receipt = GeneratedTitheReceipt.objects.get(tithe=tithe)
+        self.assertIsNone(receipt.printed_at)
+        result = self.client.post(printed_url, {"receipt_id": receipt.pk}, format="json")
+        self.assertEqual(result.status_code, 200, result.data)
+        printed_at = result.data["printed_at"]
+        self.assertEqual(self.client.get(report_url).data["count"], 1)
+        self.assertEqual(self.client.get("/api/v1/bookkeeper/tithes/receipts/").data["count"], 1)
+        reprint = self.client.post(printed_url, {"receipt_id": receipt.pk}, format="json")
+        self.assertEqual(reprint.data["printed_at"], printed_at)
+        self.assertEqual(reprint.data["receipt_number"], first.data["receipt_number"])
+        self.assertEqual(GeneratedTitheReceipt.objects.count(), 1)
+        tithe.refresh_from_db()
+        self.assertEqual(tithe.receipt.name, "supporting.pdf")
+        self.assertEqual(first.data["receipt_data"]["memberName"], self.member.full_name)
+
+    def test_generated_receipts_are_assembly_scoped(self):
+        other_report = AssemblyReport.objects.create(assembly=self.other_assembly, period_start=date(2026, 7, 1), period_end=date(2026, 7, 31))
+        other = Tithe.objects.create(assembly=self.other_assembly, report=other_report, member=self.other_member,
+                                     amount="10.00", timestamp=date(2026, 7, 5))
+        for action in ["issue-receipt", "receipt-printed"]:
+            result = self.client.post(f"/api/v1/bookkeeper/tithes/{other.pk}/{action}/", {}, format="json")
+            self.assertEqual(result.status_code, 404)
+        self.assertEqual(GeneratedTitheReceipt.objects.count(), 0)
+        self.client.force_authenticate(user=None)
+        self.assertIn(self.client.post(f"/api/v1/bookkeeper/tithes/{other.pk}/issue-receipt/").status_code, [401, 403])
 
     def envelope(self, entries):
         return {"period": "2026-07", "report": self.report.pk, "entries": entries}
